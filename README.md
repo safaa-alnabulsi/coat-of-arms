@@ -18,3 +18,7 @@
 3- to run tests
 
     pytest
+
+
+## References:
+- automata-lib: https://pypi.org/project/automata-lib/#class-dfafa
