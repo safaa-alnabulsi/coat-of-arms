@@ -5,7 +5,9 @@ automata = LabelCheckerAutomata()
 accepted_labels = {
     'O G lion rampant': 'ccom',
     'A G lion rampant': 'ccom',
-    'G A fess dancetty': 'ccom'
+    'G A fess dancetty': 'ccom',
+    'O X GB fess checky': 'ccccom',
+    'G AGG chief': 'cccco'
 }
 
 rejected_labels = {
@@ -29,3 +31,12 @@ class LabelCheckerAutomataTest(TestCase):
 
         for label, parsed_label in rejected_labels.items():
             assert automata._parse_label(label) == parsed_label
+
+    def test_is_combination_color(self):
+        assert automata._is_combination_color('AA') == True
+        assert automata._is_combination_color('AGO') == True
+        assert automata._is_combination_color('&s') == False
+
+    def test_get_combination_color(self):
+        assert automata._get_combination_color('AA') == 'cc'
+        assert automata._get_combination_color('AGO') == 'ccc'
