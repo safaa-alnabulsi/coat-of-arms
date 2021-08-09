@@ -39,4 +39,20 @@ class LabelCheckerAutomata:
                 output = output + 'm'
             elif chunck in self.position:
                 output = output + 'p'
+            elif self._is_combination_color(chunck): # to suppot multi-color   'O X GB fess checky' or 'G AGG chief'
+                output = output + self._get_combination_color(chunck)
         return output
+
+    def _is_combination_color(self, chunck):
+        flag = False
+        for ch in chunck:
+            if ch in self.color:
+                flag = True
+            else:
+                flag = False
+                break
+
+        return flag
+
+    def _get_combination_color(self, chunck):
+        return 'c' * len(chunck)
