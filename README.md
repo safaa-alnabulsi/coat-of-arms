@@ -1,6 +1,6 @@
 # coat-of-arms
 
-The visual representation of the implemented automata in (LabelCheckerAutomata)[src/label_checker_automata.py]
+The visual representation of the implemented automata in [LabelCheckerAutomata](src/label_checker_automata.py)
 ![alt automata](automata.jpg)
 
 ## Setup Local Environment
