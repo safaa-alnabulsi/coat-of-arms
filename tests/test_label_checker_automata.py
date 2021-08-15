@@ -10,7 +10,8 @@ accepted_labels = {
     'A GV 3 roses slipped': 'cccnom',
     'O S 6 boars': 'ccno',
     'S AO cross acc. 4 fleurs-de-lis': 'cccopno',
-    'G A branch with 3 oak leaves erect': 'ccopnoom'
+    'G A branch with 3 oak leaves erect': 'ccopnoom',
+    'S AO lion chained cr. & border': 'cccommpm'
 }
 
 rejected_labels = {
