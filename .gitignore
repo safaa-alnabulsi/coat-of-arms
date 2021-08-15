@@ -132,3 +132,4 @@ dmypy.json
 dataset
 .idea
 .ipynb_checkpoints
+.DS_Store
