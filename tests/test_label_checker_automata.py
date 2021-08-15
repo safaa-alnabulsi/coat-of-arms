@@ -7,14 +7,18 @@ accepted_labels = {
     'A G lion rampant': 'ccom',
     'G A fess dancetty': 'ccom',
     'O X GB fess checky': 'ccccom',
-    'G AGG chief': 'cccco'
+    'A GV 3 roses slipped': 'cccnom',
+    'O S 6 boars': 'ccno',
+    'S AO cross acc. 4 fleurs-de-lis': 'cccopno',
+    'G A branch with 3 oak leaves erect': 'ccopnoom'
 }
 
 rejected_labels = {
-    '3 pales; 2 cows; =; = :: label   {OG, OG, B}': '',
+    '3 pales; 2 cows; =; = :: label   {OG, OG, B}': 'nn',
     'A G': 'cc',
     'fess G': 'oc'
 }
+
 
 class LabelCheckerAutomataTest(TestCase):
     def test_is_valid_passes(self):
@@ -27,9 +31,11 @@ class LabelCheckerAutomataTest(TestCase):
 
     def test_parse_label(self):
         for label, parsed_label in accepted_labels.items():
+            print(label)
             assert automata._parse_label(label) == parsed_label
 
         for label, parsed_label in rejected_labels.items():
+            print(label)
             assert automata._parse_label(label) == parsed_label
 
     def test_is_combination_color(self):
