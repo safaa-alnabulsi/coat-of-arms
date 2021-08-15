@@ -11,7 +11,9 @@ accepted_labels = {
     'O S 6 boars': 'ccno',
     'S AO cross acc. 4 fleurs-de-lis': 'cccopno',
     'G A branch with 3 oak leaves erect': 'ccopnoom',
-    'S AO lion chained cr. & border': 'cccommpm'
+    'S AO lion chained cr. & border': 'cccommpm',
+    "O S eagle's head": 'ccoo',
+    'B O 3 lions': 'ccno'
 }
 
 rejected_labels = {

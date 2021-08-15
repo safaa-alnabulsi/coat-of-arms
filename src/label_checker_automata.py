@@ -44,7 +44,17 @@ class LabelCheckerAutomata:
                 output = output + 'p'
             elif chunck in self.number:
                 output = output + 'n'
-            elif self._is_combination_color(chunck): # to suppot multi-color   'O X GB fess checky' or 'G AGG chief'
+            elif chunck.endswith("'s"): # possessive pronouns: G A 3 lion's heads
+                size = len(chunck)
+                trimmed_chun = chunck[:size - 2]
+                if trimmed_chun in self.object:
+                    output = output + 'o'
+            elif chunck.endswith("s"):  # plural s: G A 3 lions
+                size = len(chunck)
+                trimmed_chun = chunck[:size - 1]
+                if trimmed_chun in self.object:
+                    output = output + 'o'
+            elif self._is_combination_color(chunck):  # to suppot multi-color   'O X GB fess checky' or 'G AGG chief'
                 output = output + self._get_combination_color(chunck)
         return output
 
