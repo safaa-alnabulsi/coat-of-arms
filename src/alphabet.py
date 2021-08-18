@@ -12,13 +12,11 @@ class Alphabet:
         self.modifier = ['rampant', 'dancetty', 'salient', 'checky', 'roundel', 'bend', 'annulet', 'lozenge',
                          'engrailed', 'orle', 'crusily', 'pale', 'doubleheaded', 'rising', 'addorsed', 'slipped',
                          'erect', 'cr.', 'border', 'chained', 'flory', 'erased', 'hooded', 'winged', 'embattled',
-                         'gorged', 'arched', 'segreant']
+                         'gorged', 'arched', 'segreant', 'pd', 'isst', 'jesst', 'passt', 'guard', 'sejt', 'reguard', 
+                         'inv', 'cch', 'compony', 'segr', 'p.c.', 'p.n.', 'col', 'displayed',
+                         'sn', 'dx', 'nebuly', 'dancetty', 'mount']
 
-        self.position = ['acc.', 'ch.', 'in', 'of', '&', 'and', 'sn', 'dx', 'nebuly', 'dancetty', 'above', 'with',
-                         'betw'
-                         # 'pd',
-                         # 'isst', 'jesst', 'passt', 'guard', 'sejt', 'reguard', 'inv', 'cch', 'compony',
-                         # 'segr', 'p.c.', 'p.n.', 'col', 'displayed', 'indented', 'towards', 'chf',
-                         # 'mount', 'on'
+        self.position = ['acc.', 'ch.', 'in', 'of', '&', 'and', 'above', 'with',
+                         'betw', 'indented', 'towards', 'chf', 'on'
                          ]
         self.number = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
