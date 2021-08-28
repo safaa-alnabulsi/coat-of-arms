@@ -3,7 +3,11 @@ import alphabet
 
 
 class LabelCheckerAutomata:
-    def __init__(self):
+    def __init__(self, colors=alphabet.COLORS,
+                 objects=alphabet.OBJECTS,
+                 modifiers=alphabet.MODIFIERS,
+                 positions=alphabet.POSITIONS,
+                 numbers=alphabet.NUMBERS):
         self.dfa = DFA(
             states={'q0', 'q1', 'q2', 'q3', 'q4', 'q5'},
             input_symbols={'c', 'o', 'm', 'p', 'n'},  # c: color, o: object, m: modifier, p: position, n: number
@@ -18,12 +22,11 @@ class LabelCheckerAutomata:
             initial_state='q0',
             final_states={'q2', 'q3'}
         )
-
-        self.color = alphabet.COLORS
-        self.object = alphabet.OBJECTS
-        self.modifier = alphabet.MODIFIERS
-        self.position = alphabet.POSITIONS
-        self.number = alphabet.NUMBERS
+        self.objects = objects
+        self.colors = colors
+        self.modifiers = modifiers
+        self.positions = positions
+        self.numbers = numbers
 
     def is_valid(self, label):
         parsed_label = self.parse_label(label)
@@ -33,34 +36,34 @@ class LabelCheckerAutomata:
         chunks = label.split()
         output = ''
         for chunk in chunks:
-            if chunk in self.color:
+            if chunk in self.colors:
                 output = output + 'c'
-            elif chunk in self.object:
+            elif chunk in self.objects:
                 output = output + 'o'
-            elif chunk in self.modifier:
+            elif chunk in self.modifiers:
                 output = output + 'm'
-            elif chunk in self.position:
+            elif chunk in self.positions:
                 output = output + 'p'
-            elif chunk in self.number:
+            elif chunk in self.numbers:
                 output = output + 'n'
-            elif chunk.endswith("'s"): # possessive pronouns: G A 3 lion's heads
+            elif chunk.endswith("'s"):  # possessive pronouns: G A 3 lion's heads
                 size = len(chunk)
-                trimmed_chun = chunk[:size - 2]
-                if trimmed_chun in self.object:
+                trimmed_chunk = chunk[:size - 2]
+                if trimmed_chunk in self.objects:
                     output = output + 'o'
             elif chunk.endswith("s"):  # plural s: G A 3 lions
                 size = len(chunk)
-                trimmed_chun = chunk[:size - 1]
-                if trimmed_chun in self.object:
+                trimmed_chunk = chunk[:size - 1]
+                if trimmed_chunk in self.objects:
                     output = output + 'o'
-            elif self.is_combination_color(chunk):  # to suppot multi-color   'O X GB fess checky' or 'G AGG chief'
-                output = output + self._get_combination_color(chunk)
+            elif self.is_combination_color(chunk):  # to support multi-color 'O X GB fess checky' or 'G AGG chief'
+                output = output + self.get_combination_color(chunk)
         return output
 
-    def is_combination_color(self, chunck):
+    def is_combination_color(self, chunk):
         flag = False
-        for ch in chunck:
-            if ch in self.color:
+        for ch in chunk:
+            if ch in self.colors:
                 flag = True
             else:
                 flag = False
@@ -68,5 +71,6 @@ class LabelCheckerAutomata:
 
         return flag
 
-    def _get_combination_color(self, chunck):
-        return 'c' * len(chunck)
+    @staticmethod
+    def get_combination_color(chunk):
+        return 'c' * len(chunk)
