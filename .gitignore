@@ -133,3 +133,5 @@ dataset
 .idea
 .ipynb_checkpoints
 .DS_Store
+generated-data/
+.DS_Store/

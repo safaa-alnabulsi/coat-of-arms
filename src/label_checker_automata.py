@@ -1,5 +1,5 @@
 from automata.fa.dfa import DFA
-import alphabet
+import src.alphabet as alphabet
 
 
 class LabelCheckerAutomata:
@@ -71,6 +71,31 @@ class LabelCheckerAutomata:
 
         return flag
 
+    
+    def align_parsed_label(self, label, parsed_label):
+        output = {
+            'colors': [],
+            'objects': [],
+            'modifiers': [],
+            'numbers': [],
+            'positions': []
+        }
+        label = label.split(' ')
+        for elem, symbol in zip(label, list(parsed_label)):
+            if symbol == 'c':
+                output['colors'].append(elem)
+            elif symbol == 'o':
+                output['objects'].append(elem)
+            elif symbol == 'm':
+                output['modifiers'].append(elem)
+            elif symbol == 'n':
+                output['numbers'].append(elem)
+            elif symbol == 'p':
+                output['positions'].append(elem)
+
+        return output
+        
+    
     @staticmethod
     def get_combination_color(chunk):
         return 'c' * len(chunk)
