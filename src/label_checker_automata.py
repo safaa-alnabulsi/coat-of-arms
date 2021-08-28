@@ -1,5 +1,5 @@
 from automata.fa.dfa import DFA
-from src.alphabet import Alphabet
+import alphabet
 
 
 class LabelCheckerAutomata:
@@ -19,46 +19,45 @@ class LabelCheckerAutomata:
             final_states={'q2', 'q3'}
         )
 
-        alphabet = Alphabet()
-        self.color = alphabet.color
-        self.object = alphabet.object
-        self.modifier = alphabet.modifier
-        self.position = alphabet.position
-        self.number = alphabet.number
+        self.color = alphabet.COLORS
+        self.object = alphabet.OBJECTS
+        self.modifier = alphabet.MODIFIERS
+        self.position = alphabet.POSITIONS
+        self.number = alphabet.NUMBERS
 
     def is_valid(self, label):
-        parsed_label = self._parse_label(label)
+        parsed_label = self.parse_label(label)
         return self.dfa.accepts_input(parsed_label)
 
-    def _parse_label(self, label):
+    def parse_label(self, label):
         chunks = label.split()
         output = ''
-        for chunck in chunks:
-            if chunck in self.color:
+        for chunk in chunks:
+            if chunk in self.color:
                 output = output + 'c'
-            elif chunck in self.object:
+            elif chunk in self.object:
                 output = output + 'o'
-            elif chunck in self.modifier:
+            elif chunk in self.modifier:
                 output = output + 'm'
-            elif chunck in self.position:
+            elif chunk in self.position:
                 output = output + 'p'
-            elif chunck in self.number:
+            elif chunk in self.number:
                 output = output + 'n'
-            elif chunck.endswith("'s"): # possessive pronouns: G A 3 lion's heads
-                size = len(chunck)
-                trimmed_chun = chunck[:size - 2]
+            elif chunk.endswith("'s"): # possessive pronouns: G A 3 lion's heads
+                size = len(chunk)
+                trimmed_chun = chunk[:size - 2]
                 if trimmed_chun in self.object:
                     output = output + 'o'
-            elif chunck.endswith("s"):  # plural s: G A 3 lions
-                size = len(chunck)
-                trimmed_chun = chunck[:size - 1]
+            elif chunk.endswith("s"):  # plural s: G A 3 lions
+                size = len(chunk)
+                trimmed_chun = chunk[:size - 1]
                 if trimmed_chun in self.object:
                     output = output + 'o'
-            elif self._is_combination_color(chunck):  # to suppot multi-color   'O X GB fess checky' or 'G AGG chief'
-                output = output + self._get_combination_color(chunck)
+            elif self.is_combination_color(chunk):  # to suppot multi-color   'O X GB fess checky' or 'G AGG chief'
+                output = output + self._get_combination_color(chunk)
         return output
 
-    def _is_combination_color(self, chunck):
+    def is_combination_color(self, chunck):
         flag = False
         for ch in chunck:
             if ch in self.color:
