@@ -8,3 +8,7 @@ matplotlib
 pillow
 pytest
 requests
+spacy
+pytorch
+torchvision
+
