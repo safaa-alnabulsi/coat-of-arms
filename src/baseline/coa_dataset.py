@@ -7,7 +7,7 @@ from src.baseline.vocabulary import Vocabulary
 
 class CoADataset(Dataset):
  
-    def __init__(self,root_dir,captions_file,transform=None,freq_threshold=5):
+    def __init__(self,root_dir,captions_file,transform=None,freq_threshold=5, vocab=None):
         self.root_dir = root_dir
         self.df = pd.read_csv(captions_file)
         self.transform = transform
@@ -17,9 +17,13 @@ class CoADataset(Dataset):
         self.captions = self.df["caption"]
         
         #Initialize vocabulary and build vocab
-        self.vocab = Vocabulary(freq_threshold)
-        self.vocab.build_vocab(self.captions.tolist())
-        
+        if vocab is None:
+            self.vocab = Vocabulary(freq_threshold)
+            self.vocab.build_vocab(self.captions.tolist())
+        else: 
+            print('vocab is passed')
+            self.vocab = vocab
+            
     
     def __len__(self):
         return len(self.df)

@@ -3,10 +3,10 @@ from src.baseline.vocabulary import Vocabulary
 from src.baseline.coa_dataset import CoADataset
 from src.baseline.caps_collate import CapsCollate
 
-def get_loader(root_folder, train_annotation_file, test_annotation_file, transform, batch_size=32, num_workers=8, shuffle=True, pin_memory=True):
+def get_loader(root_folder, train_annotation_file, test_annotation_file, transform, batch_size=32, num_workers=2, shuffle=True, pin_memory=True, vocab=None):
     
-    train_dataset = CoADataset(root_folder, train_annotation_file, transform=transform)
-    test_dataset = CoADataset(root_folder, test_annotation_file, transform=transform)
+    train_dataset = CoADataset(root_folder, train_annotation_file, transform=transform, vocab=vocab)
+    test_dataset = CoADataset(root_folder, test_annotation_file, transform=transform, vocab=vocab)
     pad_idx = train_dataset.vocab.stoi["<PAD>"]
 
     train_loader = DataLoader(
@@ -15,7 +15,7 @@ def get_loader(root_folder, train_annotation_file, test_annotation_file, transfo
         num_workers=num_workers,
         shuffle=shuffle,
         pin_memory=pin_memory,
-        collate_fn=CapsCollate(pad_idx=pad_idx),
+        collate_fn=CapsCollate(pad_idx=pad_idx)
     )
 
     test_loader = DataLoader(
@@ -24,7 +24,7 @@ def get_loader(root_folder, train_annotation_file, test_annotation_file, transfo
         num_workers=num_workers,
         shuffle=shuffle,
         pin_memory=pin_memory,
-        collate_fn=CapsCollate(pad_idx=pad_idx),
+        collate_fn=CapsCollate(pad_idx=pad_idx)
     )
     
     return train_loader, test_loader, train_dataset, test_dataset
