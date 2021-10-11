@@ -11,4 +11,5 @@ requests
 spacy
 torch
 torchvision
-
+nltk
+tqdm
