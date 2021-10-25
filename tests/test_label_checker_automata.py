@@ -22,6 +22,13 @@ rejected_labels = {
     'fess G': 'oc'
 }
 
+aligned_parsed_labels = {
+    'O G lion rampant': {'colors': ['O','G'], 'objects': ['lion'], 'modifiers': ['rampant'], 'numbers': [], 'positions': []},
+    'G A eagle doubleheaded': {'colors': ['G','A'], 'objects': ['eagle'], 'modifiers': ['doubleheaded'], 'numbers': [], 'positions': []},
+    'B G lion passt': {'colors': ['B', 'G'], 'objects': ['lion'], 'modifiers': ['passt'], 'numbers': [], 'positions': []},
+    'b g lion passt': {'colors': ['b', 'g'], 'objects': ['lion'], 'modifiers': ['passt'], 'numbers': [], 'positions': []}
+
+}
 
 class LabelCheckerAutomataTest(TestCase):
 
@@ -48,5 +55,12 @@ class LabelCheckerAutomataTest(TestCase):
         assert automata.is_combination_color('&s') == False
 
     def test_get_combination_color(self):
-        assert automata._get_combination_color('AA') == 'cc'
-        assert automata._get_combination_color('AGO') == 'ccc'
+        print(automata.get_combination_color('AA'))
+        assert automata.get_combination_color('AA') == 'cc'
+        assert automata.get_combination_color('AGO') == 'ccc'
+
+    def test_align_parsed_label(self):
+        for label, ouput in aligned_parsed_labels.items():
+            parsed_label = automata.parse_label(label)
+            assert automata.align_parsed_label(label, parsed_label) == ouput
+

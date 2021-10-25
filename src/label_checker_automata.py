@@ -52,7 +52,7 @@ class LabelCheckerAutomata:
         chunks = label.split()
         output = ''
         for chunk in chunks:
-            if chunk in self.colors:
+            if chunk.upper() in self.colors:
                 output = output + 'c'
             elif chunk in self.objects:
                 output = output + 'o'
