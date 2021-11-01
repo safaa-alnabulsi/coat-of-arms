@@ -6,6 +6,7 @@ from io import BytesIO
 # Map our dataset to the API keywords
 
 LION_MODIFIERS_MAP = {
+    'lion': 'lionRampant',
     'lion rampant': 'lionRampant',
     'lion passt': 'lionPassant',
     'lion passt guard': 'lionPassantGuardant',
