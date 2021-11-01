@@ -1,6 +1,7 @@
 import os
 import torch
 import pandas as pd
+import torchvision.transforms as T
 from PIL import Image
 from torch.utils.data import DataLoader,Dataset
 from src.baseline.vocabulary import Vocabulary
@@ -21,7 +22,6 @@ class CoADataset(Dataset):
             self.vocab = Vocabulary(freq_threshold)
             self.vocab.build_vocab(self.captions.tolist())
         else: 
-            print('vocab is passed')
             self.vocab = vocab
             
     
@@ -37,6 +37,9 @@ class CoADataset(Dataset):
         #apply the transfromation to the image
         if self.transform is not None:
             img = self.transform(img)
+        else:
+            trans = T.ToTensor()
+            img = trans(img)
         
         #numericalize the caption text
         caption_vec = []
