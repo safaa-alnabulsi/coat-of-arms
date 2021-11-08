@@ -45,8 +45,11 @@ class LabelCheckerAutomata:
         self.numbers = numbers
 
     def is_valid(self, label):
-        parsed_label = self.parse_label(label)
-        return self.dfa.accepts_input(parsed_label)
+        try:
+            parsed_label = self.parse_label(label)
+            return self.dfa.accepts_input(parsed_label)
+        except ValueError:
+            return False
 
     def parse_label(self, label):
         chunks = label.split()
@@ -74,6 +77,8 @@ class LabelCheckerAutomata:
                     output = output + 'o'
             elif self.is_combination_color(chunk):  # to support multi-color 'O X GB fess checky' or 'G AGG chief'
                 output = output + self.get_combination_color(chunk)
+            else:
+                raise ValueError(f'label "{label}" cannot be parsed. The chunk "{chunk}" cannot be fit into any category.')
         return output
 
     def is_combination_color(self, chunk):
