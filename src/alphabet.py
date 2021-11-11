@@ -9,10 +9,13 @@ OBJECTS = ['lion', 'fess', 'cross', 'crescent', 'chief', 'chevron', 'escutch', '
 
 MODIFIERS = ['rampant', 'dancetty', 'salient', 'checky', 'roundel', 'bend', 'annulet', 'lozenge',
                  'engrailed', 'orle', 'crusily', 'pale', 'doubleheaded', 'rising', 'addorsed', 'slipped',
-                 'erect', 'cr.', 'border', 'chained', 'flory', 'erased', 'hooded', 'winged', 'embattled',
+                 'erect', 'cr.', 'chained', 'flory', 'erased', 'hooded', 'winged', 'embattled',
                  'gorged', 'arched', 'segreant', 'pd', 'isst', 'jesst', 'passt', 'guard', 'sejt', 'reguard',
                  'inv', 'cch', 'compony', 'segr', 'p.c.', 'p.n.', 'col', 'displayed',
                  'sn', 'dx', 'nebuly', 'dancetty', 'mount']
+
+# extracted from dataset & compared with https://github.com/Azgaar/armoria-api/blob/main/app/dataModel.js#L8
+BORDER_MODIFIERS = ['checky', 'potenty', 'bendy', 'masoned', 'vairy', ]
 
 POSITIONS = ['acc.', 'ch.', 'in', 'of', '&', 'and', 'above', 'with',
                  'betw', 'indented', 'towards', 'chf', 'on'
