@@ -8,35 +8,9 @@ import numpy as np
 
 from src.label_checker_automata import LabelCheckerAutomata
 from src.armoria_api import ArmoriaAPIPayload, ArmoriaAPIWrapper
+from src.caption import Caption
 
 DEBUG = False
-
-
-class Caption:
-
-    # (e.g. "A lion rampant")
-    def __init__(self, label, support_plural=False): 
-        self.label = label
-        self.support_plural = support_plural
-
-    @property
-    def is_valid(self):
-        simple_automata = LabelCheckerAutomata(support_plural=self.support_plural)
-        return simple_automata.is_valid(self.label)
-
-    # (e.g. “com")
-    def get_automata_parsed(self): 
-        simple_automata = LabelCheckerAutomata(support_plural=self.support_plural)
-        return simple_automata.parse_label(self.label)
-
-    # ({“Colors”:[‘A’], “Object/Modifier”: [“lion rampant”]})
-    def get_aligned(self):
-        simple_automata = LabelCheckerAutomata(support_plural=self.support_plural)
-        parsed_label = simple_automata.parse_label(self.label)
-        return simple_automata.align_parsed_label(self.label, parsed_label)
-
-    def get_armoria_payload_dict(self):
-        return ArmoriaAPIPayload(self.label.split()).get_armoria_payload()
 
 
 
