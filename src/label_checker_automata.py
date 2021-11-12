@@ -60,7 +60,7 @@ class LabelCheckerAutomata:
             elif chunk in self.objects:
                 output = output + 'o'
             elif chunk in self.modifiers:
-                output = output + 'm'
+                    output = output + 'm'
             elif chunk in self.positions:
                 output = output + 'p'
             elif chunk in self.numbers:
@@ -79,6 +79,7 @@ class LabelCheckerAutomata:
                 output = output + self.get_combination_color(chunk)
             else:
                 raise ValueError(f'label "{label}" cannot be parsed. The chunk "{chunk}" cannot be fit into any category.')
+        
         return output
 
     def is_combination_color(self, chunk):
@@ -101,8 +102,14 @@ class LabelCheckerAutomata:
             'numbers': [],
             'positions': []
         }
-        label = label.split(' ')
-        for elem, symbol in zip(label, list(parsed_label)):
+        
+        label_ls = label.split(' ')
+        
+        has_guard = False
+        if "guard" in label_ls:
+            has_guard = True
+        
+        for elem, symbol in zip(label_ls, list(parsed_label)):
             if symbol == 'c':
                 output['colors'].append(elem)
             elif symbol == 'o':
@@ -113,7 +120,15 @@ class LabelCheckerAutomata:
                 output['numbers'].append(elem)
             elif symbol == 'p':
                 output['positions'].append(elem)
+        
+        # One exceptional use-case, "passt guard" are treated as one modifier to fix accuracy
+        if has_guard: 
+            index = output['modifiers'].index('passt')
+            output['modifiers'].insert(index, "passt guard")
+            output['modifiers'].remove('guard')
+            output['modifiers'].remove('passt')
 
+            
         return output
     
     def get_valid_labels(self, all_labels):
