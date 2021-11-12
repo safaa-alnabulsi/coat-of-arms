@@ -28,6 +28,7 @@ EAGLE_MODIFIERS_MAP = {
 
 MODIFIERS_MAP = {**LION_MODIFIERS_MAP, **CROSS_MODIFIERS_MAP, **EAGLE_MODIFIERS_MAP}
 
+
 COLORS_MAP = { 'A': 'argent', # silver
               'B': 'azure', # blue
               'O': 'or', # gold 
@@ -59,10 +60,15 @@ class ArmoriaAPIPayload:
         except:
             self.position = 'e'
             self.scale = '1.5'
-
-        self.api_shield_color = COLORS_MAP[shield_color]
-        self.api_charge_color = COLORS_MAP[charge_color]
-        self.api_charge = MODIFIERS_MAP[charge]
+        try:
+            self.api_shield_color = COLORS_MAP[shield_color]
+            self.api_charge_color = COLORS_MAP[charge_color]
+        except KeyError:
+            raise ValueError('Invalid color')
+        try:
+            self.api_charge = MODIFIERS_MAP[charge]
+        except KeyError:
+            raise ValueError('Invalid charge')
 
     def get_armoria_payload(self):
 
