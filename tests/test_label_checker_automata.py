@@ -18,16 +18,22 @@ accepted_labels = {
 
 rejected_labels = {
     '3 pales; 2 cows; =; = :: label   {OG, OG, B}': 'nn',
+}
+
+incomplete_labels = {
     'A G': 'cc',
     'fess G': 'oc'
 }
+
 
 aligned_parsed_labels = {
     'O G lion rampant': {'colors': ['O','G'], 'objects': ['lion'], 'modifiers': ['rampant'], 'numbers': [], 'positions': []},
     'G A eagle doubleheaded': {'colors': ['G','A'], 'objects': ['eagle'], 'modifiers': ['doubleheaded'], 'numbers': [], 'positions': []},
     'B G lion passt': {'colors': ['B', 'G'], 'objects': ['lion'], 'modifiers': ['passt'], 'numbers': [], 'positions': []},
-    'b g lion passt': {'colors': ['b', 'g'], 'objects': ['lion'], 'modifiers': ['passt'], 'numbers': [], 'positions': []}
-
+    'b g lion passt': {'colors': ['b', 'g'], 'objects': ['lion'], 'modifiers': ['passt'], 'numbers': [], 'positions': []},
+    'b g lion lion': {'colors': ['b', 'g'], 'objects': ['lion', 'lion'], 'modifiers': [], 'numbers': [], 'positions': []},
+    'b a lion passt guard': {'colors': ['b', 'a'], 'objects': ['lion'], 'modifiers': ['passt guard'], 'numbers': [], 'positions': []},
+    'b a g lion passt guard & cross arched & checky':{'colors': ['b', 'a', 'g'], 'objects': ['lion', 'cross'], 'modifiers': ['passt guard', 'arched', 'checky'], 'numbers': [], 'positions': ['&', '&']}
 }
 
 class LabelCheckerAutomataTest(TestCase):
@@ -42,12 +48,17 @@ class LabelCheckerAutomataTest(TestCase):
 
     def test_parse_label(self):
         for label, parsed_label in accepted_labels.items():
-            print(label)
+            print('accepted label = ', label)
+            assert automata.parse_label(label) == parsed_label
+
+        for label, parsed_label in incomplete_labels.items():
+            print('incomplete label = ', label)
             assert automata.parse_label(label) == parsed_label
 
         for label, parsed_label in rejected_labels.items():
-            print(label)
-            assert automata.parse_label(label) == parsed_label
+            with self.assertRaises(ValueError):
+                automata.parse_label(label)
+
 
     def test_is_combination_color(self):
         assert automata.is_combination_color('AA') == True
