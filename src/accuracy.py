@@ -14,7 +14,7 @@ WEIGHT_MAP_OLD = {'shield_color': 10, 'charge_color': 10, 'charge': 60, 'modifie
 class Accuracy:
     
     def __init__(self, predicted, correct, 
-                 weights_map=WEIGHT_MAP_OLD):
+                 weights_map=WEIGHT_MAP):
         self.predicted = predicted
         self.correct = correct
         self.weights_map= weights_map
@@ -68,35 +68,52 @@ class Accuracy:
         acc_charge=0
         acc_mod=0
         acc = 0
+        total = 0
         
         predicted_cap = Caption(self.predicted).get_structured()
         correct_cap = Caption(self.correct).get_structured()
         
-        for ch1, color1, mods1 in predicted_cap['objects']:
-            for ch2, color2, mods2 in predicted_cap['objects']:
-                if ch1 == ch2:
-                    acc_charge+= 1
-                
-                if color1 == color2:
-                    acc_ch_colors+= 1
-                
-                for cm in mods1:
-                    for pm in mods1:
-                        if cm == pm:
-                            acc_mod+= 1
-                            break
+        for obj1, obj2 in zip(correct_cap['objects'], predicted_cap['objects']):
+            ch1    = obj1['charge']
+            color1 = obj1['color']
+            mods1  = obj1['modifiers']
+            
+            ch2    = obj2['charge']
+            color2 = obj2['color']
+            mods2  = obj2['modifiers']
+
+            total+=2 # color & charge
+            if ch1 == ch2:
+                acc_charge+= 1
+
+            if color1 == color2:
+                acc_ch_colors+= 1
+
+            for cm in mods1:
+                total+=1
+                for pm in mods1:
+                    if cm == pm:
+                        acc_mod+= 1
+                        break
 
         acc = acc_ch_colors * self.weights_map['charge_color'] + \
               acc_charge * self.weights_map['charge'] + \
               acc_mod * self.weights_map['modifier']
+        
+        print('predicted_cap: ', predicted_cap)
+        print('correct_cap: ', correct_cap)
 
-        return acc
+        print('total: ', total)
+        print('acc:', acc)
+        
+        return round(acc / total * 100, 2)
                 
 
     def get_shield_acc(self):
         acc_sh_colors=0
         acc_mod=0
         acc = 0
+        total = 1
 
         predicted_cap = Caption(self.predicted).get_structured()
         correct_cap = Caption(self.correct).get_structured()
@@ -110,6 +127,7 @@ class Accuracy:
             acc_sh_colors+= 1
 
         for cm in mods1:
+            total+=1
             for pm in mods1:
                 if cm == pm:
                     acc_mod+= 1
@@ -118,5 +136,5 @@ class Accuracy:
         acc = acc_sh_colors * self.weights_map['shield_color'] + \
               acc_mod * self.weights_map['shield_mod']
 
-        return acc
+        return acc / total
         
