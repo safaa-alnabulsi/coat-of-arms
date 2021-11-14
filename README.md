@@ -2,7 +2,7 @@
 
 Work in progress 
 
-![coa](images/coa.png)
+![coa](images/coa-example.png)
 
 ## Setup Local Environment
 
