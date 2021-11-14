@@ -49,24 +49,25 @@ POSITION = ['a','b','c','d','e','f','g','h','i','y','z']
 SCALE = ['0.5','1','1.5']
 
 class ArmoriaAPIPayload:
-    
-    def __init__(self, label):
-        shield_color = label[0]
-        charge_color = label[1]
-        charge = label[2]
-        try:
-            self.position = label[3]
-            self.scale = label[4]
-        except:
-            self.position = 'e'
-            self.scale = '1.5'
+
+    def __init__(self, struc_label, position='e', scale='1.5'):
+        self.position = position
+        self.scale = scale
+        
+        shield_color = struc_label['shield']['color']
+        charge_color = struc_label['objects'][0]['color'] # for now, only first charge is considered
+        charge = struc_label['objects'][0]['charge']
+        first_modifier = struc_label['objects'][0]['modifiers'][0]
+        
         try:
             self.api_shield_color = COLORS_MAP[shield_color]
             self.api_charge_color = COLORS_MAP[charge_color]
         except KeyError:
             raise ValueError('Invalid color')
+        
         try:
-            self.api_charge = MODIFIERS_MAP[charge]
+            key = charge + ' ' + first_modifier
+            self.api_charge = MODIFIERS_MAP[key]
         except KeyError:
             raise ValueError('Invalid charge')
 

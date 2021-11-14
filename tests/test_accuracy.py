@@ -9,6 +9,8 @@ pairs_pred_truth = [
     ['A O lion rampant', 'A G lion rampant', 1, 0.67, 0.835],  # shield hits, charge hit except its color
     ['A O lion rampant', 'A O lion', 1, 1, 1],                  # shield hits, charge hit with extra attribute in prediction
     ['A O lion', 'A O lion rampant', 1, 0.67, 0.835],         # shield hits, charge hit except its modifier
+    ['b a a lion lion', 'b a lion passt guard', 1, 0.67, 0.835],     # multi object ===> 
+
 ]
 
 class AccuracyTest(TestCase):

@@ -26,7 +26,7 @@ class Caption:
         return simple_automata.align_parsed_label(self.label, parsed_label)
 
     def get_armoria_payload_dict(self):
-        return ArmoriaAPIPayload(self.label.split()).get_armoria_payload()
+        return ArmoriaAPIPayload(self.label).get_armoria_payload()
 
     def get_structured(self):
         charge = {'color': '','object': '','modifiers': []}
