@@ -2,6 +2,8 @@
 
 Work in progress 
 
+![coa](images/coa.png)
+
 ## Setup Local Environment
 
 1- Get the repo
@@ -21,6 +23,9 @@ Work in progress
 
     pytest
 
+4- to see it visually (needs a dataset in a folder named `data/cropped_coas/out` ):
+    
+    streamlit run view_crops.py
 
 ## The Automata
 
