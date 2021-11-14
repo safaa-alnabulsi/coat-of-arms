@@ -10,7 +10,7 @@ struc_labels = {
     
 'b a g lion lion': {'shield': {'color': 'b', 'modifiers': []}, 'objects': [{'charge': 'lion', 'color': 'a', 'modifiers': []}, {'charge': 'lion', 'color': 'g', 'modifiers': []}]},
  
-'b a g lion passt guard & cross arched & checky': {'shield': {'color': 'b', 'modifiers': ['checky']}, 'objects': [{'charge': 'lion', 'color': 'a', 'modifiers': ['passt guard']}, {'charge': 'cross', 'color': 'g', 'modifiers': ['arched']}]}
+'b a g lion passt guard & cross arched & border checky': {'shield': {'color': 'b', 'modifiers': ['border','checky']}, 'objects': [{'charge': 'lion', 'color': 'a', 'modifiers': ['passt guard']}, {'charge': 'cross', 'color': 'g', 'modifiers': ['arched']}]}
 
 
 }

@@ -7,15 +7,16 @@ OBJECTS = ['lion', 'fess', 'cross', 'crescent', 'chief', 'chevron', 'escutch', '
                'panther', 'hand', 'bugle-horn', 'lure', 'tail',
                'dice', 'donkey', 'face', 'unicorn', 'blackbird', 'marmite', 'attire']
 
-MODIFIERS = ['rampant', 'dancetty', 'salient', 'checky', 'roundel', 'bend', 'annulet', 'lozenge',
-                 'engrailed', 'orle', 'crusily', 'pale', 'doubleheaded', 'rising', 'addorsed', 'slipped',
-                 'erect', 'cr.', 'chained', 'flory', 'erased', 'hooded', 'winged', 'embattled',
+MODIFIERS = ['rampant', 'dancetty', 'salient', 'roundel', 'bend', 'annulet', 'lozenge',
+                 'orle', 'crusily', 'pale', 'doubleheaded', 'rising', 'addorsed', 'slipped',
+                 'erect', 'cr.', 'chained', 'erased', 'hooded', 'winged', 'embattled',
                  'gorged', 'arched', 'segreant', 'pd', 'isst', 'jesst', 'passt', 'guard', 'sejt', 'reguard',
-                 'inv', 'cch', 'compony', 'segr', 'p.c.', 'p.n.', 'col', 'displayed',
-                 'sn', 'dx', 'nebuly', 'dancetty', 'mount', 'border']
+                 'inv', 'cch', 'segr', 'p.c.', 'p.n.', 'col', 'displayed','sn', 'dx', 'dancetty', 'mount',
+                 'flory', 'undy', 'masoned', 'bendy', 'potenty', 'checky',
+                 'compony', 'roundely', 'engrailed', 'crenelated', 'nebuly', 'castely']
 
 # extracted from dataset & compared with https://github.com/Azgaar/armoria-api/blob/main/app/dataModel.js#L8
-BORDER_MODIFIERS = ['checky', 'potenty', 'bendy', 'masoned', 'vairy', 'flory', 'undy',
+SHIELD_MODIFIERS = ['border', 'checky', 'potenty', 'bendy', 'masoned', 'vairy', 'flory', 'undy',
                     'compony', 'roundely', 'engrailed', 'crenelated', 'nebuly', 'castely']
 
 POSITIONS = ['acc.', 'ch.', 'in', 'of', '&', 'and', 'above', 'with',

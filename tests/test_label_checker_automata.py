@@ -11,9 +11,12 @@ accepted_labels = {
     'O S 6 boars': 'ccno',
     'S AO cross acc. 4 fleurs-de-lis': 'cccopno',
     'G A branch with 3 oak leaves erect': 'ccopnoom',
-    'S AO lion chained cr. & border': 'cccommpm',
+    'S AO lion chained cr. & border': 'cccommpb',
     "O S eagle's head": 'ccoo',
-    'B O 3 lions': 'ccno'
+    'B O 3 lions': 'ccno',
+    'O G A 3 lions & border checky': 'cccnopbb',
+    'O G A lion rampant & border engrailed': 'cccompbb'
+
 }
 
 rejected_labels = {
@@ -27,23 +30,25 @@ incomplete_labels = {
 
 
 aligned_parsed_labels = {
-    'O G lion rampant': {'colors': ['O','G'], 'objects': ['lion'], 'modifiers': ['rampant'], 'numbers': [], 'positions': []},
-    'G A eagle doubleheaded': {'colors': ['G','A'], 'objects': ['eagle'], 'modifiers': ['doubleheaded'], 'numbers': [], 'positions': []},
-    'B G lion passt': {'colors': ['B', 'G'], 'objects': ['lion'], 'modifiers': ['passt'], 'numbers': [], 'positions': []},
-    'b g lion passt': {'colors': ['b', 'g'], 'objects': ['lion'], 'modifiers': ['passt'], 'numbers': [], 'positions': []},
-    'b g lion lion': {'colors': ['b', 'g'], 'objects': ['lion', 'lion'], 'modifiers': [], 'numbers': [], 'positions': []},
-    'b a lion passt guard': {'colors': ['b', 'a'], 'objects': ['lion'], 'modifiers': ['passt guard'], 'numbers': [], 'positions': []},
-    'b a g lion passt guard & cross arched & checky':{'colors': ['b', 'a', 'g'], 'objects': ['lion', 'cross'], 'modifiers': ['passt guard', 'arched', 'checky'], 'numbers': [], 'positions': ['&', '&']}
+    'O G lion rampant': {'colors': ['O','G'], 'objects': ['lion'], 'modifiers': ['rampant'], 'numbers': [], 'positions': [], 'shield_modifiers': []},
+    'G A eagle doubleheaded': {'colors': ['G','A'], 'objects': ['eagle'], 'modifiers': ['doubleheaded'], 'numbers': [], 'positions': [], 'shield_modifiers': []},
+    'B G lion passt': {'colors': ['B', 'G'], 'objects': ['lion'], 'modifiers': ['passt'], 'numbers': [], 'positions': [], 'shield_modifiers': []},
+    'b g lion passt': {'colors': ['b', 'g'], 'objects': ['lion'], 'modifiers': ['passt'], 'numbers': [], 'positions': [], 'shield_modifiers': []},
+    'b g lion lion': {'colors': ['b', 'g'], 'objects': ['lion', 'lion'], 'modifiers': [], 'numbers': [], 'positions': [], 'shield_modifiers': []},
+    'b a lion passt guard': {'colors': ['b', 'a'], 'objects': ['lion'], 'modifiers': ['passt guard'], 'numbers': [], 'positions': [], 'shield_modifiers': []},
+    'b a g lion passt guard & cross arched & border checky': {'colors': ['b', 'a', 'g'], 'objects': ['lion', 'cross'], 'modifiers': ['passt guard', 'arched'], 'numbers': [], 'positions': ['&', '&'], 'shield_modifiers': ['border','checky']}
 }
 
 class LabelCheckerAutomataTest(TestCase):
 
     def test_is_valid_passes(self):
         for label, parsed_label in accepted_labels.items():
+            print('valid label = ', label)
             self.assertTrue(automata.is_valid(label))
 
     def test_is_valid_fails(self):
         for label, parsed_label in rejected_labels.items():
+            print('invalid label = ', label)
             self.assertFalse(automata.is_valid(label))
 
     def test_parse_label(self):

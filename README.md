@@ -1,10 +1,10 @@
 # coat-of-arms
 
 The visual representation of the implemented automata in [LabelCheckerAutomata](src/label_checker_automata.py)
-![alt automata](images/automata-with-numbers.jpg)
+![alt automata](images/automata2.jpg)
 
 The previous simple automata: 
-![alt automata](images/automata.jpg)
+![alt automata](images/simple-automata2.jpg)
 
 ## Setup Local Environment
 

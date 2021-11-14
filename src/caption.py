@@ -1,6 +1,6 @@
 from src.label_checker_automata import LabelCheckerAutomata
 from src.armoria_api import ArmoriaAPIPayload
-from src.alphabet import BORDER_MODIFIERS
+from src.alphabet import SHIELD_MODIFIERS
 
 class Caption:
 
@@ -43,15 +43,8 @@ class Caption:
         # remove it from list colors
         aligned_label['colors'].pop(0)
         
-        # Check if we have a modifier for the border
-        has_border_mod = any(item in BORDER_MODIFIERS for item in aligned_label['modifiers'])
-        
-        # Add this to output and remove it from original 
-        # -> for now, I'm assuming we have only ONE modifier from the border
-        for item in aligned_label['modifiers']:
-            if item in BORDER_MODIFIERS:
-                output['shield']['modifiers'].append(item)
-                aligned_label['modifiers'].remove(item)
+        for item in aligned_label['shield_modifiers']:
+            output['shield']['modifiers'].append(item)
     
         # assign each charge to its color
         for charge, color in zip(aligned_label['objects'], aligned_label['colors']):

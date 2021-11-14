@@ -7,42 +7,47 @@ class LabelCheckerAutomata:
                  objects=alphabet.OBJECTS,
                  modifiers=alphabet.MODIFIERS,
                  positions=alphabet.POSITIONS,
-                 numbers=alphabet.NUMBERS, support_plural=True):
+                 numbers=alphabet.NUMBERS, 
+                 shield_modifiers=alphabet.SHIELD_MODIFIERS,
+                 support_plural=True):
         
         if support_plural == True:
             transitions=  {
-                    'q0': {'c': 'q1', 'p': 'q0', 'o': 'q0', 'm': 'q0', 'n': 'q0'},
-                    'q1': {'c': 'q1', 'o': 'q2', 'm': 'q1', 'p': 'q1', 'n': 'q5'},
-                    'q5': {'c': 'q5', 'o': 'q2', 'm': 'q5', 'p': 'q5', 'n': 'q5'},
-                    'q2': {'o': 'q2', 'm': 'q3', 'p': 'q4', 'c': 'q2', 'n': 'q5'},
-                    'q3': {'m': 'q3', 'o': 'q2', 'p': 'q4', 'c': 'q3', 'n': 'q5'},
-                    'q4': {'p': 'q4', 'o': 'q2', 'm': 'q3', 'c': 'q4', 'n': 'q4'},
+                    'q0': {'c': 'q1', 'p': 'q0', 'o': 'q0', 'm': 'q0', 'n': 'q0', 'b': 'q0'},
+                    'q1': {'c': 'q1', 'o': 'q2', 'm': 'q1', 'p': 'q1', 'n': 'q5', 'b': 'q1'},
+                    'q5': {'c': 'q5', 'o': 'q2', 'm': 'q5', 'p': 'q5', 'n': 'q5', 'b': 'q5'},
+                    'q2': {'o': 'q2', 'm': 'q3', 'p': 'q4', 'c': 'q2', 'n': 'q5', 'b': 'q2'},
+                    'q3': {'m': 'q3', 'o': 'q2', 'p': 'q4', 'c': 'q3', 'n': 'q5', 'b': 'q6'},
+                    'q6': {'p': 'q6', 'o': 'q6', 'm': 'q6', 'c': 'q6', 'n': 'q6', 'b': 'q6'},
+                    'q4': {'p': 'q4', 'o': 'q2', 'm': 'q3', 'c': 'q4', 'n': 'q4', 'b': 'q6'}
                 }
-            states = {'q0', 'q1', 'q2', 'q3', 'q4', 'q5'}
-            input_symbols = {'c', 'o', 'm', 'p', 'n'}
+            states = {'q0', 'q1', 'q2', 'q3', 'q4', 'q5', 'q6'}
+            input_symbols = {'c', 'o', 'm', 'p', 'n', 'b'}
         else: # no numbers
             transitions = {
-                    'q0': {'c': 'q1', 'p': 'q0', 'o': 'q0', 'm': 'q0'},
-                    'q1': {'c': 'q1', 'o': 'q2', 'm': 'q1', 'p': 'q1'},
-                    'q2': {'o': 'q2', 'm': 'q3', 'p': 'q4', 'c': 'q2'},
-                    'q3': {'m': 'q3', 'o': 'q2', 'p': 'q4', 'c': 'q3'},
-                    'q4': {'p': 'q4', 'o': 'q2', 'm': 'q3', 'c': 'q4'},
+                    'q0': {'c': 'q1', 'p': 'q0', 'o': 'q0', 'm': 'q0', 'b': 'q0'},
+                    'q1': {'c': 'q1', 'o': 'q2', 'm': 'q1', 'p': 'q1', 'b': 'q1'},
+                    'q2': {'o': 'q2', 'm': 'q3', 'p': 'q4', 'c': 'q2', 'b': 'q2'},
+                    'q3': {'m': 'q3', 'o': 'q2', 'p': 'q4', 'c': 'q3', 'b': 'q3'},
+                    'q4': {'p': 'q4', 'o': 'q2', 'm': 'q3', 'c': 'q4', 'b': 'q6'},
+                    'q6': {'p': 'q6', 'o': 'q6', 'm': 'q6', 'c': 'q6', 'b': 'q6'}
             }
-            states = {'q0', 'q1', 'q2', 'q3', 'q4'}
-            input_symbols = {'c', 'o', 'm', 'p'}
+            states = {'q0', 'q1', 'q2', 'q3', 'q4', 'q6'}
+            input_symbols = {'c', 'o', 'm', 'p', 'b'}
         
         self.dfa = DFA(
             states=states,
             input_symbols=input_symbols,  # c: color, o: object, m: modifier, p: position, n: number
             transitions=transitions,
             initial_state='q0',
-            final_states={'q2', 'q3'}
+            final_states={'q2', 'q3', 'q6'}
         )
         self.objects = objects
         self.colors = colors
         self.modifiers = modifiers
         self.positions = positions
         self.numbers = numbers
+        self.shield_modifiers = shield_modifiers
 
     def is_valid(self, label):
         try:
@@ -54,13 +59,21 @@ class LabelCheckerAutomata:
     def parse_label(self, label):
         chunks = label.split()
         output = ''
+        has_border = False
         for chunk in chunks:
+            if chunk == 'border':
+                has_border = True
             if chunk.upper() in self.colors:
                 output = output + 'c'
             elif chunk in self.objects:
                 output = output + 'o'
             elif chunk in self.modifiers:
+                if has_border: # there are shared modifiers between charges & shield
+                    output = output + 'b'
+                else:
                     output = output + 'm'
+            elif chunk in self.shield_modifiers:
+                output = output + 'b'
             elif chunk in self.positions:
                 output = output + 'p'
             elif chunk in self.numbers:
@@ -100,7 +113,8 @@ class LabelCheckerAutomata:
             'objects': [],
             'modifiers': [],
             'numbers': [],
-            'positions': []
+            'positions': [],
+            'shield_modifiers': [],
         }
         
         label_ls = label.split(' ')
@@ -114,6 +128,8 @@ class LabelCheckerAutomata:
                 output['colors'].append(elem)
             elif symbol == 'o':
                 output['objects'].append(elem)
+            elif symbol == 'b':
+                output['shield_modifiers'].append(elem)
             elif symbol == 'm':
                 output['modifiers'].append(elem)
             elif symbol == 'n':
