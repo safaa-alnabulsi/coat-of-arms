@@ -15,7 +15,8 @@ MODIFIERS = ['rampant', 'dancetty', 'salient', 'checky', 'roundel', 'bend', 'ann
                  'sn', 'dx', 'nebuly', 'dancetty', 'mount', 'border']
 
 # extracted from dataset & compared with https://github.com/Azgaar/armoria-api/blob/main/app/dataModel.js#L8
-BORDER_MODIFIERS = ['checky', 'potenty', 'bendy', 'masoned', 'vairy', ]
+BORDER_MODIFIERS = ['checky', 'potenty', 'bendy', 'masoned', 'vairy', 'flory', 'undy',
+                    'compony', 'roundely', 'engrailed', 'crenelated', 'nebuly', 'castely']
 
 POSITIONS = ['acc.', 'ch.', 'in', 'of', '&', 'and', 'above', 'with',
                  'betw', 'indented', 'towards', 'chf', 'on'
