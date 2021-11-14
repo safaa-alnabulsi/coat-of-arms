@@ -30,11 +30,7 @@ class Accuracy:
 
     def get_charges_acc(self):
         
-        hits_ch_colors=0
-        hits_charge=0
-        hits_mod=0
-        hits = 0
-        total = 0
+        total_acc=[]
         
         for obj1 in self.correct['objects']:
             
@@ -42,9 +38,14 @@ class Accuracy:
             color1 = obj1['color']
             mods1  = obj1['modifiers']
             
-            total+=2 # color & charge
+            total= 2 + len(mods1)
+            
+            obj_acc=[]
 
             for obj2 in self.predicted['objects']:
+                hits_ch_colors=0
+                hits_charge=0
+                hits_mod=0
 
                 ch2    = obj2['charge']
                 color2 = obj2['color']
@@ -59,23 +60,33 @@ class Accuracy:
                     hits_ch_colors+= 1
 
                 for cm in mods1:
-                    total+=1
                     for pm in mods2:
                         if cm == pm:
                             hits_mod+= 1
                             break
 
-        hits = hits_ch_colors * self.weights_map['charge_color'] + \
-              hits_charge * self.weights_map['charge'] + \
-              hits_mod * self.weights_map['modifier']
+                hits = hits_ch_colors * self.weights_map['charge_color'] + \
+                      hits_charge * self.weights_map['charge'] + \
+                      hits_mod * self.weights_map['modifier']
+                
+                obj_acc.append(round(hits / total, 2))
+                print(obj_acc)
+                print('max(obj_acc) == ', max(obj_acc))
+            
+            if len(obj_acc) > 0:
+                total_acc.append(max(obj_acc)) 
+                
+        # min, avg, max accuracy for each object in correct against all predicted
         
         print('predicted_cap: ', self.predicted)
         print('correct_cap: ', self.correct)
-
-        print('total: ', total)
-        print('hits:', hits)
         
-        return round(hits / total, 2)
+        if len(total_acc) == 0:
+            return 0.0
+            
+        avg_acc = sum(total_acc)/len(total_acc)
+
+        return avg_acc
                 
 
     def get_shield_acc(self):
