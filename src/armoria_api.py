@@ -53,17 +53,16 @@ class ArmoriaAPIPayload:
     def __init__(self, struc_label, position='e', scale='1.5'):
         self.position = position
         self.scale = scale
-        print(struc_label)
+                
         shield_color = struc_label['shield']['color']
         charge_color = struc_label['objects'][0]['color'] # for now, only first charge is considered
         charge = struc_label['objects'][0]['charge']
+        
         try:
             first_modifier = ' ' + struc_label['objects'][0]['modifiers'][0]
         except IndexError:
             first_modifier = ''
-
-        
-        
+       
         try:
             self.api_shield_color = COLORS_MAP[shield_color]
             self.api_charge_color = COLORS_MAP[charge_color]
