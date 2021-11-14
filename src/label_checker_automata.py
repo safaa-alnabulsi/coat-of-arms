@@ -119,9 +119,9 @@ class LabelCheckerAutomata:
         
         label_ls = label.split(' ')
         
-        has_guard = False
-        if "guard" in label_ls:
-            has_guard = True
+        has_passt_guard = False
+        if "passt" in label_ls and "guard" in label_ls:
+            has_passt_guard = True
         
         for elem, symbol in zip(label_ls, list(parsed_label)):
             if symbol == 'c':
@@ -138,7 +138,7 @@ class LabelCheckerAutomata:
                 output['positions'].append(elem)
         
         # One exceptional use-case, "passt guard" are treated as one modifier to fix accuracy
-        if has_guard: 
+        if has_passt_guard: 
             index = output['modifiers'].index('passt')
             output['modifiers'].insert(index, "passt guard")
             output['modifiers'].remove('guard')
