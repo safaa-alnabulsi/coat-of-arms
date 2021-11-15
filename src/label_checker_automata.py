@@ -11,7 +11,7 @@ class LabelCheckerAutomata:
                  shield_modifiers=alphabet.SHIELD_MODIFIERS,
                  support_plural=True):
         
-        if support_plural == True:
+        if support_plural:
             transitions=  {
                     'q0': {'c': 'q1', 'p': 'q0', 'o': 'q0', 'm': 'q0', 'n': 'q0', 'b': 'q0'},
                     'q1': {'c': 'q1', 'o': 'q2', 'm': 'q0', 'p': 'q0', 'n': 'q5', 'b': 'q0'},
@@ -150,8 +150,11 @@ class LabelCheckerAutomata:
     def get_valid_labels(self, all_labels):
         validated_labels = {}
         for label in all_labels:
-            validated_labels[label] = self.is_valid(label)
-            
+            if self.is_valid(label):
+                validated_labels[label] = 1
+            else: 
+                validated_labels[label] = 0
+
         return validated_labels
     
 
