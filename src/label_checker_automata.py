@@ -14,23 +14,23 @@ class LabelCheckerAutomata:
         if support_plural == True:
             transitions=  {
                     'q0': {'c': 'q1', 'p': 'q0', 'o': 'q0', 'm': 'q0', 'n': 'q0', 'b': 'q0'},
-                    'q1': {'c': 'q1', 'o': 'q2', 'm': 'q1', 'p': 'q1', 'n': 'q5', 'b': 'q1'},
-                    'q5': {'c': 'q5', 'o': 'q2', 'm': 'q5', 'p': 'q5', 'n': 'q5', 'b': 'q5'},
-                    'q2': {'o': 'q2', 'm': 'q3', 'p': 'q4', 'c': 'q2', 'n': 'q5', 'b': 'q2'},
-                    'q3': {'m': 'q3', 'o': 'q2', 'p': 'q4', 'c': 'q3', 'n': 'q5', 'b': 'q6'},
-                    'q6': {'p': 'q6', 'o': 'q6', 'm': 'q6', 'c': 'q6', 'n': 'q6', 'b': 'q6'},
-                    'q4': {'p': 'q4', 'o': 'q2', 'm': 'q3', 'c': 'q4', 'n': 'q4', 'b': 'q6'}
+                    'q1': {'c': 'q1', 'o': 'q2', 'm': 'q0', 'p': 'q0', 'n': 'q5', 'b': 'q0'},
+                    'q5': {'c': 'q5', 'o': 'q2', 'm': 'q0', 'p': 'q0', 'n': 'q5', 'b': 'q0'},
+                    'q2': {'o': 'q2', 'm': 'q3', 'p': 'q4', 'c': 'q0', 'n': 'q5', 'b': 'q0'},
+                    'q3': {'m': 'q3', 'o': 'q2', 'p': 'q4', 'c': 'q0', 'n': 'q5', 'b': 'q6'},
+                    'q6': {'p': 'q0', 'o': 'q0', 'm': 'q0', 'c': 'q0', 'n': 'q0', 'b': 'q6'},
+                    'q4': {'p': 'q4', 'o': 'q2', 'm': 'q3', 'c': 'q0', 'n': 'q4', 'b': 'q6'}
                 }
             states = {'q0', 'q1', 'q2', 'q3', 'q4', 'q5', 'q6'}
             input_symbols = {'c', 'o', 'm', 'p', 'n', 'b'}
         else: # no numbers
             transitions = {
                     'q0': {'c': 'q1', 'p': 'q0', 'o': 'q0', 'm': 'q0', 'b': 'q0'},
-                    'q1': {'c': 'q1', 'o': 'q2', 'm': 'q1', 'p': 'q1', 'b': 'q1'},
-                    'q2': {'o': 'q2', 'm': 'q3', 'p': 'q4', 'c': 'q2', 'b': 'q2'},
-                    'q3': {'m': 'q3', 'o': 'q2', 'p': 'q4', 'c': 'q3', 'b': 'q3'},
-                    'q4': {'p': 'q4', 'o': 'q2', 'm': 'q3', 'c': 'q4', 'b': 'q6'},
-                    'q6': {'p': 'q6', 'o': 'q6', 'm': 'q6', 'c': 'q6', 'b': 'q6'}
+                    'q1': {'c': 'q1', 'o': 'q2', 'm': 'q0', 'p': 'q0', 'b': 'q0'},
+                    'q2': {'o': 'q2', 'm': 'q3', 'p': 'q4', 'c': 'q0', 'b': 'q0'},
+                    'q3': {'m': 'q3', 'o': 'q2', 'p': 'q4', 'c': 'q0', 'b': 'q3'},
+                    'q4': {'p': 'q4', 'o': 'q2', 'm': 'q3', 'c': 'q0', 'b': 'q6'},
+                    'q6': {'p': 'q0', 'o': 'q0', 'm': 'q0', 'c': 'q0', 'b': 'q6'}
             }
             states = {'q0', 'q1', 'q2', 'q3', 'q4', 'q6'}
             input_symbols = {'c', 'o', 'm', 'p', 'b'}
@@ -52,6 +52,7 @@ class LabelCheckerAutomata:
     def is_valid(self, label):
         try:
             parsed_label = self.parse_label(label)
+            print('parsed_label', parsed_label)
             return self.dfa.accepts_input(parsed_label)
         except ValueError:
             return False

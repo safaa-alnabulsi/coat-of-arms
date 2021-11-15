@@ -55,8 +55,13 @@ class ArmoriaAPIPayload:
         self.scale = scale
                 
         shield_color = struc_label['shield']['color']
-        charge_color = struc_label['objects'][0]['color'] # for now, only first charge is considered
-        charge = struc_label['objects'][0]['charge']
+        
+        try:
+            charge_color = struc_label['objects'][0]['color'] # for now, only first charge is considered
+            charge = struc_label['objects'][0]['charge']
+        except IndexError:
+            print(struc_label['objects'])
+            raise ValueError('Invalid charge')
         
         try:
             first_modifier = ' ' + struc_label['objects'][0]['modifiers'][0]
@@ -76,7 +81,6 @@ class ArmoriaAPIPayload:
             raise ValueError('Invalid charge')
 
     def get_armoria_payload(self):
-
         coa = {"t1": self.api_shield_color, 
            "shield":"heater",
            "charges":[{"charge": self.api_charge,

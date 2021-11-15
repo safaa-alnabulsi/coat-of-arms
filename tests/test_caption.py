@@ -12,7 +12,7 @@ struc_labels = {
  
 'b a g lion passt guard & cross arched & border checky': {'shield': {'color': 'b', 'modifiers': ['border','checky']}, 'objects': [{'charge': 'lion', 'color': 'a', 'modifiers': ['passt guard']}, {'charge': 'cross', 'color': 'g', 'modifiers': ['arched']}]}
 
-
+# 'Z GO bendy & chief': {'shield': {'color': 'Z', 'modifiers': []}, 'objects': [{'charge': 'lion', 'color': 'A', 'modifiers': []}]},    
 }
 
 class CaptionTest(TestCase):

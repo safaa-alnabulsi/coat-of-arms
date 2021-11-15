@@ -23,12 +23,15 @@ class Caption:
     def get_aligned(self):
         simple_automata = LabelCheckerAutomata(support_plural=self.support_plural)
         parsed_label = simple_automata.parse_label(self.label)
+        print(self.label, parsed_label)
         return simple_automata.align_parsed_label(self.label, parsed_label)
 
     def get_armoria_payload_dict(self):
-        return ArmoriaAPIPayload(self.label).get_armoria_payload()
+        structured_label = self.get_structured()
+        return ArmoriaAPIPayload(structured_label).get_armoria_payload()
 
     def get_structured(self):
+                
         charge = {'color': '','object': '','modifiers': []}
         output = {
             'shield': {},
@@ -52,8 +55,11 @@ class Caption:
             
         # assigning modifiers to charges 
         #-> for now, I'm assuming that we have one modifier per charge
-        for i, mod in enumerate(aligned_label['modifiers']):
-            output['objects'][i]['modifiers'].append(mod)
+        try:
+            for i, mod in enumerate(aligned_label['modifiers']):
+                output['objects'][i]['modifiers'].append(mod)
+        except IndexError:
+            print('exception: ',aligned_label['modifiers'])
 
         return output
 
