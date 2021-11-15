@@ -17,7 +17,8 @@ valid_labels = {
     'O G A 3 lions & border checky': 'cccnopbb',
     'O G A lion rampant & border engrailed': 'cccompbb',
     'O GG fess acc. mullet in chf dx': 'cccopoppm',
-    'A VG volcano': 'ccco'
+    'A VG volcano': 'ccco',
+    'B O lion guard cr.': 'ccomm'
 }
 
 invalid_labels = {
@@ -27,7 +28,7 @@ invalid_labels = {
     'lion': 'o',
     '& lion': 'po',
     'a checky & lion': 'cmpo',
-    'Z GO bendy & chief': 'cccmpo'  
+    'Z GO bendy & chief': 'cccmpo',
 }
 
 rejected_labels = {
@@ -42,7 +43,9 @@ aligned_parsed_labels = {
     'b g lion passt': {'colors': ['b', 'g'], 'objects': ['lion'], 'modifiers': ['passt'], 'numbers': [], 'positions': [], 'shield_modifiers': []},
     'b g lion lion': {'colors': ['b', 'g'], 'objects': ['lion', 'lion'], 'modifiers': [], 'numbers': [], 'positions': [], 'shield_modifiers': []},
     'b a lion passt guard': {'colors': ['b', 'a'], 'objects': ['lion'], 'modifiers': ['passt guard'], 'numbers': [], 'positions': [], 'shield_modifiers': []},
-    'b a g lion passt guard & cross arched & border checky': {'colors': ['b', 'a', 'g'], 'objects': ['lion', 'cross'], 'modifiers': ['passt guard', 'arched'], 'numbers': [], 'positions': ['&', '&'], 'shield_modifiers': ['border','checky']}
+    'b a g lion passt guard & cross arched & border checky': {'colors': ['b', 'a', 'g'], 'objects': ['lion', 'cross'], 'modifiers': ['passt guard', 'arched'], 'numbers': [], 'positions': ['&', '&'], 'shield_modifiers': ['border','checky']},
+    'B O lion guard cr.': {'colors': ['B','O'], 'objects': ['lion'], 'modifiers': ['guard', 'cr.'], 'numbers': [], 'positions': [], 'shield_modifiers': []},
+
 }
 
 class LabelCheckerAutomataTest(TestCase):

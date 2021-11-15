@@ -56,8 +56,11 @@ class Caption:
         # assigning modifiers to charges 
         #-> for now, I'm assuming that we have one modifier per charge
         try:
-            for i, mod in enumerate(aligned_label['modifiers']):
-                output['objects'][i]['modifiers'].append(mod)
+            for i, mod in enumerate(aligned_label['modifiers']):               
+                if len(output['objects']) > 1:
+                    output['objects'][i]['modifiers'].append(mod)
+                else: # when one object only, assign all modifiers to it
+                    output['objects'][0]['modifiers'].append(mod)
         except IndexError:
             print('exception: ',aligned_label['modifiers'])
 

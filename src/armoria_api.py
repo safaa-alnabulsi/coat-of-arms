@@ -60,7 +60,6 @@ class ArmoriaAPIPayload:
             charge_color = struc_label['objects'][0]['color'] # for now, only first charge is considered
             charge = struc_label['objects'][0]['charge']
         except IndexError:
-            print(struc_label['objects'])
             raise ValueError('Invalid charge')
         
         try:

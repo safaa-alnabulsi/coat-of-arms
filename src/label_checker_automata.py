@@ -52,7 +52,6 @@ class LabelCheckerAutomata:
     def is_valid(self, label):
         try:
             parsed_label = self.parse_label(label)
-            print('parsed_label', parsed_label)
             return self.dfa.accepts_input(parsed_label)
         except ValueError:
             return False
