@@ -23,7 +23,7 @@ class Caption:
     def get_aligned(self):
         simple_automata = LabelCheckerAutomata(support_plural=self.support_plural)
         parsed_label = simple_automata.parse_label(self.label)
-        print(self.label, parsed_label)
+#         print(self.label, parsed_label)
         return simple_automata.align_parsed_label(self.label, parsed_label)
 
     def get_armoria_payload_dict(self):

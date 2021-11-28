@@ -80,8 +80,8 @@ class Accuracy:
                 
         # min, avg, max accuracy for each object in correct against all predicted
         
-        print('predicted_cap: ', self.predicted)
-        print('correct_cap: ', self.correct)
+#         print('predicted_cap: ', self.predicted)
+#         print('correct_cap: ', self.correct)
         
         if len(all_obj_acc) == 0:
             return 0.0
@@ -119,7 +119,7 @@ class Accuracy:
 
     
     def get_max_accuracy(self, all_obj_acc):
-        print('all_obj_acc', all_obj_acc)
+#         print('all_obj_acc', all_obj_acc)
         n = len(all_obj_acc[0])
         # get all possible unique combinations of object indexes
         comblist = self.generate_all_permutations(n)
@@ -128,10 +128,10 @@ class Accuracy:
         # get the maximum sum and the indexs 
         max_index, max_acc = self.get_max_accuracy_item(all_values)
 
-        print('comblist', comblist)
-        print('all_values', all_values)
-        print('max_index', max_index)
-        print('max_acc', max_acc)
+#         print('comblist', comblist)
+#         print('all_values', all_values)
+#         print('max_index', max_index)
+#         print('max_acc', max_acc)
 
         return max_index, max_acc
             
