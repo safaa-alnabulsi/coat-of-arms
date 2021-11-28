@@ -147,7 +147,7 @@ class Accuracy:
             
     def get_all_values(self, comblist, all_obj_acc):
         all_values = []
-        for item in comblist:           
+        for item in comblist:       
             acc = self.get_comb_acc(item, all_obj_acc)
             all_values.append({'index': item, 'value:': acc})
             
@@ -158,8 +158,11 @@ class Accuracy:
         n = len(all_obj_acc)
         for i in range(0, n):
             l = all_obj_acc[i]
-            total_sum += l[item[i]] 
-          
+            try:
+                total_sum += l[item[i]] 
+            except IndexError as e:
+                print('Index {} does not exist in item, seems like predicted less than Ground truth'.format(i)) 
+
         return round(total_sum/ n, 2)
 
     def get_max_accuracy_item(self, all_values):
