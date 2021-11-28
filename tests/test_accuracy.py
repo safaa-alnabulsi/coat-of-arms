@@ -13,6 +13,10 @@ pairs_pred_truth = [
 
 ]
 
+max_accuracy = [
+    { 'input': [[90, 89, 88], [90, 80, 70], [90, 70, 80]], 'output': [1, 0, 2],  'max_acc': 86}
+]
+
 class AccuracyTest(TestCase):
 
     def test_get_shield_acc(self):
@@ -30,3 +34,10 @@ class AccuracyTest(TestCase):
         for pair in pairs_pred_truth:
             predicted, truth, accuracy = pair[0], pair[1], pair[4]
             assert Accuracy(predicted, truth).get() == accuracy
+    
+    def test_get_max_accuracy(self):
+        for item in max_accuracy: 
+            max_index, max_acc = Accuracy('b a lion passt guard', 'b a lion passt guard').get_max_accuracy(item['input'])
+            assert max_index == item['output']
+            assert max_acc == item['max_acc']
+    
