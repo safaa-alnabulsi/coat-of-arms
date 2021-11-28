@@ -74,22 +74,19 @@ class Accuracy:
                       hits_mod * self.weights_map['modifier']
                 
                 obj_acc.append(round(hits / total, 2))
-#                 print(obj_acc)
-#                 print('max(obj_acc) == ', max(obj_acc))
             
             if len(obj_acc) > 0:
-                total_acc.append(max(obj_acc)) 
-#                 all_obj_acc.append(obj_acc)
+                all_obj_acc.append(obj_acc)
                 
         # min, avg, max accuracy for each object in correct against all predicted
         
         print('predicted_cap: ', self.predicted)
         print('correct_cap: ', self.correct)
-                
-        if len(total_acc) == 0:
+        
+        if len(all_obj_acc) == 0:
             return 0.0
-            
-        avg_acc = sum(total_acc)/len(total_acc)
+        
+        _, avg_acc = self.get_max_accuracy(all_obj_acc)
 
         return avg_acc
                 
@@ -122,6 +119,7 @@ class Accuracy:
 
     
     def get_max_accuracy(self, all_obj_acc):
+        print('all_obj_acc', all_obj_acc)
         n = len(all_obj_acc[0])
         # get all possible unique combinations of object indexes
         comblist = self.generate_all_permutations(n)
@@ -129,9 +127,13 @@ class Accuracy:
         all_values = self.get_all_values(comblist, all_obj_acc)
         # get the maximum sum and the indexs 
         max_index, max_acc = self.get_max_accuracy_item(all_values)
-        # devide by the number of objects to get the average
-        acc = self.get_avg_acc(n, max_acc)
-        return max_index, acc
+
+        print('comblist', comblist)
+        print('all_values', all_values)
+        print('max_index', max_index)
+        print('max_acc', max_acc)
+
+        return max_index, max_acc
             
             
     # -------- functions below are used in calculating the maximum accuracy: get_max_accuracy ------- #
@@ -158,22 +160,19 @@ class Accuracy:
             l = all_obj_acc[i]
             total_sum += l[item[i]] 
           
-        return total_sum
+        return round(total_sum/ n, 2)
 
     def get_max_accuracy_item(self, all_values):
-        max_acc = 0
+        max_acc = -1
         max_index = []
         for comb_val in all_values:  
             t1, t2 = comb_val.items()
-            index, value = t1[1], int(t2[1])
+            index, value = t1[1], float(t2[1])
             if value > max_acc:
                 max_acc = value
                 max_index = index
                 
         return max_index, max_acc
-    
-    def get_avg_acc(self, n, total_sum_acc):
-        return round(total_sum_acc/n)
-    
+        
     # -------- functions below are used in calculating the maximum accuracy ------- #
             

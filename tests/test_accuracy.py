@@ -14,7 +14,11 @@ pairs_pred_truth = [
 ]
 
 max_accuracy = [
-    { 'input': [[90, 89, 88], [90, 80, 70], [90, 70, 80]], 'output': [1, 0, 2],  'max_acc': 86}
+    { 'input': [[90, 89, 88], 
+                [90, 80, 70], 
+                [90, 70, 80]], 
+     'output': [1, 0, 2], 
+     'max_acc': 86.33}
 ]
 
 class AccuracyTest(TestCase):
