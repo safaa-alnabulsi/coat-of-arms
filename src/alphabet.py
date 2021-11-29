@@ -10,7 +10,7 @@ OBJECTS = ['lion', 'fess', 'cross', 'crescent', 'chief', 'chevron', 'escutch', '
 MODIFIERS = ['rampant', 'dancetty', 'salient', 'roundel', 'bend', 'annulet', 'lozenge',
                  'orle', 'crusily', 'pale', 'doubleheaded', 'rising', 'addorsed', 'slipped',
                  'erect', 'cr.', 'chained', 'erased', 'hooded', 'winged', 'embattled',
-                 'gorged', 'arched', 'segreant', 'pd', 'isst', 'jesst', 'passt', 'guard', 'sejt', 'reguard',
+                 'gorged', 'arched', 'segreant', 'pd', 'isst', 'jesst', 'passt', 'guard','passt guard', 'sejt', 'reguard',
                  'inv', 'cch', 'segr', 'p.c.', 'p.n.', 'col', 'displayed','sn', 'dx', 'dancetty', 'mount',
                  'flory', 'undy', 'masoned', 'bendy', 'potenty', 'checky', 
                  'compony', 'roundely', 'engrailed', 'crenelated', 'nebuly', 'castely', 'moline','patonce']
@@ -26,4 +26,4 @@ NUMBERS = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
 
 SIMPLE_OBJECTS = ['lion', 'cross']
 SIMPLE_COLORS = ['G', 'S'] # G: red , S: black
-SIMPLE_MODIFIERS = ['rampant', 'dancetty', 'moline', 'patonce']
+SIMPLE_MODIFIERS = ['rampant', 'dancetty', 'moline', 'patonce', 'passt guard', 'passt', 'guard']
