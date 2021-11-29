@@ -1,3 +1,5 @@
+import torch
+
 from torch.utils.data import DataLoader,Dataset
 from src.baseline.vocabulary import Vocabulary
 from src.baseline.coa_dataset import CoADataset
@@ -32,3 +34,21 @@ def get_loaders(root_folder, train_annotation_file, val_annotation_file, test_an
                                            batch_size, num_workers,shuffle, pin_memory, vocab)
 
     return train_loader, val_loader, test_loader, train_dataset, val_dataset, test_dataset
+
+def get_mean_std(train_dataset, train_loader, img_h, img_w):
+    num_of_pixels = len(train_dataset) * 500 * 500
+
+    total_sum = 0
+    sum_of_squared_error = 0
+
+    for batch in train_loader: 
+        total_sum += batch[0].sum()    
+    mean = total_sum / num_of_pixels
+    
+    for batch in train_loader: 
+        sum_of_squared_error += ((batch[0] - mean).pow(2)).sum()
+
+    
+    std = torch.sqrt(sum_of_squared_error / num_of_pixels)
+    
+    return mean, std
