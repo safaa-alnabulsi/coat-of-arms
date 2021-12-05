@@ -92,7 +92,7 @@ def validate_my_model(model):
             accuracy_list.append(Accuracy(predicted_caption,correct_caption_s).get())
             bleu = nltk.translate.bleu_score.sentence_bleu([correct_caption], caps, weights=(0.5, 0.5))
             bleu_score += bleu
-            print('here5?')
+#             print('here5?')
 
             # ------------------------------------------
             # calc losses and take the average 
@@ -136,8 +136,8 @@ if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(device)
     
-#     data_location = '/home/space/datasets/COA/generated-data-api'
-    data_location = '/home/space/datasets/COA/generated-data-api-small'
+    data_location = '/home/space/datasets/COA/generated-data-api'
+#     data_location = '/home/space/datasets/COA/generated-data-api-small'
 
     
     caption_file = data_location + '/captions.txt'
