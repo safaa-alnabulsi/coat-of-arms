@@ -56,8 +56,8 @@ class CoADataset(Dataset):
             caption_vec += self.vocab.numericalize(caption)
             caption_vec += [self.vocab.stoi["<EOS>"]]
 
-            self.images.append(img.to(self.device))
-            self.caption_vecs.append(torch.tensor(caption_vec).to(self.device))     
+            self.images.append(img)
+            self.caption_vecs.append(torch.tensor(caption_vec))     
             
     
     def __len__(self):
