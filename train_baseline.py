@@ -15,131 +15,26 @@ import torch.nn as nn
 import torch.onnx as onnx
 import torch.optim as optim
 import torchvision.models as models
-from torch.utils.data import DataLoader,Dataset
 from PIL import Image
 from datetime import datetime
 from tqdm import tqdm
 from time import sleep
-from torch.utils.data import DataLoader,Dataset
-
-from src.baseline.model import EncoderCNN, Attention, DecoderRNN, EncoderDecoder
 from src.baseline.vocabulary import Vocabulary
-from src.baseline.coa_dataset import CoADataset
-from src.baseline.caps_collate import CapsCollate
 from src.baseline.data_loader import get_loader, get_loaders, get_mean_std
 from src.accuracy import Accuracy
+from src.baseline.coa_model import save_model, get_new_model, validate_model, train_validate_test_split, print_time
 
-def print_time(text):
-    now = datetime.now()
-    current_time = now.strftime("%H:%M:%S")
-    print("{} @ Time = {}".format(text, current_time))
-
-def train_validate_test_split(df, train_percent=.6, validate_percent=.2, seed=None):
-    np.random.seed(seed)
-    perm = np.random.permutation(df.index)
-    m = len(df.index)
-    train_end = int(train_percent * m)
-    validate_end = int(validate_percent * m) + train_end
-    train = df.iloc[perm[:train_end]]
-    validate = df.iloc[perm[train_end:validate_end]]
-    test = df.iloc[perm[validate_end:]]
-    return train, validate, test
-
-def get_new_model():
-    model = EncoderDecoder(embed_size, len(train_dataset.vocab), attention_dim, encoder_dim, decoder_dim, drop_prob=0.3).to(device)
-    optimizer = optim.Adam(model.parameters(), lr=learning_rate)
-    criterion = nn.CrossEntropyLoss(ignore_index=train_dataset.vocab.stoi["<PAD>"])
-
-    return model, optimizer, criterion
-
-
-# Function to test the model with the val dataset and print the accuracy for the test images
-def validate_my_model(model):
-#     print('validate function here0?')
-
-    accuracy_list = list()
-    total = len(val_loader)
-    bleu_score = 0
-    correct = 0
-    val_losses = list()
-    avg_loss = 0
-    model.eval()
-#     print('here1?') 
-    with torch.no_grad():
-        for idx, (img, correct_cap) in enumerate(iter(val_loader)):
-            features = model.encoder(img.to(device))
-#             print('here2?')
-
-            features_tensors = img[0].detach().clone().unsqueeze(0)
-            features = model.encoder(features_tensors.to(device))
-#             print('here3?')
-                        
-            caps,_ = model.decoder.generate_caption(features, vocab=val_dataset.vocab)   
-            caps = caps[:-1]
-            predicted_caption = ' '.join(caps)
-#             print('here3?')
-
-            correct_caption = []
-            for j in correct_cap.T[0]:
-                if j.item() not in [0, 1, 2 , 3]:
-                    correct_caption.append(val_dataset.vocab.itos[j.item()])
-            correct_caption_s = ' '.join(correct_caption)
-#             print('here4?')
-
-            # ------------------------------------------
-            # calc metrics
-            
-            accuracy_list.append(Accuracy(predicted_caption,correct_caption_s).get())
-            bleu = nltk.translate.bleu_score.sentence_bleu([correct_caption], caps, weights=(0.5, 0.5))
-            bleu_score += bleu
-#             print('here5?')
-
-            # ------------------------------------------
-            # calc losses and take the average 
-            image, captions = img.to(device), correct_cap.to(device)
-            outputs, _ = model(image, captions.T)
-            targets = captions.T[:,1:] 
-            loss = criterion(outputs.view(-1, vocab_size), targets.reshape(-1))
-            val_losses.append(loss)
-            
-            # ------------------------------------------
-           
-    # compute the accuracy over all test images
-    acc_score = (100 * sum(accuracy_list) / len(accuracy_list))
-    avg_loss = sum(val_losses) / len(val_losses)
-
-    return avg_loss, bleu_score, acc_score
-
-
-
-#helper function to save the model
-def save_model(model, optimizer, epoch, loss, accuracy, model_full_path):
-    model.cpu()
-    model_state = {
-        'epoch': epoch,
-        'embed_size': embed_size,
-        'vocab_size': len(train_dataset.vocab),
-        'attention_dim': attention_dim,
-        'encoder_dim': encoder_dim,
-        'decoder_dim': decoder_dim,
-        'state_dict': model.state_dict(),
-        'model_state_dict': model.state_dict(),
-        'optimizer_state_dict': optimizer.state_dict(),
-        'loss': loss,
-        'accuracy':accuracy
-    }
-    
-    torch.save(model_state, model_full_path)
 
 if __name__ == "__main__":
     print('starting the script')
+    
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(device)
     
-    #data_location = '/home/space/datasets/COA/generated-data-api'
-    data_location = '/home/space/datasets/COA/generated-data-api-small'
+    data_location = '/home/space/datasets/COA/generated-data-api'
+#     data_location = '/home/space/datasets/COA/generated-data-api-small'
 
-    
+    print('Dataset exists in', data_location)    
     caption_file = data_location + '/captions.txt'
     root_folder_images = data_location + '/images'
     df = pd.read_csv(caption_file)
@@ -190,7 +85,7 @@ if __name__ == "__main__":
         transform=None,  # <=======================
         num_workers=NUM_WORKER,
         vocab=vocab,
-        batch_size=256
+        batch_size=BATCH_SIZE
     )
     mean, std = get_mean_std(train_dataset, train_loader, 500 , 500)
     print('mean, std:', mean, std)
@@ -206,7 +101,6 @@ if __name__ == "__main__":
 
     print_time('writing the dataloader')
     
-    BATCH_SIZE = 450
     train_loader, val_loader, test_loader, train_dataset, val_dataset, test_dataset = get_loaders(
         root_folder=root_folder_images,
         train_annotation_file=train_annotation_file,
@@ -215,34 +109,46 @@ if __name__ == "__main__":
         transform=transform,
         num_workers=NUM_WORKER,
         vocab=vocab,
-        batch_size=BATCH_SIZE
+        batch_size=BATCH_SIZE,
+        device=device,
+        pin_memory=False
     )
 
     print_time('finished writing the dataloader')
     # -------------------------------------------------------------------------------------------------------
 
-    # Hyperparams
+    #Hyperparams
     embed_size=300
     vocab_size = len(train_dataset.vocab)
     attention_dim=256
     encoder_dim=2048
     decoder_dim=512
     learning_rate = 3e-4
+    drop_prob=0.3
+    ignored_idx = train_dataset.vocab.stoi["<PAD>"]
+
+    hyper_params = {'embed_size': embed_size,
+                    'attention_dim': attention_dim,
+                    'encoder_dim': encoder_dim,
+                    'decoder_dim': decoder_dim,
+                    'vocap_size': vocab_size
+                  }
     
     # -------------------------------------------------------------------------------------------------------
-
-    #initialize new model, loss etc
-    model, optimizer, criterion = get_new_model()    
+    print('initialize new model, loss etc')    
+    model, optimizer, criterion = get_new_model(embed_size, vocab_size, attention_dim, encoder_dim,
+                                                decoder_dim, learning_rate,drop_prob,ignored_idx, device) 
 
     losses = list()
     losses_batch = list()
     val_losses = list()
     accuracy_list = list()
 
-    model_full_path = '/home/space/datasets/COA/models/baseline/attention_model_acc.pth'
+    model_full_path = '/home/space/datasets/COA/models/baseline/attention_model_acc_qsub.pth'
     num_epochs = 5
     print_every = 5
 
+    print('Start Training the model')    
     for epoch in range(1, num_epochs + 1): 
         with tqdm(train_loader, unit="batch") as tepoch:
             idx = 0
@@ -270,9 +176,8 @@ if __name__ == "__main__":
 
                 tepoch.set_postfix(loss=loss.item())
                 sleep(0.1)
-                print('before validate function')
 
-                avg_val_loss, bleu_score, accuracy = validate_my_model(model)
+                avg_val_loss, bleu_score, accuracy = validate_model(model, criterion, val_loader, val_dataset, vocab_size, device)
                 model.train()
 
                 losses_batch.append(loss) 
@@ -286,6 +191,6 @@ if __name__ == "__main__":
     print('Bleu Score: ',bleu_score/8091)
     print('Final accuracy: ', sum(accuracy_list)/len(accuracy_list))
 
-
     # save the latest model
-    save_model(model, optimizer, epoch, loss, accuracy, model_full_path)
+    save_model(model, optimizer, epoch, loss, accuracy, model_full_path, hyper_params)
+    print('The trained model has been saved to ', model_full_path)
