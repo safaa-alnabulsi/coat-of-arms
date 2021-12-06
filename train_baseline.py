@@ -136,8 +136,8 @@ if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(device)
     
-    data_location = '/home/space/datasets/COA/generated-data-api'
-#     data_location = '/home/space/datasets/COA/generated-data-api-small'
+    #data_location = '/home/space/datasets/COA/generated-data-api'
+    data_location = '/home/space/datasets/COA/generated-data-api-small'
 
     
     caption_file = data_location + '/captions.txt'
