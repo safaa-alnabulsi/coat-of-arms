@@ -41,8 +41,8 @@ def get_mean_std(train_dataset, train_loader, img_h, img_w):
     total_sum = 0
     sum_of_squared_error = 0
     
-    for idx in enumerate(train_loader):
-        batch = train_loader[idx]
+    for idx,batch in enumerate(train_loader):
+#         batch = train_loader[idx]
         total_sum += batch[0].sum()    
     mean = total_sum / num_of_pixels
     

@@ -10,13 +10,16 @@ class CoADataset(Dataset):
  
     def __init__(self,root_dir,captions_file,transform=None,freq_threshold=5, vocab=None, device="cpu"):
         self.root_dir = root_dir
-        self.df = pd.read_csv(captions_file)
         self.transform = transform
         self.device = device
+        self.df = pd.read_csv(captions_file)
+        
         #Get image and caption colum from the dataframe
         self.img_names = self.df["image"]
         self.captions = self.df["caption"]
-        
+#         print(self.img_names)
+#         print(self.captions)
+
         #Initialize vocabulary and build vocab
         if vocab is None:
             self.vocab = Vocabulary(freq_threshold)
@@ -24,12 +27,14 @@ class CoADataset(Dataset):
         else: 
             self.vocab = vocab
         
-        self.images, self.caption_vecs = self.load_images()
+        self.load_images()
 
     def load_images(self):
         n = len(self.img_names)
-        images = []
-        caption_vecs = []
+#         print('len self.img_names:', n)
+
+        self.images = []
+        self.caption_vecs = []
 
         for idx in range(n):
             caption = self.captions[idx]
@@ -51,17 +56,19 @@ class CoADataset(Dataset):
             caption_vec += self.vocab.numericalize(caption)
             caption_vec += [self.vocab.stoi["<EOS>"]]
 
-            images.append(img.to(self.device))
-            caption_vecs.append(torch.tensor(caption_vec).to(self.device))     
+            self.images.append(img.to(self.device))
+            self.caption_vecs.append(torch.tensor(caption_vec).to(self.device))     
             
-            return images, caption_vecs
-
     
     def __len__(self):
         return len(self.df)
     
     def __getitem__(self, idx):
 #         try:
+#         print('idx:',idx)
+#         print('len self.images:', len(self.images))
+#         print('len self.caption_vecs:',len(self.caption_vecs))
+
         return self.images[idx], self.caption_vecs[idx]
 #         except TypeError or IndexError:
 #             print(str(idx))
