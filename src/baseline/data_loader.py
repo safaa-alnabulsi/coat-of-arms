@@ -7,9 +7,9 @@ from src.baseline.caps_collate import CapsCollate
 
 
 def get_loader(root_folder, annotation_file, transform, 
-               batch_size=32, num_workers=2, shuffle=True, pin_memory=True, vocab=None):
+               batch_size=32, num_workers=2, shuffle=True, pin_memory=True, vocab=None, device='cpu'):
     
-    dataset = CoADataset(root_folder, annotation_file, transform=transform, vocab=vocab)
+    dataset = CoADataset(root_folder, annotation_file, transform=transform, vocab=vocab,device=device)
     pad_idx = dataset.vocab.stoi["<PAD>"]
 
     loader = DataLoader(
@@ -24,14 +24,14 @@ def get_loader(root_folder, annotation_file, transform,
     return loader, dataset
 
 def get_loaders(root_folder, train_annotation_file, val_annotation_file, test_annotation_file, 
-                transform, batch_size=32, num_workers=2, shuffle=True, pin_memory=True, vocab=None):
+                transform, batch_size=32, num_workers=2, shuffle=True, pin_memory=True, vocab=None, device='cpu'):
     
     train_loader, train_dataset = get_loader(root_folder, train_annotation_file, transform, 
-                                             batch_size, num_workers,shuffle, pin_memory, vocab)
+                                             batch_size, num_workers,shuffle, pin_memory, vocab, device)
     val_loader, val_dataset = get_loader(root_folder, val_annotation_file, transform, 
-                                         batch_size, num_workers,shuffle, pin_memory, vocab)
+                                         batch_size, num_workers,shuffle, pin_memory, vocab, device)
     test_loader, test_dataset = get_loader(root_folder, test_annotation_file, transform, 
-                                           batch_size, num_workers,shuffle, pin_memory, vocab)
+                                           batch_size, num_workers,shuffle, pin_memory, vocab, device)
 
     return train_loader, val_loader, test_loader, train_dataset, val_dataset, test_dataset
 
@@ -40,8 +40,9 @@ def get_mean_std(train_dataset, train_loader, img_h, img_w):
 
     total_sum = 0
     sum_of_squared_error = 0
-
-    for batch in train_loader: 
+    
+    for idx in enumerate(train_loader):
+        batch = train_loader[idx]
         total_sum += batch[0].sum()    
     mean = total_sum / num_of_pixels
     
