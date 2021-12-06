@@ -23,7 +23,7 @@ from src.baseline.vocabulary import Vocabulary
 from src.baseline.data_loader import get_loader, get_loaders, get_mean_std
 from src.accuracy import Accuracy
 from src.baseline.coa_model import save_model, get_new_model, validate_model, train_validate_test_split, print_time
-
+import torch.multiprocessing as mp
 
 if __name__ == "__main__":
     print('starting the script')
@@ -68,7 +68,7 @@ if __name__ == "__main__":
     # -------------------------------------------------------------------------------------------------------
     
     #setting the constants
-    BATCH_SIZE = 256
+    BATCH_SIZE = 125
     NUM_WORKER = 2 #### this needs multi-core
     freq_threshold = 5
     
@@ -85,12 +85,14 @@ if __name__ == "__main__":
         transform=None,  # <=======================
         num_workers=NUM_WORKER,
         vocab=vocab,
-        batch_size=BATCH_SIZE
+        batch_size=BATCH_SIZE,
+        pin_memory=False
     )
     mean, std = get_mean_std(train_dataset, train_loader, 500 , 500)
     print('mean, std:', mean, std)
     
     # Defining the transform to be applied
+#     mp.set_start_method('spawn')
 
     transform = T.Compose([
         T.Resize(226),                     
