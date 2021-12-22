@@ -5,10 +5,13 @@ import torchvision.transforms as T
 from PIL import Image
 from torch.utils.data import DataLoader,Dataset
 from src.baseline.vocabulary import Vocabulary
+import torchdatasets as td
+from src.baseline.coa_model import print_time
 
-class CoADataset(Dataset):
+class CoADataset(td.Dataset):
  
     def __init__(self,root_dir,captions_file,transform=None,freq_threshold=5, vocab=None, device="cpu"):
+        super().__init__() # for the td.Dataset
         self.root_dir = root_dir
         self.transform = transform
         self.device = device
