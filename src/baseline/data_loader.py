@@ -1,4 +1,6 @@
 import torch
+import torchvision
+import torchdatasets as td
 
 from torch.utils.data import DataLoader,Dataset
 from src.baseline.vocabulary import Vocabulary
@@ -9,7 +11,19 @@ from src.baseline.caps_collate import CapsCollate
 def get_loader(root_folder, annotation_file, transform, 
                batch_size=32, num_workers=2, shuffle=True, pin_memory=True, vocab=None, device='cpu'):
     
-    dataset = CoADataset(root_folder, annotation_file, transform=transform, vocab=vocab,device=device)
+    dataset = CoADataset(root_folder, 
+                         annotation_file, 
+                         transform=transform, 
+                         vocab=vocab,
+                         device=device)
+#     .map(torchvision.transforms.ToTensor()).cache(td.modifiers.UpToIndex(500, td.cachers.Memory())).cache(td.modifiers.FromIndex(500, td.cachers.Pickle("./cache")))
+#     .cache()
+# #                         # First 1000 samples in memory
+#                         .cache(td.modifiers.UpToIndex(500, td.cachers.Memory()))
+# #                         # Sample from 1000 to the end saved with Pickle on disk
+#                         .cache(td.modifiers.FromIndex(500, td.cachers.Pickle("./cache")))
+# #                         # You can define your own cachers, modifiers, see docs
+
     pad_idx = dataset.vocab.stoi["<PAD>"]
 
     loader = DataLoader(
