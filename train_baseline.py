@@ -25,6 +25,9 @@ from src.accuracy import Accuracy
 from src.baseline.coa_model import save_model, get_new_model, validate_model, train_validate_test_split, print_time
 import torch.multiprocessing as mp
 
+from pyinstrument import Profiler
+
+
 if __name__ == "__main__":
     print('starting the script')
     
@@ -78,7 +81,10 @@ if __name__ == "__main__":
     vocab.itos = {0: '<PAD>', 1: '<SOS>', 2: '<EOS>', 3: '<UNK>', 4: 'g', 5: 'v', 6: 'b', 7: 'cross', 8: 'lion', 9: 'passt', 10: 's', 11: 'a', 12: 'eagle', 13: 'o', 14: 'doubleheaded', 15: "'s", 16: 'head', 17: 'patonce', 18: 'moline', 19: 'guard', 20: 'rampant'}
     
     # -------------------------------------------------------------------------------------------------------
-    
+    print_time('\n ------------------------ \n before get_loader')
+    profiler = Profiler(async_mode='disabled')
+    profiler.start()
+
     train_loader, train_dataset = get_loader(
         root_folder=root_folder_images,
         annotation_file=train_annotation_file,
@@ -88,8 +94,19 @@ if __name__ == "__main__":
         batch_size=BATCH_SIZE,
         pin_memory=False
     )
+    
+    profiler.stop()
+    profiler.print()
+
+    profiler = Profiler(async_mode='disabled')
+    profiler.start()
+
+    print_time('\n ------------------------ \n before get_mean_std')
+
     mean, std = get_mean_std(train_dataset, train_loader, 500 , 500)
     print('mean, std:', mean, std)
+    profiler.stop()
+    profiler.print()
     
     # Defining the transform to be applied
 #     mp.set_start_method('spawn')
@@ -145,8 +162,8 @@ if __name__ == "__main__":
     losses_batch = list()
     val_losses = list()
     accuracy_list = list()
-
-    model_full_path = '/home/space/datasets/COA/models/baseline/attention_model_acc_qsub.pth'
+    
+    model_full_path = '/home/space/datasets/COA/models/baseline/attention_model_acc_qsub-wed-22-dec.pth'
     num_epochs = 5
     print_every = 5
 
@@ -155,6 +172,8 @@ if __name__ == "__main__":
         with tqdm(train_loader, unit="batch") as tepoch:
             idx = 0
             avg_val_loss, bleu_score, accuracy = 0,0,0
+            device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+            print(device)
             for image, captions in tepoch:
                 idx+=1
                 tepoch.set_description(f"Epoch {epoch}")

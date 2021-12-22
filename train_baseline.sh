@@ -9,5 +9,7 @@
 #$ -l cuda=1   # request one GPU
 #$ -o task_out
 #$ -j y
+#$ -l h=!node43
 echo "I am a job task with ID $SGE_TASK_ID."
+export CUDA_LAUNCH_BLOCKING=1
 source /home/salnabulsi/.thesis-py38/bin/activate && python train_baseline.py > output.txt
