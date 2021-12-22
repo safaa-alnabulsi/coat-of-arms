@@ -43,14 +43,15 @@ class Caption:
         # Reserve the first color as a shield color; it's a rule
         try:
             shield_color = aligned_label['colors'][0]
+            output['shield'] = {'color': shield_color, 
+                    'modifiers': []}
+            # remove it from list colors
+            aligned_label['colors'].pop(0)
+
         except IndexError:
             print('No shield color found in this label: "{}"'.format(self.label))
             shield_color = 'A' # DEFAULT_SHIELD
             
-        output['shield'] = {'color': shield_color, 
-                            'modifiers': []}
-        # remove it from list colors
-        aligned_label['colors'].pop(0)
         
         for item in aligned_label['shield_modifiers']:
             output['shield']['modifiers'].append(item)
