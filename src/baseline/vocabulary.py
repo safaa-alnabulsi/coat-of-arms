@@ -25,12 +25,7 @@ class Vocabulary:
     
     @staticmethod
     def tokenize(text):
-        #using spacy for the better text tokenization 
-        spacy.prefer_gpu() # or spacy.require_gpu()
-
-        spacy_eng = spacy.blank("en")
-
-        return [token.text.lower() for token in spacy_eng.tokenizer(text)]
+        return [token.lower() for token in text.split(" ")]
     
     def build_vocab(self, sentence_list):
         frequencies = Counter()
