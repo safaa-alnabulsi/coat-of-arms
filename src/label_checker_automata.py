@@ -55,7 +55,8 @@ class LabelCheckerAutomata:
             return self.dfa.accepts_input(parsed_label)
         except ValueError:
             return False
-
+        
+    
     def parse_label(self, label):
         chunks = label.split()
         output = ''
@@ -123,10 +124,15 @@ class LabelCheckerAutomata:
         if "passt" in label_ls and "guard" in label_ls:
             has_passt_guard = True
         
+        has_possessive_s = False
+        possive_s = ''
         for elem, symbol in zip(label_ls, list(parsed_label)):
             if symbol == 'c':
                 output['colors'].append(elem)
             elif symbol == 'o':
+                if elem.endswith("'s"):
+                    size = len(elem)
+                    elem = elem[:size - 2]
                 output['objects'].append(elem)
             elif symbol == 'b':
                 output['shield_modifiers'].append(elem)
