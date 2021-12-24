@@ -69,7 +69,7 @@ class Caption:
                 else: # when one object only, assign all modifiers to it
                     output['objects'][0]['modifiers'].append(mod)
         except IndexError:
-            print('Caption Class - exception: ',aligned_label['modifiers'])
+            print(f"Caption Class - exception in label {self.label}, {aligned_label['modifiers']}")
 
         return output
 
