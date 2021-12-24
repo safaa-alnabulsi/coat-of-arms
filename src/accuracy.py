@@ -97,10 +97,21 @@ class Accuracy:
         hits = 0
         total = 1
         
-        color1 = self.predicted['shield']['color']
-        mods1  = self.predicted['shield']['modifiers']
-        color2 = self.correct['shield']['color']
-        mods2  = self.correct['shield']['modifiers']
+        try:
+            color1 = self.predicted['shield']['color']
+            mods1  = self.predicted['shield']['modifiers']
+        except KeyError as err:
+            print(f"Unexpected {err=}, {type(err)=} in predicted label: {self.predicted=}")
+            raise
+            
+        try:
+            color2 = self.correct['shield']['color']
+            mods2  = self.correct['shield']['modifiers']
+        except KeyError as err:
+            print('KeyError in correct: "{}"'.format(self.correct))
+            print(f"Unexpected {err=}, {type(err)=} in correct label: {self.correct=}")
+            raise
+            
 
         if color1 == color2:
             hits_sh_colors+= 1

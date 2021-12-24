@@ -23,7 +23,7 @@ class Caption:
     def get_aligned(self):
         simple_automata = LabelCheckerAutomata(support_plural=self.support_plural)
         parsed_label = simple_automata.parse_label(self.label)
-        print(self.label, parsed_label)
+#         print(self.label, parsed_label)
         return simple_automata.align_parsed_label(self.label, parsed_label)
 
     def get_armoria_payload_dict(self):
@@ -43,16 +43,14 @@ class Caption:
         # Reserve the first color as a shield color; it's a rule
         try:
             shield_color = aligned_label['colors'][0]
-            output['shield'] = {'color': shield_color, 
-                    'modifiers': []}
+            output['shield'] = {'color': shield_color, 'modifiers': []}
             # remove it from list colors
             aligned_label['colors'].pop(0)
 
         except IndexError:
             print('No shield color found in this label: "{}"'.format(self.label))
             shield_color = 'A' # DEFAULT_SHIELD
-            output['shield']['color'] = {'color': shield_color, 
-                    'modifiers': []}
+            output['shield'] = {'color': shield_color, 'modifiers': []}
             
         
         for item in aligned_label['shield_modifiers']:
