@@ -172,8 +172,19 @@ class LabelCheckerAutomata:
                 charge_labels.append(l)
         
         return charge_labels
+
+    def get_valid_plural_labels(self, all_labels):
+        validated_labels = self.get_valid_labels(all_labels)
+        pl_labels = []
+        for l, valid in validated_labels.items():
+            if valid and self.has_numbers(l): 
+                pl_labels.append(l)
         
+        return pl_labels
     
+    def has_numbers(self, inputString):
+         return any(char.isdigit() for char in inputString)
+
     @staticmethod
     def get_combination_color(chunk):
         return 'c' * len(chunk)
