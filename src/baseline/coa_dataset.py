@@ -7,6 +7,8 @@ from torch.utils.data import DataLoader,Dataset
 from src.baseline.vocabulary import Vocabulary
 import torchdatasets as td
 from src.baseline.coa_model import print_time
+from pathlib import Path
+
 
 class CoADataset(td.Dataset):
  
@@ -44,6 +46,12 @@ class CoADataset(td.Dataset):
             img_name = self.img_names[idx]
             
             img_location = os.path.join(self.root_dir, img_name)
+            
+            my_image = Path(img_location)
+            if not my_image.exists():
+                print(f'skipping image {img_name}, as it does not exist')
+                continue                
+
             img = Image.open(img_location).convert("RGB")
             
             #apply the transfromation to the image
