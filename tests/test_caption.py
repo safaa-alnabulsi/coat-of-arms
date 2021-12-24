@@ -17,6 +17,7 @@ struc_labels = {
  'B O lion passt guard cr.': {'shield': {'color': 'B', 'modifiers': []}, 'objects': [{'charge': 'lion', 'color': 'O', 'modifiers': ['passt guard', 'cr.']}]},
     
 'A S bear rampant chained': {'shield': {'color': 'A', 'modifiers': []}, 'objects': [{'charge': 'bear', 'color': 'S', 'modifiers': ['rampant', 'chained']}]},
+"O O lion's head":  {'shield': {'color': 'O', 'modifiers': []}, 'objects': [{'charge': 'lion', 'color': 'O', 'modifiers': ['head']}]},  
 }
 
 class CaptionTest(TestCase):
