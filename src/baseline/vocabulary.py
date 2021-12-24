@@ -25,7 +25,13 @@ class Vocabulary:
     
     @staticmethod
     def tokenize(text):
-        return [token.lower() for token in text.split(" ")]
+        tokens = []
+        for token in text.split(" "):
+            if token.endswith("'s"):  # possessive pronouns: G A 3 lion's heads
+                size = len(token)
+                token = token[:size - 2]
+            tokens.append(token.lower())
+        return tokens
     
     def build_vocab(self, sentence_list):
         frequencies = Counter()
