@@ -1,6 +1,6 @@
 COLORS = ['A', 'B', 'O', 'S', 'G', 'E', 'X', 'V', 'Z']
 OBJECTS = ['lion', 'fess', 'cross', 'crescent', 'chief', 'chevron', 'escutch', 'escutcheon', 'mullet',
-               'eagle', 'bars', 'fleur-de-lis', 'martlet', 'saltire', 'estoile', 'rose', 'head',
+               'eagle', 'bars', 'fleur-de-lis', 'martlet', 'saltire', 'estoile', 'rose',
                'leave', 'fish', 'leopard', 'bear', 'ram', 'lamb', 'boar', 'cow', 'duck',
                'dragon', 'merlette', 'cock', 'volcano', 'falcon', 'wing', 'oak',
                'fleurs-de-lis', 'branch', 'bull', 'elephant', 'griffin', 'horseshoe', 'hare',
@@ -13,7 +13,7 @@ MODIFIERS = ['rampant', 'dancetty', 'salient', 'roundel', 'bend', 'annulet', 'lo
                  'gorged', 'arched', 'segreant', 'pd', 'isst', 'jesst', 'passt', 'guard','passt guard', 'sejt', 'reguard',
                  'inv', 'cch', 'segr', 'p.c.', 'p.n.', 'col', 'displayed','sn', 'dx', 'dancetty', 'mount',
                  'flory', 'undy', 'masoned', 'bendy', 'potenty', 'checky', 
-                 'compony', 'roundely', 'engrailed', 'crenelated', 'nebuly', 'castely', 'moline','patonce']
+                 'compony', 'roundely', 'engrailed', 'crenelated', 'nebuly', 'castely', 'moline','patonce', 'head', 'heads']
 
 # extracted from dataset & compared with https://github.com/Azgaar/armoria-api/blob/main/app/dataModel.js#L8
 SHIELD_MODIFIERS = ['border', 'checky', 'potenty', 'bendy', 'masoned', 'vairy', 'flory', 'undy',
@@ -24,6 +24,6 @@ POSITIONS = ['acc.', 'ch.', 'in', 'of', '&', 'and', 'above', 'with',
                  ]
 NUMBERS = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
 
-SIMPLE_OBJECTS = ['lion', 'cross']
+SIMPLE_OBJECTS = ['lion', 'cross', 'head', 'eagle']
 SIMPLE_COLORS = ['G', 'S'] # G: red , S: black
 SIMPLE_MODIFIERS = ['rampant', 'dancetty', 'moline', 'patonce', 'passt guard', 'passt', 'guard']
