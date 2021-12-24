@@ -26,6 +26,7 @@ from src.baseline.coa_model import save_model, get_new_model, validate_model, tr
 import torch.multiprocessing as mp
 
 from pyinstrument import Profiler
+from datetime import datetime
 
 
 if __name__ == "__main__":
@@ -163,7 +164,9 @@ if __name__ == "__main__":
     val_losses = list()
     accuracy_list = list()
     
-    model_full_path = '/home/space/datasets/COA/models/baseline/attention_model_acc_qsub-wed-22-dec.pth'
+    now = datetime.now() # current date and time
+    timestr = now.strftime("%m.%d.%Y-%H:%M:%S")
+    model_full_path = f"/home/space/datasets/COA/models/baseline/attention_model_acc_qsub-{timestr}.pth"
     num_epochs = 5
     print_every = 5
 
