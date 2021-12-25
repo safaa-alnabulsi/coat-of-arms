@@ -35,7 +35,7 @@ def zip_dir(path, ziph):
                                        os.path.join(path, '..')))
 
 
-def zip_dir_to_file(path_to_zipped_file, data_folder)
+def zip_dir_to_file(path_to_zipped_file, data_folder):
     zipf = zipfile.ZipFile(path_to_zipped_file, 'w', zipfile.ZIP_DEFLATED)
     zip_dir(data_folder, zipf)
     zipf.close()

@@ -6,7 +6,7 @@ from PIL import Image
 from torch.utils.data import DataLoader,Dataset
 from src.baseline.vocabulary import Vocabulary
 import torchdatasets as td
-from src.baseline.coa_model import print_time
+from src.utils import print_time
 from pathlib import Path
 
 

@@ -29,16 +29,29 @@ from src.utils import print_time
 from pyinstrument import Profiler
 from datetime import datetime
 
+import argparse
+
 
 if __name__ == "__main__":
     print('starting the script')
     
+    parser = argparse.ArgumentParser(description='A script for training the baseline model')
+    parser.add_argument('--dataset', dest='dataset', type=str, help='Full path to the dataset', default='/home/space/datasets/COA/generated-data-api')
+    parser.add_argument('--epochs', dest='epochs', type=int, help='Number of epochs',default=10)
+    parser.add_argument('--batch-size', dest='batch_size', type=int, help='Number of Batch size', default=128)
+
+    args = parser.parse_args()
+    print(args.dataset)
+    print(args.epochs)
+    print(args.batch_size)
+    
+    data_location = args.dataset
+    BATCH_SIZE = args.batch_size
+    num_epochs = args.epochs
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(device)
     
-    data_location = '/home/space/datasets/COA/generated-data-api'
-#     data_location = '/home/space/datasets/COA/generated-data-api-small'
-
     print('Dataset exists in', data_location)    
     caption_file = data_location + '/captions.txt'
     root_folder_images = data_location + '/images'
@@ -73,7 +86,6 @@ if __name__ == "__main__":
     # -------------------------------------------------------------------------------------------------------
     
     #setting the constants
-    BATCH_SIZE = 125
     NUM_WORKER = 2 #### this needs multi-core
     freq_threshold = 5
     
@@ -168,7 +180,6 @@ if __name__ == "__main__":
     now = datetime.now() # current date and time
     timestr = now.strftime("%m.%d.%Y-%H:%M:%S")
     model_full_path = f"/home/space/datasets/COA/models/baseline/attention_model_acc_qsub-{timestr}.pth"
-    num_epochs = 5
     print_every = 5
 
     print('Start Training the model')    
