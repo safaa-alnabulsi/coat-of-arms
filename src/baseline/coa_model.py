@@ -11,7 +11,6 @@ import torchvision.models as models
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from PIL import Image
-from datetime import datetime
 from tqdm import tqdm
 from time import sleep
 from src.baseline.model import EncoderCNN, Attention, DecoderRNN, EncoderDecoder
@@ -144,13 +143,6 @@ def show_image(img, title=None):
     if title is not None:
         plt.title(title)
     plt.pause(0.001)  # pause a bit so that plots are updated
-    
-
-def print_time(text):
-    now = datetime.now()
-    current_time = now.strftime("%H:%M:%S")
-    print("{} @ Time = {}".format(text, current_time))
-    
     
 
 

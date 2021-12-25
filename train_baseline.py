@@ -22,8 +22,9 @@ from time import sleep
 from src.baseline.vocabulary import Vocabulary
 from src.baseline.data_loader import get_loader, get_loaders, get_mean_std
 from src.accuracy import Accuracy
-from src.baseline.coa_model import save_model, get_new_model, validate_model, train_validate_test_split, print_time
+from src.baseline.coa_model import save_model, get_new_model, validate_model, train_validate_test_split
 import torch.multiprocessing as mp
+from src.utils import print_time
 
 from pyinstrument import Profiler
 from datetime import datetime
