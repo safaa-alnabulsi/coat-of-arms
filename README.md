@@ -39,3 +39,6 @@ The previous simple automata:
 
 ## References:
 - automata-lib: https://pypi.org/project/automata-lib/#class-dfafa
+- Armoria API: https://github.com/Azgaar/armoria-api
+- Early Stopping for PyTorch: https://github.com/Bjarten/early-stopping-pytorch
+- 

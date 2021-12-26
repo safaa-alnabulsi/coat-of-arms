@@ -1,4 +1,5 @@
 import os
+import torch
 import zipfile
 import matplotlib.image as mpimg
 import numpy as np
@@ -44,3 +45,13 @@ def zip_dir_to_file(path_to_zipped_file, data_folder):
 def unzip_file_to_dir(path_to_zipped_file, unzip_location):
     with zipfile.ZipFile(path_to_zipped_file, 'r') as zip_ref:
         zip_ref.extractall(unzip_location)
+
+def list_of_tensors_to_numpy_arr(output):
+    targets = []
+    for i, o in enumerate(output):
+        if isinstance(o, torch.Tensor):
+            o = o.cpu().numpy()
+            targets.append(o)
+
+    return np.array(targets)
+        

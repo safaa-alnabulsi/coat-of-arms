@@ -4,6 +4,7 @@
 
 jupyter
 pandas
+numpy
 matplotlib
 pillow
 pytest

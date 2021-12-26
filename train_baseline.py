@@ -213,7 +213,7 @@ if __name__ == "__main__":
                 tepoch.set_postfix(loss=loss.item())
                 sleep(0.1)
 
-                avg_val_loss, bleu_score, accuracy = validate_model(model, criterion, val_loader, val_dataset, vocab_size, device)
+                avg_loss, val_losses, bleu_score, acc_score = validate_model(model, criterion, val_loader, val_dataset, vocab_size, device)
                 model.train()
 
                 losses_batch.append(loss) 
