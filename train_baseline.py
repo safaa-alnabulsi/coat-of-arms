@@ -22,7 +22,7 @@ from time import sleep
 from src.baseline.vocabulary import Vocabulary
 from src.baseline.data_loader import get_loader, get_loaders, get_mean_std
 from src.accuracy import Accuracy
-from src.baseline.coa_model import save_model, get_new_model, validate_model, train_validate_test_split
+from src.baseline.coa_model import save_model, get_new_model, validate_model, train_model, train_validate_test_split
 import torch.multiprocessing as mp
 from src.utils import print_time
 
@@ -150,7 +150,7 @@ if __name__ == "__main__":
     print_time('finished writing the dataloader')
     # -------------------------------------------------------------------------------------------------------
 
-    #Hyperparams
+    # Hyperparams
     embed_size=300
     vocab_size = len(train_dataset.vocab)
     attention_dim=256
@@ -168,65 +168,30 @@ if __name__ == "__main__":
                   }
     
     # -------------------------------------------------------------------------------------------------------
+    
+    # Training the model
+    
     print('initialize new model, loss etc')    
     model, optimizer, criterion = get_new_model(embed_size, vocab_size, attention_dim, encoder_dim,
                                                 decoder_dim, learning_rate,drop_prob,ignored_idx, device) 
 
-    losses = list()
-    losses_batch = list()
-    val_losses = list()
-    accuracy_list = list()
     
+    # early stopping patience; how long to wait after last time validation loss improved.
+    patience = 20
+
+    model, train_loss, valid_loss, avg_acc, bleu_score = train_model(model, optimizer, criterion, train_loader, val_loader, val_dataset, vocab_size, batch_size, patience, num_epochs, device)
+
+    final_accuracy = np.average(accuracy_list)
+    final_train_loss = np.average(train_loss)
+    
+    print('Bleu Score: ', bleu_score/8091)
+    print('Final accuracy: ', final_accuracy)
+    # -------------------------------------------------------------------------------------------------------
+
+    # save the latest model
     now = datetime.now() # current date and time
     timestr = now.strftime("%m.%d.%Y-%H:%M:%S")
     model_full_path = f"/home/space/datasets/COA/models/baseline/attention_model_acc_qsub-{timestr}.pth"
-    print_every = 5
 
-    print('Start Training the model')    
-    for epoch in range(1, num_epochs + 1): 
-        with tqdm(train_loader, unit="batch") as tepoch:
-            idx = 0
-            avg_val_loss, bleu_score, accuracy = 0,0,0
-            device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-            print(device)
-            for image, captions in tepoch:
-                idx+=1
-                tepoch.set_description(f"Epoch {epoch}")
-                image, captions = image.to(device), captions.to(device)
-
-                # Zero the gradients.
-                optimizer.zero_grad()
-
-                # Feed forward
-                outputs, attentions = model(image, captions.T)
-
-                # Calculate the batch loss.
-                targets = captions.T[:,1:]  ####### the fix in here
-                loss = criterion(outputs.view(-1, vocab_size), targets.reshape(-1))
-
-                # Backward pass. 
-                loss.backward()
-
-                # Update the parameters in the optimizer.
-                optimizer.step()
-
-                tepoch.set_postfix(loss=loss.item())
-                sleep(0.1)
-
-                avg_loss, val_losses, bleu_score, acc_score = validate_model(model, criterion, val_loader, val_dataset, vocab_size, device)
-                model.train()
-
-                losses_batch.append(loss) 
-                val_losses.append(avg_val_loss)
-                accuracy_list.append(accuracy)
-
-            avg_batch_loss = sum(losses_batch) / len(losses_batch)
-            losses.append(avg_batch_loss)
-
-
-    print('Bleu Score: ',bleu_score/8091)
-    print('Final accuracy: ', sum(accuracy_list)/len(accuracy_list))
-
-    # save the latest model
-    save_model(model, optimizer, epoch, loss, accuracy, model_full_path, hyper_params)
+    save_model(model, optimizer, final_train_loss, final_accuracy, model_full_path, hyper_params)
     print('The trained model has been saved to ', model_full_path)

@@ -94,5 +94,5 @@ class EarlyStoppingAccuracy:
     def save_checkpoint(self, accuracy, model):
         '''Saves model when accuracy decrease.'''
         if self.verbose:
-            self.trace_func(f'Accuracy decreased ({self.best_accuracy:.6f} --> {accuracy:.6f}).  Saving model ...')
+            self.trace_func(f'Accuracy increased ({self.best_accuracy:.6f} --> {accuracy:.6f}).  Saving model ...')
         torch.save(model.state_dict(), self.path)

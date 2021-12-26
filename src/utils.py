@@ -1,7 +1,9 @@
 import os
 import torch
 import zipfile
+import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
+from PIL import Image
 import numpy as np
 from datetime import datetime
 
@@ -19,7 +21,6 @@ def plot_image(image_file):
     img = mpimg.imread(image_file)
     imgplot = plt.imshow(img)
     plt.show()
-
 
 def print_time(text):
     now = datetime.now()
@@ -54,4 +55,5 @@ def list_of_tensors_to_numpy_arr(output):
             targets.append(o)
 
     return np.array(targets)
-        
+
+

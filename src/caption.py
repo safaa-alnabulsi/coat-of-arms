@@ -48,7 +48,7 @@ class Caption:
             aligned_label['colors'].pop(0)
 
         except IndexError:
-            print('No shield color found in this label: "{}"'.format(self.label))
+            print(f'No shield color found in this label: "{self.label}"')
             shield_color = 'A' # DEFAULT_SHIELD
             output['shield'] = {'color': shield_color, 'modifiers': []}
             

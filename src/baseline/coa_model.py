@@ -8,13 +8,13 @@ import torch.nn as nn
 import torch.onnx as onnx
 import torch.optim as optim
 import torchvision.models as models
-import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
 from PIL import Image
 from tqdm import tqdm
 from time import sleep
 from src.baseline.model import EncoderCNN, Attention, DecoderRNN, EncoderDecoder
 from src.accuracy import Accuracy
+from src.pytorchtools import EarlyStopping, EarlyStoppingAccuracy
+from src.utils import list_of_tensors_to_numpy_arr
 
 
 def train_validate_test_split(df, train_percent=.6, validate_percent=.2, seed=None):
@@ -82,12 +82,107 @@ def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device
             # ------------------------------------------
            
     # compute the accuracy over all test images
-    acc_score = (100 * sum(accuracy_list) / len(accuracy_list))
-    avg_loss = sum(val_losses) / len(val_losses)
+#     acc_score = (100 * sum(accuracy_list) / len(accuracy_list))
+#     avg_loss = sum(val_losses) / len(val_losses)
 #     print('avg_loss, bleu_score, acc_score', avg_loss, bleu_score, acc_score)
 
-    return avg_loss, val_losses, bleu_score, accuracy_list, acc_score
+    return val_losses, accuracy_list, bleu_score
 
+
+def train_model(model, optimizer, criterion, train_loader, val_loader, val_dataset, vocab_size, batch_size, patience, n_epochs, device):
+
+    # to track the training loss as the model trains
+    train_losses = []
+    # to track the validation loss as the model trains
+    valid_losses = []
+    # to track the average training loss per epoch as the model trains
+    avg_train_losses = []
+    # to track the average validation loss per epoch as the model trains
+    avg_valid_losses = [] 
+    
+    # to track the accuracy as the model trains
+    accuracy_list = []
+    avg_acc = []
+    
+    # initialize the early_stopping object
+#     early_stopping = EarlyStopping(patience=patience, verbose=True)
+    early_stopping = EarlyStoppingAccuracy(patience=patience, verbose=True)
+    for epoch in range(1, n_epochs + 1): 
+        ###################
+        # train the model #
+        ###################
+        model.train() # prep model for training
+
+        with tqdm(train_loader, unit="batch") as tepoch:
+            
+            idx = 0
+            for image, captions in tepoch:
+                idx+=1
+                tepoch.set_description(f"Epoch {epoch}")
+                # use cuda
+                image, captions = image.to(device), captions.to(device)
+                # clear the gradients of all optimized variables
+                optimizer.zero_grad()
+                # forward pass: compute predicted outputs by passing inputs to the model
+                outputs, attentions = model(image, captions.T)
+                # calculate the loss
+                targets = captions.T[:,1:]  ####### the fix in here
+                loss = criterion(outputs.view(-1, vocab_size), targets.reshape(-1))
+                # backward pass: compute gradient of the loss with respect to model parameters
+                loss.backward()
+                # perform a single optimization step (parameter update)
+                optimizer.step()
+                # record training loss
+                batch_loss = loss.item()
+                train_losses.append(batch_loss)
+                
+                ######################    
+                # validate the model #
+                ######################
+                
+                val_losses, accuracy_list, bleu_score = validate_model(model, criterion, val_loader, val_dataset, vocab_size, device)
+
+                ########################################    
+                # print training/validation statistics #
+                ########################################
+
+                # calculate average loss over an epoch
+                train_loss = np.average(train_losses)
+                avg_train_losses.append(train_loss)
+
+                # Copy the tensor to host memory first to move tensor to numpy
+                valid_losses = list_of_tensors_to_numpy_arr(val_losses)        
+                valid_loss = np.average(valid_losses)
+                avg_valid_losses.append(valid_loss)
+
+                # calculate average accuracy over an epoch       
+                accuracy = np.average(accuracy_list)
+                avg_acc.append(accuracy)
+
+                tepoch.set_postfix(train_loss=train_loss, val_loss=valid_loss,accuracy=accuracy)
+
+                # clear lists to track next epoch
+                train_losses = []
+                valid_losses = []
+                accuracy_list = []
+
+                # early_stopping needs the validation loss to check if it has decresed, 
+                # and if it has, it will make a checkpoint of the current model
+        #         early_stopping(valid_loss, model)
+                early_stopping(accuracy, model)
+
+                if early_stopping.early_stop:
+                    print("Early stopping")
+                break
+                
+            if early_stopping.early_stop:
+                print("Early stopping")
+                break
+
+    # load the last checkpoint with the best model
+    model.load_state_dict(torch.load('checkpoint.pt'))
+
+    return  model, avg_train_losses, avg_valid_losses, avg_acc, bleu_score
 
 #helper function to save the model
 def save_model(model, optimizer, epoch, loss, accuracy, model_full_path, hyper_params):
@@ -124,97 +219,4 @@ def load_model_checkpoint(model_path):
     loss = checkpoint['loss']
     
     return model, optimizer, epoch, loss
-
-#show the tensor image
-def show_image(img, title=None):
-    """Imshow for Tensor."""
     
-    #unnormalize 
-    img[0] = img[0] * 0.229
-    img[1] = img[1] * 0.224 
-    img[2] = img[2] * 0.225 
-    img[0] += 0.485 
-    img[1] += 0.456 
-    img[2] += 0.406
-    
-    img = img.numpy().transpose((1, 2, 0))
-      
-    plt.imshow(img)
-    if title is not None:
-        plt.title(title)
-    plt.pause(0.001)  # pause a bit so that plots are updated
-    
-
-
-# def train_model(model, optimizer, criterion, train_loader, train_dataset, 
-#                 val_loader, val_dataset, 
-#                 num_epochs, vocab_size,
-#                 hyper_params,
-#                 device, model_full_path):
-#     losses = list()
-#     losses_batch = list()
-#     val_losses = list()
-#     val_accuracy_list = list()
-
-#     # if model is None:
-    
-    
-# #     train_on_gpu = torch.cuda.is_available()
-
-# #     if train_on_gpu:
-# #         print("CUDA is available! Training on GPU...")
-# #     else:
-# #         print("CUDA is not available. Training on CPU...")
-    
-# #     # Move tensors to GPU is CUDA is available
-# #     if train_on_gpu:
-# #         model.cuda()
-
-#     for epoch in range(1, num_epochs + 1): 
-#     #     if model is None:
-#     #         model, optimizer, epoch, loss = load_model_checkpoint(model_full_path)
-
-#         with tqdm(train_loader, unit="batch") as tepoch:
-#             idx = 0
-#             for image, captions in tepoch:
-#                 idx+=1
-#                 tepoch.set_description(f"Epoch {epoch}")
-#                 image, captions = image.to(device), captions.to(device)
-
-#                 # Zero the gradients.
-#                 optimizer.zero_grad()
-
-#                 # Feed forward
-#                 outputs, attentions = model(image, captions.T)
-
-#                 # Calculate the batch loss.
-#                 targets = captions.T[:,1:]  ####### the fix in here
-#                 loss = criterion(outputs.view(-1, vocab_size), targets.reshape(-1))
-
-#                 # Backward pass. 
-#                 loss.backward()
-
-#                 # Update the parameters in the optimizer.
-#                 optimizer.step()
-
-#                 tepoch.set_postfix(loss=loss.item())
-#                 sleep(0.1)
-
-#                 avg_val_loss, bleu_score, accuracy = validate_model(model, criterion, 
-#                                                                     val_loader, val_dataset, 
-#                                                                     vocab_size, device)
-#                 model.train()
-
-#                 losses_batch.append(loss) # in here 17 batches * 5 epochs = 85 , you can get the average
-#                 val_losses.append(avg_val_loss)
-#                 val_accuracy_list.append(accuracy)
-
-#             avg_batch_loss = sum(losses_batch) / len(losses_batch)
-#             losses.append(avg_batch_loss)
-    
-                
-#         # save the latest model
-#         accuracy = sum(val_accuracy_list)/len(val_accuracy_list)
-#         save_model(model, optimizer, epoch, loss, accuracy, model_full_path, hyper_params)
-
-#     return model, losses, val_accuracy_list, val_losses, bleu_score
