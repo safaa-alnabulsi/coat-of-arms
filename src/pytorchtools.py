@@ -29,7 +29,7 @@ class EarlyStopping:
     def __call__(self, val_loss, model):
 
         score = -val_loss
-
+        # best_score is minimum loss
         if self.best_score is None:
             self.best_score = score
             self.save_checkpoint(val_loss, model)
@@ -50,3 +50,49 @@ class EarlyStopping:
         torch.save(model.state_dict(), self.path)
         self.val_loss_min = val_loss
         
+class EarlyStoppingAccuracy:
+    """Early stops the training if accuracy doesn't improve after a given patience."""
+    def __init__(self, patience=7, verbose=False, delta=0, path='checkpoint.pt', trace_func=print):
+        """
+        Args:
+            patience (int): How long to wait after last time accuracy improved.
+                            Default: 7
+            verbose (bool): If True, prints a message for each accuracy improvement. 
+                            Default: False
+            delta (float): Minimum change in the monitored quantity to qualify as an improvement.
+                            Default: 0
+            path (str): Path for the checkpoint to be saved to.
+                            Default: 'checkpoint.pt'
+            trace_func (function): trace print function.
+                            Default: print            
+        """
+        self.patience = patience
+        self.verbose = verbose
+        self.counter = 0
+        self.best_accuracy = 0
+        self.early_stop = False
+        self.delta = delta
+        self.path = path
+        self.trace_func = trace_func
+        
+    def __call__(self, accuracy, model):
+        
+        # best_score is maximum accuracy
+        if self.best_accuracy == 0: # when it is not set yet
+            self.save_checkpoint(accuracy, model)
+            self.best_accuracy = accuracy
+        elif accuracy < self.best_accuracy + self.delta:
+            self.counter += 1
+            self.trace_func(f'EarlyStopping counter: {self.counter} out of {self.patience}')
+            if self.counter >= self.patience:
+                self.early_stop = True
+        else:
+            self.save_checkpoint(accuracy, model)
+            self.best_accuracy = accuracy
+            self.counter = 0
+
+    def save_checkpoint(self, accuracy, model):
+        '''Saves model when accuracy decrease.'''
+        if self.verbose:
+            self.trace_func(f'Accuracy decreased ({self.best_accuracy:.6f} --> {accuracy:.6f}).  Saving model ...')
+        torch.save(model.state_dict(), self.path)

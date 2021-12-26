@@ -86,7 +86,7 @@ def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device
     avg_loss = sum(val_losses) / len(val_losses)
 #     print('avg_loss, bleu_score, acc_score', avg_loss, bleu_score, acc_score)
 
-    return avg_loss, val_losses, bleu_score, acc_score
+    return avg_loss, val_losses, bleu_score, accuracy_list, acc_score
 
 
 #helper function to save the model
