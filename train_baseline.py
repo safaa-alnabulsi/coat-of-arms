@@ -46,7 +46,7 @@ if __name__ == "__main__":
     print(args.batch_size)
     
     data_location = args.dataset
-    BATCH_SIZE = args.batch_size
+    batch_size = args.batch_size
     num_epochs = args.epochs
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -105,7 +105,7 @@ if __name__ == "__main__":
         transform=None,  # <=======================
         num_workers=NUM_WORKER,
         vocab=vocab,
-        batch_size=BATCH_SIZE,
+        batch_size=batch_size,
         pin_memory=False
     )
     
@@ -142,7 +142,7 @@ if __name__ == "__main__":
         transform=transform,
         num_workers=NUM_WORKER,
         vocab=vocab,
-        batch_size=BATCH_SIZE,
+        batch_size=batch_size,
         device=device,
         pin_memory=False
     )
@@ -181,7 +181,7 @@ if __name__ == "__main__":
 
     model, train_loss, valid_loss, avg_acc, bleu_score = train_model(model, optimizer, criterion, train_loader, val_loader, val_dataset, vocab_size, batch_size, patience, num_epochs, device)
 
-    final_accuracy = np.average(accuracy_list)
+    final_accuracy = np.average(avg_acc)
     final_train_loss = np.average(train_loss)
     
     print('Bleu Score: ', bleu_score/8091)

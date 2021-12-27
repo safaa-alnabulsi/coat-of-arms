@@ -89,7 +89,9 @@ def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device
     return val_losses, accuracy_list, bleu_score
 
 
-def train_model(model, optimizer, criterion, train_loader, val_loader, val_dataset, vocab_size, batch_size, patience, n_epochs, device):
+def train_model(model, optimizer, criterion, 
+                train_loader, val_loader, val_dataset, 
+                vocab_size, batch_size, patience, n_epochs, device):
 
     # to track the training loss as the model trains
     train_losses = []
@@ -107,17 +109,15 @@ def train_model(model, optimizer, criterion, train_loader, val_loader, val_datas
     # initialize the early_stopping object
 #     early_stopping = EarlyStopping(patience=patience, verbose=True)
     early_stopping = EarlyStoppingAccuracy(patience=patience, verbose=True)
-    for epoch in range(1, n_epochs + 1): 
-        ###################
-        # train the model #
-        ###################
-        model.train() # prep model for training
-
+    
+    for epoch in range(1, n_epochs + 1):
         with tqdm(train_loader, unit="batch") as tepoch:
-            
-            idx = 0
-            for image, captions in tepoch:
-                idx+=1
+
+            ###################
+            # train the model #
+            ###################
+            model.train() # prep model for training
+            for image, captions in tepoch: 
                 tepoch.set_description(f"Epoch {epoch}")
                 # use cuda
                 image, captions = image.to(device), captions.to(device)
@@ -133,48 +133,55 @@ def train_model(model, optimizer, criterion, train_loader, val_loader, val_datas
                 # perform a single optimization step (parameter update)
                 optimizer.step()
                 # record training loss
-                batch_loss = loss.item()
-                train_losses.append(batch_loss)
-                
-                ######################    
-                # validate the model #
-                ######################
-                
-                val_losses, accuracy_list, bleu_score = validate_model(model, criterion, val_loader, val_dataset, vocab_size, device)
+                train_batch_loss = loss.item()
+                train_losses.append(train_batch_loss)
+                tepoch.set_postfix({'Train loss (in progress)': train_batch_loss})
 
-                ########################################    
-                # print training/validation statistics #
-                ########################################
+               
+            ######################    
+            # validate the model #
+            ######################
 
-                # calculate average loss over an epoch
-                train_loss = np.average(train_losses)
-                avg_train_losses.append(train_loss)
+            val_losses, accuracy_list, bleu_score = validate_model(model, criterion, 
+                                                                   val_loader, val_dataset,
+                                                                   vocab_size, device)
 
-                # Copy the tensor to host memory first to move tensor to numpy
-                valid_losses = list_of_tensors_to_numpy_arr(val_losses)        
-                valid_loss = np.average(valid_losses)
-                avg_valid_losses.append(valid_loss)
+            ########################################    
+            # print training/validation statistics #
+            ########################################
 
-                # calculate average accuracy over an epoch       
-                accuracy = np.average(accuracy_list)
-                avg_acc.append(accuracy)
+            # calculate average loss over an epoch
+            train_loss = np.average(train_losses)
+            avg_train_losses.append(train_loss)
 
-                tepoch.set_postfix(train_loss=train_loss, val_loss=valid_loss,accuracy=accuracy)
+            # Copy the tensor to host memory first to move tensor to numpy
+            valid_losses = list_of_tensors_to_numpy_arr(val_losses)        
+            valid_loss = np.average(valid_losses)
+            avg_valid_losses.append(valid_loss)
 
-                # clear lists to track next epoch
-                train_losses = []
-                valid_losses = []
-                accuracy_list = []
+            # calculate average accuracy over an epoch       
+            accuracy = np.average(accuracy_list)
+            avg_acc.append(accuracy)
 
-                # early_stopping needs the validation loss to check if it has decresed, 
-                # and if it has, it will make a checkpoint of the current model
-        #         early_stopping(valid_loss, model)
-                early_stopping(accuracy, model)
+            epoch_len = len(str(n_epochs))
 
-                if early_stopping.early_stop:
-                    print("Early stopping")
-                break
-                
+            print_msg = (f'[{epoch:>{epoch_len}}/{n_epochs:>{epoch_len}}] ' +
+                         f'train_loss: {train_loss:.5f} , ' +
+                         f'valid_loss: {valid_loss:.5f} , ' +
+                         f'accuracy: {accuracy:.5f}')
+        
+            print(print_msg)
+
+            # clear lists to track next epoch
+            train_losses = []
+            valid_losses = []
+            accuracy_list = []
+
+            # early_stopping needs the validation loss to check if it has decresed, 
+            # and if it has, it will make a checkpoint of the current model
+    #         early_stopping(valid_loss, model)
+            early_stopping(accuracy, model)
+
             if early_stopping.early_stop:
                 print("Early stopping")
                 break
