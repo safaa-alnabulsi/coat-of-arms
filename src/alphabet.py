@@ -15,9 +15,30 @@ MODIFIERS = ['rampant', 'dancetty', 'salient', 'roundel', 'bend', 'annulet', 'lo
                  'flory', 'undy', 'masoned', 'bendy', 'potenty', 'checky', 
                  'compony', 'roundely', 'engrailed', 'crenelated', 'nebuly', 'castely', 'moline','patonce', 'head', 'heads']
 
+# ---------------------------------------------------------------------------
 # extracted from dataset & compared with https://github.com/Azgaar/armoria-api/blob/main/app/dataModel.js#L8
+
 SHIELD_MODIFIERS = ['border', 'checky', 'potenty', 'bendy', 'masoned', 'vairy', 'flory', 'undy',
                     'compony', 'roundely', 'engrailed', 'crenelated', 'nebuly', 'castely']
+
+# our dataset <> armoria
+
+# engrailed <> engrailed
+# nebuly <> nebuly
+# masoned <> masoned
+# potenty <>  potenty, potentyDexter, potentySinister
+# bendy   <>  bendy, bendySinister, palyBendy, barryBendy
+
+# checky  <>  chequy
+# roundely <> roundel, roundel2
+
+# vairy <> -
+# flory <> -
+# undy <> -
+# crenelated <> -
+# castely <> -
+# ---------------------------------------------------------------------------
+
 
 POSITIONS = ['acc.', 'ch.', 'in', 'of', '&', 'and', 'above', 'with',
                  'betw', 'indented', 'towards', 'chf', 'on'
