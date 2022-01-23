@@ -10,7 +10,12 @@ LION_MODIFIERS_MAP = {
     'lion rampant': 'lionRampant',
     'lion passt': 'lionPassant',
     'lion passt guard': 'lionPassantGuardant',
-    "lion's head": 'lionHeadCaboshed'
+    "lion's head": 'lionHeadCaboshed',
+    # plural
+    'lions': 'lionRampant',
+    'lions rampant': 'lionRampant',
+    'lions passt': 'lionPassant',
+    'lions passt guard': 'lionPassantGuardant',
 }
 
 CROSS_MODIFIERS_MAP = {
@@ -23,6 +28,9 @@ CROSS_MODIFIERS_MAP = {
 EAGLE_MODIFIERS_MAP = {
     'eagle': 'eagle' ,
     'eagle doubleheaded': 'eagleTwoHeards',
+    'eagles': 'eagle' ,
+    'eagles doubleheaded': 'eagleTwoHeards' ,
+
 }
 
 SHIELD_MODIFIERS_MAP = {
@@ -47,16 +55,16 @@ COLORS_MAP = { 'A': 'argent', # silver
 # Armoria-API = possible values for single position of a charge in an image
 # SINGLE_POSITION = ['a','b','c','d','e','f','g','h','i','y','z']
 
-POSITIONS ={1: 'e',
-            2: 'kn',   
-            3: 'def',
-            4: 'bhdf',
-            5: 'kenpq',
-            6: 'kenpqa',
-            7: 'kenpqac',   
-            8: 'abcdfgzi',
-            9: 'abcdefgzi',
-            11: 'ABCDEFGHIJKL'    
+POSITIONS ={'1': 'e',
+            '2': 'kn',   
+            '3': 'def',
+            '4': 'bhdf',
+            '5': 'kenpq',
+            '6': 'kenpqa',
+            '7': 'kenpqac',   
+            '8': 'abcdfgzi',
+            '9': 'abcdefgzi',
+            '11': 'ABCDEFGHIJKL'    
             }
 
 # Armoria-API = possible values for a charge scale 
@@ -70,8 +78,8 @@ class ArmoriaAPIPayload:
     def __init__(self, struc_label, position='e', scale='1.5'):
         self.position = position
         self.scale = scale
-        self.num_of_charges = len(struc_label['objects'])
-        self.charges_positions = self._get_charge_position()
+        self.objects = struc_label['objects']
+        self.charge_positions = self._get_charge_position()
         
         # Shield
         shield_color = struc_label['shield']['color'].upper() # dict keys are in upper case
@@ -82,7 +90,7 @@ class ArmoriaAPIPayload:
             raise ValueError('Invalid shield_color', shield_color)
 
             
-        self.charges = self._get_charges(struc_label['objects'])
+        self.charges = self._get_charges(self.objects)
             
         self.ordinaries = self._get_ordinaries(struc_label['shield']['modifiers'])
 
@@ -115,8 +123,8 @@ class ArmoriaAPIPayload:
     # private_func
     def _get_charges(self, objects):
         charges = []
+
         for i, obj in enumerate(objects):
-            print(obj, i)
             try:
                 charge_color = obj['color'].upper()
                 api_charge_color = COLORS_MAP[charge_color]
@@ -133,23 +141,34 @@ class ArmoriaAPIPayload:
                 api_charge = MODIFIERS_MAP[key]
             except KeyError:
                 raise ValueError('Invalid charge', key)
-                
+             
             charge = {"charge": api_charge,
-                       "t": api_charge_color,
-                       "p": self.charges_positions[i],  
+                       "t": api_charge_color ,
+                       "p": self.charge_positions[i],  
                        "size": self.scale}
             
             charges.append(charge)
             
         return charges
   
+    # TODO update this function  to support plural and multi objects
+    # idea: count total number of final charges and connect them back to charges
+    # example: 3 lions 4 eagles: two charges & 7 final drawn objs on the coa
     def _get_charge_position(self):
-        pos = POSITIONS[self.num_of_charges]
-        if self.num_of_charges > 1:
-            return list(pos) # example: lion eagle
-        
-        return [pos] # example: 3 lions 
-        
+        total_obj_number = 0     
+        for obj in self.objects:
+            obj_num = obj['number']
+            total_obj_number+=int(obj_num)
+
+        try:
+            pos = POSITIONS[str(total_obj_number)]   
+        except KeyError:
+            raise ValueError('Invalid number of charge', total_obj_number)
+
+        if len(self.objects) > 1:
+            return list(pos)      
+     
+        return [pos] # example: 3 lions           
         
                  
 # =====================================================================================
