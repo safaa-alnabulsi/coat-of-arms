@@ -71,6 +71,7 @@ class ArmoriaAPIPayload:
         self.position = position
         self.scale = scale
         self.num_of_charges = len(struc_label['objects'])
+        self.charges_positions = self._get_charge_position()
         
         # Shield
         shield_color = struc_label['shield']['color'].upper() # dict keys are in upper case
@@ -113,11 +114,9 @@ class ArmoriaAPIPayload:
         
     # private_func
     def _get_charges(self, objects):
-        
         charges = []
-              
-        for obj in objects:
-
+        for i, obj in enumerate(objects):
+            print(obj, i)
             try:
                 charge_color = obj['color'].upper()
                 api_charge_color = COLORS_MAP[charge_color]
@@ -137,15 +136,19 @@ class ArmoriaAPIPayload:
                 
             charge = {"charge": api_charge,
                        "t": api_charge_color,
-                       "p": self.position,  
+                       "p": self.charges_positions[i],  
                        "size": self.scale}
             
             charges.append(charge)
             
         return charges
-    
+  
     def _get_charge_position(self):
-        return POSITIONS[self.num_of_charges]
+        pos = POSITIONS[self.num_of_charges]
+        if self.num_of_charges > 1:
+            return list(pos) # example: lion eagle
+        
+        return [pos] # example: 3 lions 
         
         
                  
