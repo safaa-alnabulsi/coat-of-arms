@@ -45,19 +45,31 @@ COLORS_MAP = { 'A': 'argent', # silver
 
 # chequy
 # Armoria-API = possible values for single position of a charge in an image
-POSITION = ['a','b','c','d','e','f','g','h','i','y','z']
+# SINGLE_POSITION = ['a','b','c','d','e','f','g','h','i','y','z']
+
+POSITIONS ={1: 'e',
+            2: 'kn',   
+            3: 'def',
+            4: 'bhdf',
+            5: 'kenpq',
+            6: 'kenpqa',
+            7: 'kenpqac',   
+            8: 'abcdfgzi',
+            9: 'abcdefgzi',
+            11: 'ABCDEFGHIJKL'    
+            }
 
 # Armoria-API = possible values for a charge scale 
 # note that for large charges in a side positions means that a part of the charge is out of the shield
 SCALE = ['0.5','1','1.5']
+
+# =====================================================================================
 
 class ArmoriaAPIPayload:
 
     def __init__(self, struc_label, position='e', scale='1.5'):
         self.position = position
         self.scale = scale
-        self.charges = []
-        self.ordinaries = []
         
         # Shield
         shield_color = struc_label['shield']['color'].upper() # dict keys are in upper case
@@ -68,11 +80,42 @@ class ArmoriaAPIPayload:
             raise ValueError('Invalid shield_color', shield_color)
 
             
-        # -----------------------------------------------
-        # Charges / Objects
+        self.charges = self._get_charges(struc_label['objects'])
+            
+        self.ordinaries = self._get_ordinaries(struc_label['shield']['modifiers'])
+
+    
+    def get_armoria_payload(self):
+        coa = {"t1": self.api_shield_color, 
+           "shield":"heater",
+           "charges": self.charges,
+           "ordinaries": self.ordinaries
+          }
+
+        return coa
         
-        # for now, only first charge is considered       
-        for obj in struc_label['objects']:
+    # private_func(( border for now ))
+    def _get_ordinaries(self, shield_modifiers):
+        ordinaries = []
+        
+        for mod in shield_modifiers:
+            
+            try:
+                api_shield_modifier = SHIELD_MODIFIERS_MAP[mod]
+                ordinary = {"ordinary":api_shield_modifier, "t":"azure"}
+                ordinaries.append(ordinary)
+                
+            except KeyError:
+                raise ValueError('Invalid ordinary')
+                
+        return ordinaries
+        
+    # private_func
+    def _get_charges(self, objects):
+        
+        charges = []
+              
+        for obj in objects:
 
             try:
                 charge_color = obj['color'].upper()
@@ -101,29 +144,11 @@ class ArmoriaAPIPayload:
                        "p": self.position,  
                        "size": self.scale}
             
-            self.charges.append(charge)
-         # -----------------------------------------------          
-        # ordinaries (( border for now ))
-        shield_modifiers = struc_label['shield']['modifiers']
-        
-        for mod in shield_modifiers:
-            try:
-                api_shield_modifier = SHIELD_MODIFIERS_MAP[mod]
-                ordinary = {"ordinary":api_shield_modifier, "t":"azure"}
-                self.ordinaries.append(ordinary)
-            except KeyError:
-                raise ValueError('Invalid ordinary')
-        
-
-    def get_armoria_payload(self):
-        coa = {"t1": self.api_shield_color, 
-           "shield":"heater",
-           "charges": self.charges,
-           "ordinaries": self.ordinaries
-          }
-
-        return coa
-
+            charges.append(charge)
+            
+        return charges
+                 
+# =====================================================================================
 
 class ArmoriaAPIWrapper:
     def __init__(self, size, format, coa):
