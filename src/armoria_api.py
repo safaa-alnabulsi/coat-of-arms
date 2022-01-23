@@ -25,6 +25,9 @@ EAGLE_MODIFIERS_MAP = {
     'eagle doubleheaded': 'eagleTwoHeards',
 }
 
+SHIELD_MODIFIERS_MAP = {
+    'border': 'bordure' ,
+}
 
 MODIFIERS_MAP = {**LION_MODIFIERS_MAP, **CROSS_MODIFIERS_MAP, **EAGLE_MODIFIERS_MAP}
 
@@ -40,7 +43,7 @@ COLORS_MAP = { 'A': 'argent', # silver
 #               'X': '', 
 #               'Z': ''}
 
-
+# chequy
 # Armoria-API = possible values for single position of a charge in an image
 POSITION = ['a','b','c','d','e','f','g','h','i','y','z']
 
@@ -53,39 +56,70 @@ class ArmoriaAPIPayload:
     def __init__(self, struc_label, position='e', scale='1.5'):
         self.position = position
         self.scale = scale
+        self.charges = []
+        self.ordinaries = []
+        
+        # Shield
+        shield_color = struc_label['shield']['color'].upper() # dict keys are in upper case
+        
+        try:
+            self.api_shield_color = COLORS_MAP[shield_color] 
+        except KeyError:
+            raise ValueError('Invalid shield_color', shield_color)
+
+            
+        # -----------------------------------------------
+        # Charges / Objects
+        
+        # for now, only first charge is considered       
+        for obj in struc_label['objects']:
+
+            try:
+                charge_color = obj['color'].upper()
+                api_charge_color = COLORS_MAP[charge_color]
+            except KeyError:
+                raise ValueError('Invalid charge_color', charge_color)
+           
+            try:
+                charge = obj['charge']
+            except IndexError:
+                raise ValueError('Invalid charge')
+            
+            try:
+                first_modifier = ' ' + obj['modifiers'][0]
+            except IndexError:
+                first_modifier = ''
+
+            try:
+                key = charge + first_modifier
+                api_charge = MODIFIERS_MAP[key]
+            except KeyError:
+                raise ValueError('Invalid charge')
                 
-        shield_color = struc_label['shield']['color']
+            charge = {"charge": api_charge,
+                       "t": api_charge_color,
+                       "p": self.position,  
+                       "size": self.scale}
+            
+            self.charges.append(charge)
+         # -----------------------------------------------          
+        # ordinaries (( border for now ))
+        shield_modifiers = struc_label['shield']['modifiers']
         
-        try:
-            charge_color = struc_label['objects'][0]['color'] # for now, only first charge is considered
-            charge = struc_label['objects'][0]['charge']
-        except IndexError:
-            raise ValueError('Invalid charge')
+        for mod in shield_modifiers:
+            try:
+                api_shield_modifier = SHIELD_MODIFIERS_MAP[mod]
+                ordinary = {"ordinary":api_shield_modifier, "t":"azure"}
+                self.ordinaries.append(ordinary)
+            except KeyError:
+                raise ValueError('Invalid ordinary')
         
-        try:
-            first_modifier = ' ' + struc_label['objects'][0]['modifiers'][0]
-        except IndexError:
-            first_modifier = ''
-       
-        try:
-            self.api_shield_color = COLORS_MAP[shield_color]
-            self.api_charge_color = COLORS_MAP[charge_color]
-        except KeyError:
-            raise ValueError('Invalid color')
-        
-        try:
-            key = charge + first_modifier
-            self.api_charge = MODIFIERS_MAP[key]
-        except KeyError:
-            raise ValueError('Invalid charge')
 
     def get_armoria_payload(self):
         coa = {"t1": self.api_shield_color, 
            "shield":"heater",
-           "charges":[{"charge": self.api_charge,
-                       "t": self.api_charge_color,
-                       "p": self.position, 
-                       "size": self.scale}] 
+           "charges": self.charges,
+           "ordinaries": self.ordinaries
           }
 
         return coa

@@ -4,9 +4,22 @@ from src.caption import Caption
 
 
 pairs_label_payload = {
-'B A lion': {'t1': 'azure', 'shield': 'heater', 'charges': [{'charge': 'lionRampant', 't': 'argent', 'p': 'e', 'size': '1.5'}]},
-'B A eagle': {'t1': 'azure', 'shield': 'heater', 'charges': [{'charge': 'eagle', 't': 'argent', 'p': 'e', 'size': '1.5'}]},
-'B A eagle doubleheaded': {'t1': 'azure', 'shield': 'heater', 'charges': [{'charge': 'eagleTwoHeards', 't': 'argent', 'p': 'e', 'size': '1.5'}]},
+'B A lion': {'t1': 'azure', 'shield': 'heater', 
+             'charges': [{'charge': 'lionRampant', 't': 'argent', 'p': 'e', 'size': '1.5'}],
+             'ordinaries': []},
+'B A eagle': {'t1': 'azure', 'shield': 'heater', 
+              'charges': [{'charge': 'eagle', 't': 'argent', 'p': 'e', 'size': '1.5'}],
+               'ordinaries': []},
+'B A eagle doubleheaded': {'t1': 'azure', 
+                           'shield': 'heater', 
+                           'charges': [{'charge': 'eagleTwoHeards', 't': 'argent', 'p': 'e', 'size': '1.5'}],
+                           'ordinaries': []},
+ 'b a g lion passt guard & border': {'t1': 'azure', 
+                                            'shield': 'heater', 
+                                            'charges': [{'charge': 'lionPassantGuardant',
+                                                         't': 'argent', 'p': 'e', 'size': '1.5'}],     
+                                            'ordinaries':[{"ordinary":"bordure", 
+                                                           "t":"azure"}]},
 }
 
 
