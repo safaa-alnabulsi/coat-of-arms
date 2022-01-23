@@ -70,6 +70,7 @@ class ArmoriaAPIPayload:
     def __init__(self, struc_label, position='e', scale='1.5'):
         self.position = position
         self.scale = scale
+        self.num_of_charges = len(struc_label['objects'])
         
         # Shield
         shield_color = struc_label['shield']['color'].upper() # dict keys are in upper case
@@ -122,22 +123,17 @@ class ArmoriaAPIPayload:
                 api_charge_color = COLORS_MAP[charge_color]
             except KeyError:
                 raise ValueError('Invalid charge_color', charge_color)
-           
-            try:
-                charge = obj['charge']
-            except IndexError:
-                raise ValueError('Invalid charge')
-            
+                       
             try:
                 first_modifier = ' ' + obj['modifiers'][0]
             except IndexError:
                 first_modifier = ''
 
             try:
-                key = charge + first_modifier
+                key = obj['charge'] + first_modifier
                 api_charge = MODIFIERS_MAP[key]
             except KeyError:
-                raise ValueError('Invalid charge')
+                raise ValueError('Invalid charge', key)
                 
             charge = {"charge": api_charge,
                        "t": api_charge_color,
@@ -147,6 +143,11 @@ class ArmoriaAPIPayload:
             charges.append(charge)
             
         return charges
+    
+    def _get_charge_position(self):
+        return POSITIONS[self.num_of_charges]
+        
+        
                  
 # =====================================================================================
 
