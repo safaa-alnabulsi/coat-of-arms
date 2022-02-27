@@ -48,10 +48,21 @@ pairs_label_payload = {
              'charges': [{'charge': 'lionRampant', 't': 'argent', 'p': 'ken', 'size': '1.5'},
                          {'charge': 'eagle', 't': 'or', 'p': 'pqac', 'size': '1.5'}],
              'ordinaries': []},
+
+'B A O 3 lions 4 eagles & border': {'t1': 'azure', 'shield': 'heater', 
+             'charges': [{'charge': 'lionRampant', 't': 'argent', 'p': 'ken', 'size': '1.5'},
+                         {'charge': 'eagle', 't': 'or', 'p': 'pqac', 'size': '1.5'}],
+             'ordinaries': [{"ordinary":"bordure", "t":"azure"}]},
+
+
+"O O B A 3 lions 4 eagles cross & border": {'t1': 'or', 'shield': 'heater', 
+             'charges': [{'charge': 'lionRampant', 't': 'or', 'p': 'abc', 'size': '1.5'},
+                         {'charge': 'eagle', 't': 'azure', 'p': 'dfgz', 'size': '1.5'},
+                         {'charge': 'crossHummetty', 't': 'argent', 'p': 'i', 'size': '1.5'}],
+             'ordinaries': [{"ordinary":"bordure", "t":"azure"}]},            
 }
 
-class ArmoriaAPIPayloadTest(TestCase):
-    
+class ArmoriaAPIPayloadTest(TestCase):    
     
     def test_get_armoria_payload(self):
         for label, payload in pairs_label_payload.items():       

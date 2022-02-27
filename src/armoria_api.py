@@ -182,14 +182,10 @@ class ArmoriaAPIPayload:
 
         # multi object
         for obj in self.objects:
-            print('start_index_pos',start_index_pos)
             end_index_pos = int(obj['number']) + start_index_pos 
-            print('end_index_pos',end_index_pos)
             charge_position = pos[start_index_pos: end_index_pos]
-            print('charge_position',charge_position)
             positions.append(charge_position)
             start_index_pos = end_index_pos
-            print('------------------')
 
         return positions
 
