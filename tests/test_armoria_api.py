@@ -39,12 +39,15 @@ pairs_label_payload = {
              'charges': [{'charge': 'lionRampant', 't': 'argent', 'p': 'def', 'size': '1.5'}],
              'ordinaries': []},
 
-# TODO fix this use case
-# 'B A O 3 lions 3 eagles': {'t1': 'azure', 'shield': 'heater', 
-#              'charges': [{'charge': 'lionRampant', 't': 'argent', 'p': 'def', 'size': '1.5'},
-#                          {'charge': 'eagle', 't': 'or', 'p': 'def', 'size': '1.5'}],
-#              'ordinaries': []},
+'B A O 3 lions 3 eagles': {'t1': 'azure', 'shield': 'heater', 
+             'charges': [{'charge': 'lionRampant', 't': 'argent', 'p': 'ken', 'size': '1.5'},
+                         {'charge': 'eagle', 't': 'or', 'p': 'pqa', 'size': '1.5'}],
+             'ordinaries': []},
 
+'B A O 3 lions 4 eagles': {'t1': 'azure', 'shield': 'heater', 
+             'charges': [{'charge': 'lionRampant', 't': 'argent', 'p': 'ken', 'size': '1.5'},
+                         {'charge': 'eagle', 't': 'or', 'p': 'pqac', 'size': '1.5'}],
+             'ordinaries': []},
 }
 
 class ArmoriaAPIPayloadTest(TestCase):
@@ -57,25 +60,25 @@ class ArmoriaAPIPayloadTest(TestCase):
             
     def test_get_charge_position_single_charge(self):
         struc_label = Caption('B A lion').get_structured()
-        assert ArmoriaAPIPayload(struc_label)._get_charge_position() == ['e']
+        assert ArmoriaAPIPayload(struc_label)._get_positions() == ['e']
 
     def test_get_charge_position_two_charges_without_modifiers(self):
         struc_label = Caption('B A O lion eagle').get_structured()
-        assert ArmoriaAPIPayload(struc_label)._get_charge_position() == two_charge_pos_list
+        assert ArmoriaAPIPayload(struc_label)._get_positions() == two_charge_pos_list
 
     def test_get_charge_position_two_charges_with_modifiers(self):      
         struc_label = Caption('B A O lion rampant & eagle doubleheaded').get_structured()
-        assert ArmoriaAPIPayload(struc_label)._get_charge_position() == two_charge_pos_list
+        assert ArmoriaAPIPayload(struc_label)._get_positions() == two_charge_pos_list
         
     def test_get_charge_position_two_charges_with_modifiers_10(self):              
         struc_label = Caption('B A O lion rampant & eagle').get_structured()
-        assert ArmoriaAPIPayload(struc_label)._get_charge_position() == two_charge_pos_list
+        assert ArmoriaAPIPayload(struc_label)._get_positions() == two_charge_pos_list
         
     def test_get_charge_position_two_charges_with_modifiers_01(self):              
         struc_label = Caption('B A O lion passt guard & eagle').get_structured()
-        assert ArmoriaAPIPayload(struc_label)._get_charge_position() == two_charge_pos_list
+        assert ArmoriaAPIPayload(struc_label)._get_positions() == two_charge_pos_list
         
     def test_get_charge_position_two_charges_with_modifiers_and_border(self):      
         struc_label = Caption('B A O lion rampant & eagle doubleheaded & border').get_structured()
-        assert ArmoriaAPIPayload(struc_label)._get_charge_position() == two_charge_pos_list
+        assert ArmoriaAPIPayload(struc_label)._get_positions() == two_charge_pos_list
 

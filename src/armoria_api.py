@@ -76,10 +76,11 @@ SCALE = ['0.5','1','1.5']
 class ArmoriaAPIPayload:
 
     def __init__(self, struc_label, position='e', scale='1.5'):
+        print(struc_label)
         self.position = position
         self.scale = scale
         self.objects = struc_label['objects']
-        self.charge_positions = self._get_charge_position()
+        self.charge_positions = self._get_positions()
         
         # Shield
         shield_color = struc_label['shield']['color'].upper() # dict keys are in upper case
@@ -151,25 +152,50 @@ class ArmoriaAPIPayload:
             
         return charges
   
-    # TODO update this function  to support plural and multi objects
-    # idea: count total number of final charges and connect them back to charges
-    # example: 3 lions 4 eagles: two charges & 7 final drawn objs on the coa
-    def _get_charge_position(self):
-        total_obj_number = 0     
+    # This function supports single, plural and multi objects
+    # the ideais to count total number of final charges and connect them back to charges
+    # example: 3 lions 3 eagles: two charges and 6 final drawn objs on the coa => kenpqa for all objects
+    # which means ken for 3 lions and pqa for 3 eagles
+    def _get_charges_positions(self):
+        total_obj_number = 0  
         for obj in self.objects:
             obj_num = obj['number']
             total_obj_number+=int(obj_num)
+        print('total_obj_number', total_obj_number)
 
         try:
             pos = POSITIONS[str(total_obj_number)]   
         except KeyError:
             raise ValueError('Invalid number of charge', total_obj_number)
+        print('pos', pos)
 
-        if len(self.objects) > 1:
-            return list(pos)      
-     
-        return [pos] # example: 3 lions           
-        
+        return pos        
+    
+    def _get_positions(self):
+        positions = []
+        pos = self._get_charges_positions()
+        start_index_pos = 0
+
+        # single object
+        if len(self.objects) == 1:
+            return [pos]
+
+        # multi object
+        for obj in self.objects:
+            print('start_index_pos',start_index_pos)
+            end_index_pos = int(obj['number']) + start_index_pos 
+            print('end_index_pos',end_index_pos)
+            charge_position = pos[start_index_pos: end_index_pos]
+            print('charge_position',charge_position)
+            positions.append(charge_position)
+            start_index_pos = end_index_pos
+            print('------------------')
+
+        return positions
+
+ 
+
+
                  
 # =====================================================================================
 
