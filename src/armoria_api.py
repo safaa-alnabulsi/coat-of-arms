@@ -67,9 +67,21 @@ POSITIONS ={'1': 'e',
             '11': 'ABCDEFGHIJKL'    
             }
 
+SIZES ={'1': '1.5',
+        '2': '0.7',   
+        '3': '0.5',
+        '4': '0.5',
+        '5': '0.5',
+        '6': '0.5',
+        '7': '0.5',   
+        '8': '0.3',
+        '9': '0.3',
+        '11': '0.18'    
+        }
+
 # Armoria-API = possible values for a charge scale 
 # note that for large charges in a side positions means that a part of the charge is out of the shield
-SCALE = ['0.5','1','1.5']
+# SCALE = ['0.5','1','1.5']
 
 # =====================================================================================
 
@@ -78,10 +90,10 @@ class ArmoriaAPIPayload:
     def __init__(self, struc_label, position='e', scale='1.5'):
         print(struc_label)
         self.position = position
-        self.scale = scale
         self.objects = struc_label['objects']
         self.charge_positions = self._get_positions()
-        
+        self.scale = self._get_charges_size()
+
         # Shield
         shield_color = struc_label['shield']['color'].upper() # dict keys are in upper case
         
@@ -157,12 +169,8 @@ class ArmoriaAPIPayload:
     # example: 3 lions 3 eagles: two charges and 6 final drawn objs on the coa => kenpqa for all objects
     # which means ken for 3 lions and pqa for 3 eagles
     def _get_charges_positions(self):
-        total_obj_number = 0  
-        for obj in self.objects:
-            obj_num = obj['number']
-            total_obj_number+=int(obj_num)
-        print('total_obj_number', total_obj_number)
-
+        total_obj_number = self._get_total_objects_number()
+        
         try:
             pos = POSITIONS[str(total_obj_number)]   
         except KeyError:
@@ -189,10 +197,23 @@ class ArmoriaAPIPayload:
 
         return positions
 
- 
+    def _get_charges_size(self):
+        total_obj_number = self._get_total_objects_number()
+        try:
+            size = SIZES[str(total_obj_number)]   
+        except KeyError:
+            raise ValueError('Invalid number of charge', total_obj_number)
 
+        return size        
 
-                 
+    def _get_total_objects_number(self):
+        total_obj_number = 0  
+        for obj in self.objects:
+            obj_num = obj['number']
+            total_obj_number+=int(obj_num)
+
+        return total_obj_number
+
 # =====================================================================================
 
 class ArmoriaAPIWrapper:
