@@ -93,7 +93,6 @@ NUMBERS_MULTI = ['2', '3', '4', '5']
 class ArmoriaAPIPayload:
 
     def __init__(self, struc_label, position='e', scale='1.5'):
-        print(struc_label)
         self.position = position
         self.objects = struc_label['objects']
         self.charge_positions = self._get_positions()
