@@ -4,19 +4,32 @@ from PIL import Image
 from io import BytesIO
 
 # Map our dataset to the API keywords
-
-LION_MODIFIERS_MAP = {
+# Lion
+SINGLE_LION_MODIFIERS_MAP = {
     'lion': 'lionRampant',
     'lion rampant': 'lionRampant',
     'lion passt': 'lionPassant',
     'lion passt guard': 'lionPassantGuardant',
     "lion's head": 'lionHeadCaboshed',
-    # plural
+}
+PLURAL_LION_MODIFIERS_MAP = {
     'lions': 'lionRampant',
     'lions rampant': 'lionRampant',
     'lions passt': 'lionPassant',
     'lions passt guard': 'lionPassantGuardant',
 }
+LION_MODIFIERS_MAP ={**SINGLE_LION_MODIFIERS_MAP, **PLURAL_LION_MODIFIERS_MAP}
+
+# Eagle
+SINGLE_EAGLE_MODIFIERS_MAP = {
+    'eagle': 'eagle' ,
+    'eagle doubleheaded': 'eagleTwoHeards',
+}
+PLURAL_EAGLE_MODIFIERS_MAP = {
+    'eagles': 'eagle' ,
+    'eagles doubleheaded': 'eagleTwoHeards' ,
+}
+EAGLE_MODIFIERS_MAP = {**SINGLE_EAGLE_MODIFIERS_MAP, **PLURAL_EAGLE_MODIFIERS_MAP}
 
 CROSS_MODIFIERS_MAP = {
     'cross': 'crossHummetty' ,
@@ -24,21 +37,11 @@ CROSS_MODIFIERS_MAP = {
     'cross patonce': 'crossPatonce',
 }
 
-    
-EAGLE_MODIFIERS_MAP = {
-    'eagle': 'eagle' ,
-    'eagle doubleheaded': 'eagleTwoHeards',
-    'eagles': 'eagle' ,
-    'eagles doubleheaded': 'eagleTwoHeards' ,
-
-}
-
 SHIELD_MODIFIERS_MAP = {
     'border': 'bordure' ,
 }
 
 MODIFIERS_MAP = {**LION_MODIFIERS_MAP, **CROSS_MODIFIERS_MAP, **EAGLE_MODIFIERS_MAP}
-
 
 COLORS_MAP = { 'A': 'argent', # silver
               'B': 'azure', # blue
@@ -53,7 +56,7 @@ COLORS_MAP = { 'A': 'argent', # silver
 
 # chequy
 # Armoria-API = possible values for single position of a charge in an image
-# SINGLE_POSITION = ['a','b','c','d','e','f','g','h','i','y','z']
+SINGLE_POSITION = ['a','b','c','d','e','f','g','h','i','y','z']
 
 POSITIONS ={'1': 'e',
             '2': 'kn',   
@@ -67,6 +70,8 @@ POSITIONS ={'1': 'e',
             '11': 'ABCDEFGHIJKL'    
             }
 
+# Armoria-API = possible values for a charge scale 
+# note that for large charges in a side positions means that a part of the charge is out of the shield
 SIZES ={'1': '1.5',
         '2': '0.7',   
         '3': '0.5',
@@ -79,9 +84,9 @@ SIZES ={'1': '1.5',
         '11': '0.18'    
         }
 
-# Armoria-API = possible values for a charge scale 
-# note that for large charges in a side positions means that a part of the charge is out of the shield
-# SCALE = ['0.5','1','1.5']
+NUMBERS = ['2', '3', '4', '5', '6', '7', '8', '9', '10', '11']
+# maximum allowed number of objects in one coat-of-arm is 11
+NUMBERS_MULTI = ['2', '3', '4', '5']
 
 # =====================================================================================
 
@@ -175,7 +180,6 @@ class ArmoriaAPIPayload:
             pos = POSITIONS[str(total_obj_number)]   
         except KeyError:
             raise ValueError('Invalid number of charge', total_obj_number)
-        print('pos', pos)
 
         return pos        
     
