@@ -10,7 +10,7 @@ SINGLE_LION_MODIFIERS_MAP = {
     'lion rampant': 'lionRampant',
     'lion passt': 'lionPassant',
     'lion passt guard': 'lionPassantGuardant',
-    "lion's head": 'lionHeadCaboshed',
+    "lion head": 'lionHeadCaboshed',
 }
 PLURAL_LION_MODIFIERS_MAP = {
     'lions': 'lionRampant',
