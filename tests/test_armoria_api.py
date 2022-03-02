@@ -68,6 +68,9 @@ pairs_label_payload = {
                                 'charges': [{'charge': 'lionHeadCaboshed', 't': 'argent', 'p': 'k', 'size': '0.7'},
                                             {'charge': 'eagle', 't': 'argent', 'p': 'n', 'size': '0.7'}],
                                 'ordinaries': []},
+    "A A 10 lions & border": {'t1': 'argent', 'shield': 'heater',
+                                'charges': [{'charge': 'lionRampant', 't': 'argent', 'p': 'ABCDEFGHIJKLe', 'size': '0.18'}],
+                                'ordinaries': [{"ordinary": "bordure", "t": "azure"}]},
 
 }
 

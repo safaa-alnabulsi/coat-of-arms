@@ -67,6 +67,7 @@ POSITIONS ={'1': 'e',
             '7': 'kenpqac',   
             '8': 'abcdfgzi',
             '9': 'abcdefgzi',
+            '10': 'ABCDEFGHIJKLe',    
             '11': 'ABCDEFGHIJKL'    
             }
 
@@ -81,6 +82,7 @@ SIZES ={'1': '1.5',
         '7': '0.5',   
         '8': '0.3',
         '9': '0.3',
+        '10': '0.18',    
         '11': '0.18'    
         }
 
