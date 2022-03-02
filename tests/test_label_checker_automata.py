@@ -1,4 +1,5 @@
 from unittest import TestCase
+
 from src.label_checker_automata import LabelCheckerAutomata
 
 automata = LabelCheckerAutomata()
@@ -35,7 +36,8 @@ invalid_labels = {
 
 rejected_labels = {
     '3 pales; 2 cows; =; = :: label   {OG, OG, B}': 'nn',
-    'safaa coa': 'dd'
+    'safaa coa': 'dd',
+    
 }
 
 aligned_parsed_labels = {
@@ -86,7 +88,11 @@ class LabelCheckerAutomataTest(TestCase):
         assert automata.get_combination_color('AGO') == 'ccc'
 
     def test_align_parsed_label(self):
-        for label, ouput in aligned_parsed_labels.items():
+        for label, output in aligned_parsed_labels.items():
             parsed_label = automata.parse_label(label)
-            assert automata.align_parsed_label(label, parsed_label) == ouput
+            assert automata.align_parsed_label(label, parsed_label) == output
 
+    def test_parse_label_value_error(self):
+        with self.assertRaises(ValueError):
+            automata.parse_label("O O B 12 lions & border")
+            automata.parse_label("O O B 12 humans")

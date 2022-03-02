@@ -43,7 +43,7 @@ SHIELD_MODIFIERS = ['border', 'checky', 'potenty', 'bendy', 'masoned', 'vairy', 
 POSITIONS = ['acc.', 'ch.', 'in', 'of', '&', 'and', 'above', 'with',
                  'betw', 'indented', 'towards', 'chf', 'on'
                  ]
-NUMBERS = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+NUMBERS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10','11']
 
 SIMPLE_OBJECTS = ['lion', 'cross', 'head', 'eagle']
 SIMPLE_COLORS = ['G', 'S'] # G: red , S: black
