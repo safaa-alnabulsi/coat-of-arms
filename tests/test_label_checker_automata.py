@@ -49,7 +49,7 @@ aligned_parsed_labels = {
     'b a lion passt guard': {'colors': ['b', 'a'], 'objects': ['lion'], 'modifiers': ['passt guard'], 'numbers': [], 'positions': [], 'shield_modifiers': []},
     'b a g lion passt guard & cross arched & border checky': {'colors': ['b', 'a', 'g'], 'objects': ['lion', 'cross'], 'modifiers': ['passt guard', 'arched'], 'numbers': [], 'positions': ['&', '&'], 'shield_modifiers': ['border','checky']},
     'B O lion guard cr.': {'colors': ['B','O'], 'objects': ['lion'], 'modifiers': ['guard', 'cr.'], 'numbers': [], 'positions': [], 'shield_modifiers': []},
-    "O O lion's head": {'colors': ['O', 'O'], 'objects': ['lion'], 'modifiers': ['head'], 'numbers': [], 'positions': [], 'shield_modifiers': []},
+    "O O lion's head": {'colors': ['O', 'O'], 'objects': ["lion's"], 'modifiers': ['head'], 'numbers': [], 'positions': [], 'shield_modifiers': []},
     "O O 3 lions": {'colors': ['O', 'O'], 'objects': ['lions'], 'modifiers': [], 'numbers': ['3'], 'positions': [], 'shield_modifiers': []},
     "B A O 3 lions 3 eagles": {'colors': ['B', 'A', 'O'], 'objects': ['lions', 'eagles'], 'modifiers': [], 'numbers': ['3', '3'], 'positions': [], 'shield_modifiers': []},
 }

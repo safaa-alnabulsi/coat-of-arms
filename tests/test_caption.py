@@ -32,7 +32,7 @@ struc_labels = {
                                  'objects': [{'charge': 'bear', 'color': 'S', 'modifiers': ['rampant', 'chained'], 'number': '1'}]},
 
     "O O lion's head":  {'shield': {'color': 'O', 'modifiers': []},
-                         'objects': [{'charge': 'lion', 'color': 'O', 'modifiers': ['head'], 'number': '1'}]},
+                         'objects': [{'charge': "lion's", 'color': 'O', 'modifiers': ['head'], 'number': '1'}]},
 
     "O O 3 lions":  {'shield': {'color': 'O', 'modifiers': []},
                      'objects': [{'charge': 'lions', 'color': 'O', 'modifiers': [], 'number': '3'}]},
