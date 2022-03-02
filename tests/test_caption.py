@@ -52,7 +52,10 @@ struc_labels = {
                                                              {'charge': 'cross', 'color': 'A', 'modifiers': [], 'number': '1'}]},
 
     "O O B 10 lions & border":  {'shield': {'color': 'O', 'modifiers': ['border']},
-                                         'objects': [{'charge': 'lions', 'color': 'O', 'modifiers': [], 'number': '10'}]},
+                                 'objects': [{'charge': 'lions', 'color': 'O', 'modifiers': [], 'number': '10'}]},
+    "A A A lion eagle doubleheaded & border":  {'shield': {'color': 'A', 'modifiers': ['border']},
+                                                'objects': [{'charge': 'lion', 'color': 'A', 'modifiers': [], 'number': '1'},
+                                                            {'charge': 'eagle', 'color': 'A', 'modifiers': ['doubleheaded'], 'number': '1'}]},
 }
 
 
@@ -61,4 +64,3 @@ class CaptionTest(TestCase):
     def test_get_stuctured(self):
         for label, struc_label in struc_labels.items():
             assert Caption(label).get_structured() == struc_label
-    

@@ -69,8 +69,13 @@ pairs_label_payload = {
                                             {'charge': 'eagle', 't': 'argent', 'p': 'n', 'size': '0.7'}],
                                 'ordinaries': []},
     "A A 10 lions & border": {'t1': 'argent', 'shield': 'heater',
-                                'charges': [{'charge': 'lionRampant', 't': 'argent', 'p': 'ABCDEFGHIJKLe', 'size': '0.18'}],
-                                'ordinaries': [{"ordinary": "bordure", "t": "azure"}]},
+                              'charges': [{'charge': 'lionRampant', 't': 'argent', 'p': 'ABCDEFGHIJKLe', 'size': '0.18'}],
+                              'ordinaries': [{"ordinary": "bordure", "t": "azure"}]},
+    "A A A lion eagle doubleheaded & border": {'t1': 'argent',
+                                               'shield': 'heater',
+                                               'charges': [{'charge': 'lionRampant', 't': 'argent', 'k': 'ABCDEFGHIJKLe', 'size': '0.70'},
+                                                           {'charge': 'eagleTwoHeards', 't': 'argent','p': 'n', 'size': '0.70'}],
+                                               'ordinaries': [{"ordinary": "bordure", "t": "azure"}]},
 
 }
 
