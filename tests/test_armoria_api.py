@@ -61,22 +61,31 @@ pairs_label_payload = {
                                                             'p': 'dfgz', 'size': '0.3'},
                                                             {'charge': 'crossHummetty', 't': 'argent', 'p': 'i', 'size': '0.3'}],
                                                 'ordinaries': [{"ordinary": "bordure", "t": "azure"}]},
+
     "B A lion's head": {'t1': 'azure', 'shield': 'heater',
                         'charges': [{'charge': 'lionHeadCaboshed', 't': 'argent', 'p': 'e', 'size': '1.5'}],
                         'ordinaries': []},
+
     "B A A lion's head eagle": {'t1': 'azure', 'shield': 'heater',
                                 'charges': [{'charge': 'lionHeadCaboshed', 't': 'argent', 'p': 'k', 'size': '0.7'},
                                             {'charge': 'eagle', 't': 'argent', 'p': 'n', 'size': '0.7'}],
                                 'ordinaries': []},
+
     "A A 10 lions & border": {'t1': 'argent', 'shield': 'heater',
                               'charges': [{'charge': 'lionRampant', 't': 'argent', 'p': 'ABCDEFGHIJKLe', 'size': '0.18'}],
                               'ordinaries': [{"ordinary": "bordure", "t": "azure"}]},
+
     "A A A lion eagle doubleheaded & border": {'t1': 'argent',
                                                'shield': 'heater',
                                                'charges': [{'charge': 'lionRampant', 't': 'argent', 'p': 'k', 'size': '0.7'},
-                                                           {'charge': 'eagleTwoHeards', 't': 'argent','p': 'n', 'size': '0.7'}],
+                                                           {'charge': 'eagleTwoHeards', 't': 'argent', 'p': 'n', 'size': '0.7'}],
                                                'ordinaries': [{"ordinary": "bordure", "t": "azure"}]},
 
+    'A A lion & border': {'t1': 'argent',
+                          'shield': 'heater',
+                          'charges': [{'charge': 'lionRampant',
+                                      't': 'argent', 'p': 'e', 'size': '1.5'}],
+                          'ordinaries': [{"ordinary": "bordure", "t": "azure"}]},
 }
 
 
