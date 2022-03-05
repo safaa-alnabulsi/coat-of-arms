@@ -16,7 +16,7 @@ class ArmoriaAPIGeneratorHelper:
             sample_name = 'image_' + str(i)
 
             self.write_image_label_to_file(
-                caption_file, sample_name + '.png,' + text_label)
+                self.caption_file, sample_name + '.png,' + text_label)
 
     def generate_dataset(self):
 
