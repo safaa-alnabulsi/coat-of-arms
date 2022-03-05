@@ -54,8 +54,8 @@ class ArmoriaAPIGeneratorHelper:
         if not os.path.exists(directory):
             os.makedirs(directory)
 
-    def creat_caption_file(self, filename):
-        f = open(filename, "w+")
+    def creat_caption_file(self):
+        f = open(self.caption_file, "w+")
         f.write('image,caption')
         f.write('\n')
         f.close()
