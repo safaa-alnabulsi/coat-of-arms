@@ -124,6 +124,7 @@ class LabelCheckerAutomata:
         if "passt" in label_ls and "guard" in label_ls:
             has_passt_guard = True
         
+        last_mod = None
         for elem, symbol in zip(label_ls, list(parsed_label)):
             if symbol == 'c':
                 output['colors'].append(elem)
@@ -132,10 +133,15 @@ class LabelCheckerAutomata:
                     # size = len(elem)
                     # elem = elem[:size - 2]
                 output['objects'].append(elem)
+                # to solve the usecae of multi obj and not enough modifieiers: "A A A lion eagle doubleheaded & border": 'cccoompb'
+                if last_mod == '':
+                    output['modifiers'].append('')
+                last_mod = ''
             elif symbol == 'b':
                 output['shield_modifiers'].append(elem)
             elif symbol == 'm':
-                output['modifiers'].append(elem)
+                last_mod = elem
+                output['modifiers'].append(elem)   
             elif symbol == 'n':
                 output['numbers'].append(elem)
             elif symbol == 'p':

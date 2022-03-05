@@ -72,10 +72,14 @@ class Caption:
         # -> for now, I'm assuming that we have one modifier per charge
         try:
             for i, mod in enumerate(aligned_label['modifiers']):
-                if len(output['objects']) > 1:
-                    output['objects'][i]['modifiers'].append(mod)
-                else:  # when one object only, assign all modifiers to it
+                # # when one object only, assign all modifiers to it
+                if mod == '':
+                    continue
+                elif len(output['objects']) == 1: 
                     output['objects'][0]['modifiers'].append(mod)
+                else: 
+                     output['objects'][i]['modifiers'].append(mod)
+
         except IndexError:
             print(
                 f"Caption Class - exception in label {self.label}, {aligned_label['modifiers']}")

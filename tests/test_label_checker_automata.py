@@ -21,7 +21,8 @@ valid_labels = {
     'A VG volcano': 'ccco',
     'B O lion guard cr.': 'ccomm',
     'V B lion passt guard': 'ccomm',
-    "V V lion's head": 'ccom'
+    "V V lion's head": 'ccom',
+    "A A A lion eagle doubleheaded & border": 'cccoompb',
 }
 
 invalid_labels = {
@@ -45,13 +46,16 @@ aligned_parsed_labels = {
     'G A eagle doubleheaded': {'colors': ['G','A'], 'objects': ['eagle'], 'modifiers': ['doubleheaded'], 'numbers': [], 'positions': [], 'shield_modifiers': []},
     'B G lion passt': {'colors': ['B', 'G'], 'objects': ['lion'], 'modifiers': ['passt'], 'numbers': [], 'positions': [], 'shield_modifiers': []},
     'b g lion passt': {'colors': ['b', 'g'], 'objects': ['lion'], 'modifiers': ['passt'], 'numbers': [], 'positions': [], 'shield_modifiers': []},
-    'b g lion lion': {'colors': ['b', 'g'], 'objects': ['lion', 'lion'], 'modifiers': [], 'numbers': [], 'positions': [], 'shield_modifiers': []},
+    'b g lion lion': {'colors': ['b', 'g'], 'objects': ['lion', 'lion'], 'modifiers': [''], 'numbers': [], 'positions': [], 'shield_modifiers': []},
     'b a lion passt guard': {'colors': ['b', 'a'], 'objects': ['lion'], 'modifiers': ['passt guard'], 'numbers': [], 'positions': [], 'shield_modifiers': []},
     'b a g lion passt guard & cross arched & border checky': {'colors': ['b', 'a', 'g'], 'objects': ['lion', 'cross'], 'modifiers': ['passt guard', 'arched'], 'numbers': [], 'positions': ['&', '&'], 'shield_modifiers': ['border','checky']},
     'B O lion guard cr.': {'colors': ['B','O'], 'objects': ['lion'], 'modifiers': ['guard', 'cr.'], 'numbers': [], 'positions': [], 'shield_modifiers': []},
     "O O lion's head": {'colors': ['O', 'O'], 'objects': ["lion's"], 'modifiers': ['head'], 'numbers': [], 'positions': [], 'shield_modifiers': []},
     "O O 3 lions": {'colors': ['O', 'O'], 'objects': ['lions'], 'modifiers': [], 'numbers': ['3'], 'positions': [], 'shield_modifiers': []},
-    "B A O 3 lions 3 eagles": {'colors': ['B', 'A', 'O'], 'objects': ['lions', 'eagles'], 'modifiers': [], 'numbers': ['3', '3'], 'positions': [], 'shield_modifiers': []},
+    "B A O 3 lions 3 eagles": {'colors': ['B', 'A', 'O'], 'objects': ['lions', 'eagles'], 'modifiers': [''], 'numbers': ['3', '3'], 'positions': [], 'shield_modifiers': []},
+    "A A A lion eagle doubleheaded & border":  {'colors': ['A', 'A', 'A'], 'objects': ['lion', 'eagle'], 'modifiers': ['','doubleheaded'], 'numbers': [], 'positions': ['&'], 'shield_modifiers': ['border']},
+    "A A bear rampant chained lion":  {'colors': ['A', 'A'], 'objects': ['bear','lion'], 'modifiers': ['rampant','chained'], 'numbers': [], 'positions': [], 'shield_modifiers': []},
+
 }
 
 class LabelCheckerAutomataTest(TestCase):
@@ -90,6 +94,7 @@ class LabelCheckerAutomataTest(TestCase):
     def test_align_parsed_label(self):
         for label, output in aligned_parsed_labels.items():
             parsed_label = automata.parse_label(label)
+            print(parsed_label)
             assert automata.align_parsed_label(label, parsed_label) == output
 
     def test_parse_label_value_error(self):

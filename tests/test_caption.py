@@ -53,9 +53,29 @@ struc_labels = {
 
     "O O B 10 lions & border":  {'shield': {'color': 'O', 'modifiers': ['border']},
                                  'objects': [{'charge': 'lions', 'color': 'O', 'modifiers': [], 'number': '10'}]},
+
     "A A A lion eagle doubleheaded & border":  {'shield': {'color': 'A', 'modifiers': ['border']},
                                                 'objects': [{'charge': 'lion', 'color': 'A', 'modifiers': [], 'number': '1'},
                                                             {'charge': 'eagle', 'color': 'A', 'modifiers': ['doubleheaded'], 'number': '1'}]},
+
+    "A A A A lion cross eagle doubleheaded & border":  {'shield': {'color': 'A', 'modifiers': ['border']},
+                                                        'objects': [{'charge': 'lion', 'color': 'A', 'modifiers': [], 'number': '1'},
+                                                                    {'charge': 'cross', 'color': 'A', 'modifiers': [
+                                                                    ], 'number': '1'},
+                                                                    {'charge': 'eagle', 'color': 'A', 'modifiers': ['doubleheaded'], 'number': '1'}]},
+
+    "A A A A lion rampant cross eagle doubleheaded & border":  {'shield': {'color': 'A', 'modifiers': ['border']},
+                                                                'objects': [{'charge': 'lion', 'color': 'A', 'modifiers': ['rampant'], 'number': '1'},
+                                                                            {'charge': 'cross', 'color': 'A', 'modifiers': [
+                                                                            ], 'number': '1'},
+                                                                            {'charge': 'eagle', 'color': 'A', 'modifiers': ['doubleheaded'], 'number': '1'}]},
+
+    "A A A A cross lion rampant eagle doubleheaded & border":  {'shield': {'color': 'A', 'modifiers': ['border']},
+                                                                'objects': [{'charge': 'cross', 'color': 'A', 'modifiers': [], 'number': '1'},
+                                                                            {'charge': 'lion', 'color': 'A', 'modifiers': [
+                                                                                'rampant'], 'number': '1'},
+                                                                            {'charge': 'eagle', 'color': 'A', 'modifiers': ['doubleheaded'], 'number': '1'}]},
+
 }
 
 
