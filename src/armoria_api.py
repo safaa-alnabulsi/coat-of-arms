@@ -113,7 +113,7 @@ class ArmoriaAPIPayload:
         self.charges = self._get_charges(self.objects)
             
         self.ordinaries = self._get_ordinaries(struc_label['shield']['modifiers'])
-
+        
     
     def get_armoria_payload(self):
         coa = {"t1": self.api_shield_color, 

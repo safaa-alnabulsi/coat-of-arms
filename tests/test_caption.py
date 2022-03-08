@@ -84,3 +84,8 @@ class CaptionTest(TestCase):
     def test_get_stuctured(self):
         for label, struc_label in struc_labels.items():
             assert Caption(label).get_structured() == struc_label
+
+    def test_is_valid_in_armoria(self):
+        assert Caption('B OA 3 fleurs-de-lis & border').is_valid_in_armoria == False
+        assert Caption('A A A A lion rampant cross eagle doubleheaded & border').is_valid_in_armoria == True
+            

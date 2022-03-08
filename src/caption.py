@@ -34,6 +34,18 @@ class Caption:
         structured_label = self.get_structured()
         return ArmoriaAPIPayload(structured_label).get_armoria_payload()
 
+    @property
+    def is_valid_in_armoria(self):
+        try: 
+            payload = self.get_armoria_payload_dict()
+        except ValueError:
+#             print(f'Label {self.label} is invalid in Armoria API')
+            
+            return False
+        
+        return True
+          
+    
     def get_structured(self):
 
         charge = {'color': '', 'object': '', 'modifiers': []}
