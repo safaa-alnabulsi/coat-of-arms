@@ -136,3 +136,7 @@ dataset
 .DS_Store
 generated-data/
 .DS_Store/
+checkpoint.pt
+cropped/
+generated/
+output.txt
