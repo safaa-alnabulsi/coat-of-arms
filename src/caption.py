@@ -12,23 +12,23 @@ class Caption:
 
     @property
     def is_valid(self):
-        simple_automata = LabelCheckerAutomata(
+        automata = LabelCheckerAutomata(
             support_plural=self.support_plural)
-        return simple_automata.is_valid(self.label)
+        return automata.is_valid(self.label)
 
     # (e.g. “com")
     def get_automata_parsed(self):
-        simple_automata = LabelCheckerAutomata(
+        automata = LabelCheckerAutomata(
             support_plural=self.support_plural)
-        return simple_automata.parse_label(label)
+        return automata.parse_label(label)
 
     # {'colors': ['b', 'g'], 'objects': ['lion'], 'modifiers': ['passt'], 'numbers': [], 'positions': []}
     def get_aligned(self):
-        simple_automata = LabelCheckerAutomata(
+        automata = LabelCheckerAutomata(
             support_plural=self.support_plural)
-        parsed_label = simple_automata.parse_label(self.label)
+        parsed_label = automata.parse_label(self.label)
 #         print(self.label, parsed_label)
-        return simple_automata.align_parsed_label(self.label, parsed_label)
+        return automata.align_parsed_label(self.label, parsed_label)
 
     def get_armoria_payload_dict(self):
         structured_label = self.get_structured()

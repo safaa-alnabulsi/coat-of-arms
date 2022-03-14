@@ -17,8 +17,11 @@ Work in progress
     conda create --name thesis-py38 python=3.8
     conda activate thesis-py38
     conda install --file requirements.txt
-    pip install automata-lib
     
+    torchdatasets: pip install automata-lib
+    pip install --user torchdatasets
+    pip install --user torchdatasets-nightly
+
     jupyter notebook
 
 3- to run tests
@@ -41,4 +44,6 @@ The previous simple automata:
 - automata-lib: https://pypi.org/project/automata-lib/#class-dfafa
 - Armoria API: https://github.com/Azgaar/armoria-api
 - Early Stopping for PyTorch: https://github.com/Bjarten/early-stopping-pytorch
+- torchdatasets: https://github.com/szymonmaszke/torchdatasets
+- Torch data-loader: https://www.kaggle.com/mdteach/torch-data-loader-flicker-8k
 - 

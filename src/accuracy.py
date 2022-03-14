@@ -16,8 +16,8 @@ class Accuracy:
     
     def __init__(self, predicted, correct, 
                  weights_map=WEIGHT_MAP):
-        self.predicted = Caption(predicted).get_structured()
-        self.correct = Caption(correct).get_structured()
+        self.predicted = Caption(predicted, support_plural=True).get_structured()
+        self.correct = Caption(correct, support_plural=True).get_structured()
         self.weights_map= weights_map
         self.total_colors = 6 # from armoria_api.py
         self.total_charges = 3 # from armoria_api.py

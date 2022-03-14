@@ -19,8 +19,8 @@ class ArmoriaAPIGeneratorHelper:
                 self.caption_file, sample_name + '.png,' + text_label)
 
     def generate_dataset(self):
-
-        with open(self.caption_file, 'r', buffering=100000) as f:
+#         with open(self.caption_file, 'r', buffering=100000) as f:
+        with open(self.caption_file, 'r') as f:
             for line in f:
                 # skip title
                 if 'image,caption' in line:
@@ -38,11 +38,11 @@ class ArmoriaAPIGeneratorHelper:
                     api = ArmoriaAPIWrapper(
                         size=500, format="png", coa=payload)
 
-                    image_full_path = self.folder_name + '/images/' + sample_name + '.png'
+                    image_full_path = self.folder_name + '/images/' + sample_name 
 
                     self.ensure_dir(image_full_path)
 
-                    # api.save_image(image_full_path)
+                    api.save_image(image_full_path)
 
                     print('Image "{}" for label "{}" has been generated succfully' .format(
                         image_full_path, text_label))
