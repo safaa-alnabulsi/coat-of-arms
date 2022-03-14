@@ -158,21 +158,18 @@ class LabelCheckerAutomata:
         return output
     
     def get_valid_labels(self, all_labels):
-        validated_labels = {}
+        validated_labels = []
         for label in all_labels:
             if self.is_valid(label):
-                validated_labels[label] = 1
-            else: 
-                validated_labels[label] = 0
-
+                validated_labels.append(label)
         return validated_labels
-    
+
 
     def get_valid_labels_of(self, all_labels, charge):
         validated_labels = self.get_valid_labels(all_labels)
         charge_labels = []
-        for l, valid in validated_labels.items():
-            if valid and charge in l: 
+        for l in validated_labels:
+            if charge in l: 
                 charge_labels.append(l)
         
         return charge_labels
@@ -180,8 +177,8 @@ class LabelCheckerAutomata:
     def get_valid_plural_labels(self, all_labels):
         validated_labels = self.get_valid_labels(all_labels)
         pl_labels = []
-        for l, valid in validated_labels.items():
-            if valid and self.has_numbers(l): 
+        for l in validated_labels:
+            if self.has_numbers(l): 
                 pl_labels.append(l)
         
         return pl_labels
