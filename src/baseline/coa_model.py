@@ -192,16 +192,15 @@ def train_model(model, optimizer, criterion,
     return  model, avg_train_losses, avg_valid_losses, avg_acc, bleu_score
 
 #helper function to save the model
-def save_model(model, optimizer, epoch, loss, accuracy, model_full_path, hyper_params):
+def save_model(model, optimizer, loss, accuracy, model_full_path, hyper_params):
     model.cpu()
     model_state = {
-        'epoch': epoch,
         'hyper_params': hyper_params,
         'state_dict': model.state_dict(),
         'model_state_dict': model.state_dict(),
         'optimizer_state_dict': optimizer.state_dict(),
         'loss': loss,
-        'accuracy':accuracy
+        'accuracy': accuracy
     }
     
     torch.save(model_state, model_full_path)
