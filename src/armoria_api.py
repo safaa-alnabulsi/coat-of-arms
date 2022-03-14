@@ -229,7 +229,8 @@ class ArmoriaAPIWrapper:
                    "format": format,
                    "coa": json.dumps(coa)
                   }
-        self.r = requests.get('https://armoria.herokuapp.com/', params=payload)
+#         self.r = requests.get('https://armoria.herokuapp.com/', params=payload)
+        self.r = requests.get('http://localhost:3000/', params=payload)
 #         print(self.r.url)
     
     def get_image_bytes(self):
