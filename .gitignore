@@ -140,3 +140,8 @@ checkpoint.pt
 cropped/
 generated/
 output.txt
+smaller-gen/
+small-gen-dataset/
+cropped
+data
+models
