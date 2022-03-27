@@ -18,7 +18,7 @@ if __name__ == "__main__":
     print('starting the script')
     BORDER_MOD = ['& border', '']
     parser = argparse.ArgumentParser(description='A script for generating armoria dataset')
-    parser.add_argument('--index', dest='i', type=int, help='Start index', default=1)
+    parser.add_argument('--index', dest='index type=int, help='Start index', default=1)
 
     args = parser.parse_args()
     start_index = args.index
