@@ -22,8 +22,8 @@ class ArmoriaAPIGeneratorHelper:
     def generate_dataset(self):
 #         with open(self.caption_file, 'r', buffering=100000) as f:
         with open(self.caption_file, 'r') as f:
-            for i in xrange(self.start_index):
-                f, next()
+        
+            garbage=[next(f) for i in range(self.start_index)]   
 
             for line in f:
                 # skip title
