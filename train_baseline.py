@@ -192,7 +192,7 @@ if __name__ == "__main__":
     now = datetime.now() # current date and time
     timestr = now.strftime("%m.%d.%Y-%H:%M:%S")
 #     model_full_path = f"/home/space/datasets/COA/models/baseline/attention_model_acc_qsub-{timestr}.pth"
-    model_full_path = f"../models/baseline/attention_model_acc_qsub-{timestr}.pth"
+    model_full_path = f"models/baseline/attention_model_{timestr}.pth"
 
     save_model(model, optimizer, final_train_loss, final_accuracy, model_full_path, hyper_params)
     print('The trained model has been saved to ', model_full_path)
