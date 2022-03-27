@@ -29,7 +29,13 @@ def train_validate_test_split(df, train_percent=.6, validate_percent=.2, seed=No
     return train, validate, test
 
 
-def get_new_model(embed_size, vocab_size, attention_dim, encoder_dim, decoder_dim, learning_rate,drop_prob,ignored_idx, device):
+def get_new_model(hyper_params, learning_rate, ignored_idx, drop_prob, device):
+    embed_size = hyper_params['embed_size']
+    vocab_size = hyper_params['vocab_size']
+    encoder_dim = hyper_params['encoder_dim']
+    decoder_dim = hyper_params['decoder_dim']
+    attention_dim = hyper_params['attention_dim']
+
     model = EncoderDecoder(embed_size, vocab_size, attention_dim, encoder_dim, decoder_dim, drop_prob=0.3).to(device)
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
     criterion = nn.CrossEntropyLoss(ignore_index=ignored_idx)
@@ -191,38 +197,39 @@ def train_model(model, optimizer, criterion,
 
     return  model, avg_train_losses, avg_valid_losses, avg_acc, bleu_score
 
-#helper function to save the model
+# helper function to save the model 
+# https://pytorch.org/tutorials/recipes/recipes/saving_and_loading_a_general_checkpoint.html
 def save_model(model, optimizer, loss, accuracy, model_full_path, hyper_params):
     model.cpu()
     model_state = {
         'hyper_params': hyper_params,
-        'state_dict': model.state_dict(),
         'model_state_dict': model.state_dict(),
         'optimizer_state_dict': optimizer.state_dict(),
         'loss': loss,
         'accuracy': accuracy
     }
-    
+
     torch.save(model_state, model_full_path)
 
-def load_model(model_path):
+def load_model(model_path, hyper_params, learning_rate, drop_prob, ignored_idx):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    
-    model, _, _ = get_new_model()
-    
-    model.load_state_dict(torch.load(model_path))
-
-    return model
-
-def load_model_checkpoint(model_path):
+    model, optimizer, _ = get_new_model(hyper_params, learning_rate, ignored_idx, drop_prob, device)
+        
     checkpoint = torch.load(model_path)
-    
-    model, optimizer, criterion = get_new_model()
-    
+    model.load_state_dict(checkpoint['model_state_dict'])
+    optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+    loss = checkpoint['loss']
+
+    return model, optimizer, loss
+
+def load_model_checkpoint(model_path, hyper_params, learning_rate, drop_prob, ignored_idx):    
+    model, optimizer, criterion = get_new_model(hyper_params, learning_rate, ignored_idx, drop_prob, device)
+        
+    checkpoint = torch.load(model_path)
     model.load_state_dict(checkpoint['model_state_dict'])
     optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
     epoch = checkpoint['epoch']
     loss = checkpoint['loss']
-    
+
     return model, optimizer, epoch, loss
     
