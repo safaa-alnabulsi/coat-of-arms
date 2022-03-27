@@ -4,6 +4,7 @@
 
 import os
 import itertools
+import argparse
 
 import src.alphabet as alphabet
 from src.caption import Caption
@@ -16,6 +17,12 @@ POSITIONS, SIZES, NUMBERS, NUMBERS_MULTI, SINGLE_POSITION
 if __name__ == "__main__":
     print('starting the script')
     BORDER_MOD = ['& border', '']
+    parser = argparse.ArgumentParser(description='A script for generating armoria dataset')
+    parser.add_argument('--index', dest='i', type=int, help='Start index', default=1)
+
+    args = parser.parse_args()
+    start_index = args.index
+    print('Start index', start_index)
 
     ## Single object
     # lion, modifiers and colors
@@ -87,6 +94,6 @@ if __name__ == "__main__":
     FOLDER_NAME = '/home/space/datasets/COA/generated-data-api-large'
     # FOLDER_NAME = '../generated'
     caption_file = FOLDER_NAME + '/' + 'captions.txt'
-    api_gen_helper = ArmoriaAPIGeneratorHelper(caption_file, FOLDER_NAME, total_possible_permutations)   
+    api_gen_helper = ArmoriaAPIGeneratorHelper(caption_file, FOLDER_NAME, total_possible_permutations, start_index)   
     
     api_gen_helper.generate_dataset()

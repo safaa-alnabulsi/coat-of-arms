@@ -3,10 +3,11 @@ from src.caption import Caption
 from src.armoria_api import ArmoriaAPIPayload, ArmoriaAPIWrapper
 
 class ArmoriaAPIGeneratorHelper:
-    def __init__(self, caption_file, folder_name, permutations):
+    def __init__(self, caption_file, folder_name, permutations, start_index=1):
         self.caption_file = caption_file
         self.folder_name = folder_name
         self.permutations = permutations
+        self.start_index = start_index
 
     def generate_caption_file(self):
         for i in range(0, len(self.permutations)):
@@ -21,6 +22,9 @@ class ArmoriaAPIGeneratorHelper:
     def generate_dataset(self):
 #         with open(self.caption_file, 'r', buffering=100000) as f:
         with open(self.caption_file, 'r') as f:
+            for i in xrange(self.start_index):
+                f, next()
+
             for line in f:
                 # skip title
                 if 'image,caption' in line:
