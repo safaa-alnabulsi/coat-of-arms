@@ -10,7 +10,7 @@ from src.baseline.caps_collate import CapsCollate
 
 def get_loader(root_folder, annotation_file, transform, 
                batch_size=32, num_workers=2, shuffle=True, pin_memory=True, vocab=None, device='cpu'):
-    
+    print('before CoADataset init')
     dataset = CoADataset(root_folder, 
                          annotation_file, 
                          transform=transform, 
@@ -24,8 +24,10 @@ def get_loader(root_folder, annotation_file, transform,
 #                         .cache(td.modifiers.FromIndex(500, td.cachers.Pickle("./cache")))
 # #                         # You can define your own cachers, modifiers, see docs
 
+    print('after CoADataset init')
     pad_idx = dataset.vocab.stoi["<PAD>"]
-
+  
+    print('before DataLoader init')
     loader = DataLoader(
         dataset=dataset,
         batch_size=batch_size,
@@ -34,16 +36,19 @@ def get_loader(root_folder, annotation_file, transform,
         pin_memory=pin_memory,
         collate_fn=CapsCollate(pad_idx=pad_idx)
     )
+    print('after DataLoader init')
 
     return loader, dataset
 
 def get_loaders(root_folder, train_annotation_file, val_annotation_file, test_annotation_file, 
                 transform, batch_size=32, num_workers=2, shuffle=True, pin_memory=True, vocab=None, device='cpu'):
-    
+    print('initing train loader')
     train_loader, train_dataset = get_loader(root_folder, train_annotation_file, transform, 
                                              batch_size, num_workers,shuffle, pin_memory, vocab, device)
+    print('initing val loader')
     val_loader, val_dataset = get_loader(root_folder, val_annotation_file, transform, 
                                          batch_size, num_workers,shuffle, pin_memory, vocab, device)
+    print('initing test loader')
     test_loader, test_dataset = get_loader(root_folder, test_annotation_file, transform, 
                                            batch_size, num_workers,shuffle, pin_memory, vocab, device)
 
