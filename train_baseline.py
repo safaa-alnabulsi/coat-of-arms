@@ -164,7 +164,7 @@ if __name__ == "__main__":
                     'attention_dim': attention_dim,
                     'encoder_dim': encoder_dim,
                     'decoder_dim': decoder_dim,
-                    'vocap_size': vocab_size
+                    'vocab_size': vocab_size
                   }
     
     # -------------------------------------------------------------------------------------------------------
