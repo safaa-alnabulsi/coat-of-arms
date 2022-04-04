@@ -17,5 +17,4 @@ dataset=$1
 batch_size=$2
 epochs=$3
 
-echo 
 source /home/salnabulsi/.thesis-py38/bin/activate && python train_baseline.py --dataset ${dataset} --batch-size ${batch_size} --epochs ${epochs} > output.txt
