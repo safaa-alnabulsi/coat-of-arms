@@ -45,9 +45,11 @@ def get_loaders(root_folder, train_annotation_file, val_annotation_file, test_an
     print('initing train loader')
     train_loader, train_dataset = get_loader(root_folder, train_annotation_file, transform, 
                                              batch_size, num_workers,shuffle, pin_memory, vocab, device)
+    print('-------------')                                             
     print('initing val loader')
     val_loader, val_dataset = get_loader(root_folder, val_annotation_file, transform, 
                                          batch_size, num_workers,shuffle, pin_memory, vocab, device)
+    print('-------------')                                             
     print('initing test loader')
     test_loader, test_dataset = get_loader(root_folder, test_annotation_file, transform, 
                                            batch_size, num_workers,shuffle, pin_memory, vocab, device)

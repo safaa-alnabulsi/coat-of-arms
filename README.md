@@ -40,6 +40,10 @@ Work in progress
     
     streamlit run view_crops.py
 
+6- to generate dataset
+
+    python generate-baseline-large.py --index=40787
+    
 ## The Automata
 
 The visual representation of the implemented automata in [LabelCheckerAutomata](src/label_checker_automata.py)
