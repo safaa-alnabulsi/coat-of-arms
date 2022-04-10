@@ -43,6 +43,7 @@ Work in progress
 6- to generate dataset
 
     python generate-baseline-large.py --index=40787
+    python add-pixels-to-caption.py --index=40787 --dataset baseline-gen-data/medium
 
 ## Training the baseline model
 
