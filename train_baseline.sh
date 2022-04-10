@@ -16,5 +16,6 @@ export CUDA_LAUNCH_BLOCKING=1
 dataset=$1
 batch_size=$2
 epochs=$3
+resplit=$4
 
-source /home/salnabulsi/.thesis-py38/bin/activate && python train_baseline.py --dataset ${dataset} --batch-size ${batch_size} --epochs ${epochs} > output.txt
+source /home/salnabulsi/.thesis-py38/bin/activate && python train_baseline.py --dataset ${dataset} --batch-size ${batch_size} --epochs ${epochs} --resplit ${resplit} > output.txt

@@ -43,7 +43,17 @@ Work in progress
 6- to generate dataset
 
     python generate-baseline-large.py --index=40787
-    
+
+## Training the baseline model
+
+On the cluster
+
+    qsub train_baseline.sh /home/space/datasets/COA/generated-data-api-large 256 1 false
+
+Locally:
+
+    python train_baseline.py --dataset baseline-gen-data/small --batch-size 256 --epochs 1 --resplit false
+
 ## The Automata
 
 The visual representation of the implemented automata in [LabelCheckerAutomata](src/label_checker_automata.py)

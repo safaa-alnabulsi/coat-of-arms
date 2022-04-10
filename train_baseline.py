@@ -2,6 +2,7 @@
 
 #imports 
 import os
+from xmlrpc.client import boolean
 import torch
 import spacy
 import pandas as pd
@@ -39,6 +40,7 @@ if __name__ == "__main__":
     parser.add_argument('--dataset', dest='dataset', type=str, help='Full path to the dataset', default='/home/space/datasets/COA/generated-data-api')
     parser.add_argument('--epochs', dest='epochs', type=int, help='Number of epochs',default=10)
     parser.add_argument('--batch-size', dest='batch_size', type=int, help='Number of Batch size', default=128)
+    parser.add_argument('--resplit', dest='resplit', type=boolean, help='resplit the samples', default=False)
 
     args = parser.parse_args()
     print(args.dataset)
@@ -48,12 +50,13 @@ if __name__ == "__main__":
     data_location = args.dataset
     batch_size = args.batch_size
     num_epochs = args.epochs
+    resplit = args.epochs 
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(device)
     
     print('Dataset exists in', data_location)    
-    caption_file = data_location + '/captions.txt'
+    caption_file = data_location + '/captions-pixels.txt'
     root_folder_images = data_location + '/images'
     df = pd.read_csv(caption_file)
 
@@ -63,11 +66,11 @@ if __name__ == "__main__":
     train_annotation_file = data_location + '/train_captions.txt'
     val_annotation_file  = data_location + '/val_captions.txt'
     test_annotation_file  = data_location + '/test_captions.txt'
-
-    train.to_csv(train_annotation_file, sep=',',index=False)
-    test.to_csv(test_annotation_file, sep=',',index=False)
-    validate.to_csv(val_annotation_file, sep=',',index=False)
-
+    
+    if resplit:
+        train.to_csv(train_annotation_file, sep=',',index=False)
+        test.to_csv(test_annotation_file, sep=',',index=False)
+        validate.to_csv(val_annotation_file, sep=',',index=False)
 
     print("There are {} total images".format(len(df)))
 
