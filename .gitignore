@@ -143,3 +143,4 @@ data
 models
 baseline-gen-data
 gg
+*.pt
