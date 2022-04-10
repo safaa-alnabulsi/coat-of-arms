@@ -54,7 +54,7 @@ def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device
     avg_loss = 0
     model.eval()
     with torch.no_grad():
-        for idx, (img, correct_cap) in enumerate(iter(val_loader)):
+        for idx, (img, correct_cap,_) in enumerate(iter(val_loader)):
             features = model.encoder(img.to(device))
 
             features_tensors = img[0].detach().clone().unsqueeze(0)
@@ -123,7 +123,7 @@ def train_model(model, optimizer, criterion,
             # train the model #
             ###################
             model.train() # prep model for training
-            for image, captions in tepoch: 
+            for image, captions,_ in tepoch: 
                 tepoch.set_description(f"Epoch {epoch}")
                 # use cuda
                 image, captions = image.to(device), captions.to(device)

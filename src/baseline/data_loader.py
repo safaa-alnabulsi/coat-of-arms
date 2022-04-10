@@ -76,3 +76,4 @@ def get_mean_std(train_dataset, train_loader, img_h, img_w):
     std = torch.sqrt(sum_of_squared_error / num_of_pixels)
     
     return mean, std
+    
