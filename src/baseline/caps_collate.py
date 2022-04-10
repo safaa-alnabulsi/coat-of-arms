@@ -11,9 +11,15 @@ class CapsCollate:
         self.batch_first = batch_first
     
     def __call__(self,batch):
-        imgs = [item[0].unsqueeze(0) for item in batch]
-        imgs = torch.cat(imgs,dim=0)
+        imgs,targets,pixels = [],[],[]
         
-        targets = [item[1] for item in batch]
+        for item in batch:
+            imgs.append(item[0].unsqueeze(0))
+            targets.append(item[1])
+            pixels.append(item[2])
+        
+        imgs = torch.cat(imgs,dim=0)
         targets = pad_sequence(targets, batch_first=self.batch_first, padding_value=self.pad_idx)
-        return imgs,targets
+        pixels = torch.tensor(pixels)
+        
+        return imgs,targets,pixels

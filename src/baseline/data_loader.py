@@ -6,7 +6,7 @@ from torch.utils.data import DataLoader,Dataset
 from src.baseline.vocabulary import Vocabulary
 from src.baseline.coa_dataset import CoADataset
 from src.baseline.caps_collate import CapsCollate
-
+from src.utils import print_time
 
 def get_loader(root_folder, annotation_file, transform, 
                batch_size=32, num_workers=2, shuffle=True, pin_memory=True, vocab=None, device='cpu'):
@@ -61,16 +61,18 @@ def get_mean_std(train_dataset, train_loader, img_h, img_w):
 
     total_sum = 0
     sum_of_squared_error = 0
-    
-    for idx,batch in enumerate(train_loader):
-#         batch = train_loader[idx]
-        total_sum += batch[0].sum()    
-    mean = total_sum / num_of_pixels
-    
-    for batch in train_loader: 
-        sum_of_squared_error += ((batch[0] - mean).pow(2)).sum()
 
+    # the batch[0] contains the images, batch[1] contains labels and 2 contains pixels values.
+    for _, batch in enumerate(iter(train_loader)):
+        total_sum += batch[2].sum()
     
+    mean = total_sum / num_of_pixels
+    print('mean: ',mean)
+    print_time('finished calculating the mean and started with std')
+
+    for _, batch in enumerate(iter(train_loader)):
+        sum_of_squared_error += ((batch[2] - mean).pow(2)).sum()
+   
     std = torch.sqrt(sum_of_squared_error / num_of_pixels)
     
     return mean, std

@@ -19,9 +19,15 @@ class CoADataset(td.Dataset):
         self.device = device
         self.df = pd.read_csv(captions_file)
         
-        #Get image and caption colum from the dataframe
+        # Get image and caption colum from the dataframe
         self.img_names = self.df["image"]
         self.captions = self.df["caption"]
+
+        # Get pixels colum from the dataframe       
+        try:
+            self.pixels = self.df["pixels"]
+        except IndexError:
+            print('no pixels columns')
 
         #Initialize vocabulary and build vocab
         if vocab is None:
@@ -36,7 +42,7 @@ class CoADataset(td.Dataset):
     
     def __getitem__(self, idx):
         try:
-             return self._get_image_tensor(idx), self._get_caption_vec(idx)
+            return self._get_image_tensor(idx), self._get_caption_vec(idx), float(self.pixels[idx])
         except TypeError or IndexError:
             print(f' Error, cannot find image with index: {str(idx)}')
 
