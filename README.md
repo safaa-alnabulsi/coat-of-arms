@@ -52,7 +52,7 @@ On the cluster
 
 Locally:
 
-    python train_baseline.py --dataset baseline-gen-data/small --batch-size 256 --epochs 1 --resplit false
+    python train_baseline.py --dataset baseline-gen-data/small --batch-size 256 --epochs 1 --resplit no
 
 ## The Automata
 

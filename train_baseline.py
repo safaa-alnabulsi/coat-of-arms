@@ -40,17 +40,24 @@ if __name__ == "__main__":
     parser.add_argument('--dataset', dest='dataset', type=str, help='Full path to the dataset', default='/home/space/datasets/COA/generated-data-api')
     parser.add_argument('--epochs', dest='epochs', type=int, help='Number of epochs',default=10)
     parser.add_argument('--batch-size', dest='batch_size', type=int, help='Number of Batch size', default=128)
-    parser.add_argument('--resplit', dest='resplit', type=boolean, help='resplit the samples', default=False)
+    parser.add_argument('--resplit', dest='resplit', type=str, help='resplit the samples', default='no', choices=['yes','Yes','y','Y','no','No','n', 'N'])
 
     args = parser.parse_args()
-    print(args.dataset)
-    print(args.epochs)
-    print(args.batch_size)
-    
+
     data_location = args.dataset
     batch_size = args.batch_size
     num_epochs = args.epochs
-    resplit = args.epochs 
+    resplit = args.resplit 
+    if resplit in ['yes','Yes','y','Y'] :
+        resplit = True
+    else: 
+        resplit = False
+
+    print('data_location is ',data_location)
+    print('batch_size is ',batch_size)
+    print('num_epochs is ',num_epochs)
+    print('resplit is ',resplit)
+
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(device)
@@ -60,14 +67,12 @@ if __name__ == "__main__":
     root_folder_images = data_location + '/images'
     df = pd.read_csv(caption_file)
 
-    train, validate, test = train_validate_test_split(df, train_percent=.6, validate_percent=.2, seed=None)
-
-
     train_annotation_file = data_location + '/train_captions.txt'
     val_annotation_file  = data_location + '/val_captions.txt'
     test_annotation_file  = data_location + '/test_captions.txt'
     
     if resplit:
+        train, validate, test = train_validate_test_split(df, train_percent=.6, validate_percent=.2, seed=None)
         train.to_csv(train_annotation_file, sep=',',index=False)
         test.to_csv(test_annotation_file, sep=',',index=False)
         validate.to_csv(val_annotation_file, sep=',',index=False)
