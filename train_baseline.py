@@ -67,9 +67,9 @@ if __name__ == "__main__":
     root_folder_images = data_location + '/images'
     df = pd.read_csv(caption_file)
 
-    train_annotation_file = data_location + '/train_captions.txt'
-    val_annotation_file  = data_location + '/val_captions.txt'
-    test_annotation_file  = data_location + '/test_captions.txt'
+    train_annotation_file = data_location + '/train_captions_pixels.txt'
+    val_annotation_file  = data_location + '/val_captions_pixels.txt'
+    test_annotation_file  = data_location + '/test_captions_pixels.txt'
     
     if resplit:
         train, validate, test = train_validate_test_split(df, train_percent=.6, validate_percent=.2, seed=None)
@@ -79,16 +79,13 @@ if __name__ == "__main__":
 
     print("There are {} total images".format(len(df)))
 
-    caption_file = data_location + '/train_captions.txt'
-    df1 = pd.read_csv(caption_file)
+    df1 = pd.read_csv(train_annotation_file)
     print("There are {} train images".format(len(df1)))
 
-    caption_file = data_location + '/val_captions.txt'
-    df2 = pd.read_csv(caption_file)
+    df2 = pd.read_csv(val_annotation_file)
     print("There are {} val images".format(len(df2)))
 
-    caption_file = data_location + '/test_captions.txt'
-    df3 = pd.read_csv(caption_file)
+    df3 = pd.read_csv(test_annotation_file)
     print("There are {} test images".format(len(df3)))
     
     # -------------------------------------------------------------------------------------------------------
