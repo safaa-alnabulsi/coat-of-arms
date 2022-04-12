@@ -9,13 +9,15 @@ from src.baseline.caps_collate import CapsCollate
 from src.utils import print_time
 
 def get_loader(root_folder, annotation_file, transform, 
-               batch_size=32, num_workers=2, shuffle=True, pin_memory=True, vocab=None, device='cpu'):
+               batch_size=32, num_workers=2, shuffle=True, 
+               pin_memory=True, vocab=None, device='cpu', calc_mean=False):
     print('before CoADataset init')
     dataset = CoADataset(root_folder, 
                          annotation_file, 
                          transform=transform, 
                          vocab=vocab,
-                         device=device)
+                         device=device,
+                         calc_mean=calc_mean)
 #     .map(torchvision.transforms.ToTensor()).cache(td.modifiers.UpToIndex(500, td.cachers.Memory())).cache(td.modifiers.FromIndex(500, td.cachers.Pickle("./cache")))
 #     .cache()
 # #                         # First 1000 samples in memory
@@ -34,7 +36,7 @@ def get_loader(root_folder, annotation_file, transform,
         num_workers=num_workers,
         shuffle=shuffle,
         pin_memory=pin_memory,
-        collate_fn=CapsCollate(pad_idx=pad_idx)
+        collate_fn=CapsCollate(pad_idx=pad_idx,calc_mean=calc_mean)
     )
     print('after DataLoader init')
 
@@ -56,24 +58,27 @@ def get_loaders(root_folder, train_annotation_file, val_annotation_file, test_an
 
     return train_loader, val_loader, test_loader, train_dataset, val_dataset, test_dataset
 
-def get_mean_std(train_dataset, train_loader, img_h, img_w):
-    num_of_pixels = len(train_dataset) * 500 * 500
+def get_mean(train_dataset, train_loader, img_h=500, img_w=500):
+    num_of_pixels = len(train_dataset) * img_h * img_w
 
     total_sum = 0
-    sum_of_squared_error = 0
 
     # the batch[0] contains the images, batch[1] contains labels and 2 contains pixels values.
     for _, batch in enumerate(iter(train_loader)):
         total_sum += batch[2].sum()
     
     mean = total_sum / num_of_pixels
-    print('mean: ',mean)
-    print_time('finished calculating the mean and started with std')
+    
+    return mean
 
+def get_std(train_dataset, train_loader, mean, img_h=500, img_w=500):
+    num_of_pixels = len(train_dataset) * img_h * img_w
+    sum_of_squared_error = 0
+    
     for _, batch in enumerate(iter(train_loader)):
         sum_of_squared_error += ((batch[2] - mean).pow(2)).sum()
    
     std = torch.sqrt(sum_of_squared_error / num_of_pixels)
     
-    return mean, std
+    return std
     

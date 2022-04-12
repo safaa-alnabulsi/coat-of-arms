@@ -12,13 +12,14 @@ from pathlib import Path
 
 class CoADataset(td.Dataset):
  
-    def __init__(self,root_dir,captions_file,transform=None,freq_threshold=5, vocab=None, device="cpu"):
+    def __init__(self,root_dir,captions_file,transform=None,freq_threshold=5, vocab=None, device="cpu", calc_mean=False):
         super().__init__() # for the td.Dataset
         self.root_dir = root_dir
         self.transform = transform
         self.device = device
         self.df = pd.read_csv(captions_file)
-        
+        self.calc_mean = calc_mean
+
         # Get image and caption colum from the dataframe
         self.img_names = self.df["image"]
         self.captions = self.df["caption"]
@@ -41,10 +42,13 @@ class CoADataset(td.Dataset):
         return len(self.df)
     
     def __getitem__(self, idx):
-        try:
-            return self._get_image_tensor(idx), self._get_caption_vec(idx), float(self.pixels[idx])
-        except TypeError or IndexError:
-            print(f' Error, cannot find image with index: {str(idx)}')
+        if self.calc_mean == True:
+           return torch.tensor([]),torch.tensor([]),float(self.pixels[idx])
+        else:
+            try:
+                return self._get_image_tensor(idx), self._get_caption_vec(idx), float(self.pixels[idx])
+            except TypeError or IndexError:
+                print(f' Error, cannot find image with index: {str(idx)}')
 
     def _get_image_tensor(self, idx):
         img_name = self.img_names[idx]
