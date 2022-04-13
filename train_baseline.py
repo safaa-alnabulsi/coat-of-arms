@@ -21,7 +21,7 @@ from datetime import datetime
 from tqdm import tqdm
 from time import sleep
 from src.baseline.vocabulary import Vocabulary
-from src.baseline.data_loader import get_loader, get_loaders, get_mean, get_std
+from src.baseline.data_loader import get_loader, get_loaders, get_mean_std
 from src.accuracy import Accuracy
 from src.baseline.coa_model import save_model, get_new_model, validate_model, train_model, train_validate_test_split
 import torch.multiprocessing as mp
@@ -67,9 +67,9 @@ if __name__ == "__main__":
     root_folder_images = data_location + '/images'
     df = pd.read_csv(caption_file)
 
-    train_annotation_file = data_location + '/train_captions_pixels.txt'
-    val_annotation_file  = data_location + '/val_captions_pixels.txt'
-    test_annotation_file  = data_location + '/test_captions_pixels.txt'
+    train_annotation_file = data_location + '/train_captions.txt'
+    val_annotation_file  = data_location + '/val_captions.txt'
+    test_annotation_file  = data_location + '/test_captions.txt'
     
     if resplit:
         train, validate, test = train_validate_test_split(df, train_percent=.6, validate_percent=.2, seed=None)
@@ -79,13 +79,16 @@ if __name__ == "__main__":
 
     print("There are {} total images".format(len(df)))
 
-    df1 = pd.read_csv(train_annotation_file)
+    caption_file = data_location + '/train_captions.txt'
+    df1 = pd.read_csv(caption_file)
     print("There are {} train images".format(len(df1)))
 
-    df2 = pd.read_csv(val_annotation_file)
+    caption_file = data_location + '/val_captions.txt'
+    df2 = pd.read_csv(caption_file)
     print("There are {} val images".format(len(df2)))
 
-    df3 = pd.read_csv(test_annotation_file)
+    caption_file = data_location + '/test_captions.txt'
+    df3 = pd.read_csv(caption_file)
     print("There are {} test images".format(len(df3)))
     
     # -------------------------------------------------------------------------------------------------------
@@ -100,7 +103,7 @@ if __name__ == "__main__":
     vocab.itos = {0: '<PAD>', 1: '<SOS>', 2: '<EOS>', 3: '<UNK>', 4: 'lion', 5: 'rampant', 6: 'passt', 7: 'guard', 8: 'head', 9: 'lions', 10: 'cross', 11: 'moline', 12: 'patonce', 13: 'eagle', 14: 'doubleheaded', 15: 'eagles', 16: 'a', 17: 'b', 18: 'o', 19: 's', 20: 'g', 21: 'e', 22: 'v', 23: '1', 24: '2', 25: '3', 26: '4', 27: '5', 28: '6', 29: '7', 30: '8', 31: '9', 32: '10', 33: '11', 34: 'border', 35: '&'}
     
     # -------------------------------------------------------------------------------------------------------
-    print_time('\n ------------------------ \n calling get_loader with calc_mean=True - for mean')
+    print_time('\n ------------------------ \n before get_loader')
     profiler = Profiler(async_mode='disabled')
     profiler.start()
 
@@ -111,56 +114,22 @@ if __name__ == "__main__":
         num_workers=NUM_WORKER,
         vocab=vocab,
         batch_size=batch_size,
-        pin_memory=False,
-        calc_mean=True
+        pin_memory=False
     )
     
     profiler.stop()
     profiler.print()
 
-    # -------------------------------------------------------------------------------------------------------
     profiler = Profiler(async_mode='disabled')
     profiler.start()
 
-    print_time('\n ------------------------ \n calling get_mean')
+    print_time('\n ------------------------ \n before get_mean_std')
 
-    mean = get_mean(train_dataset, train_loader, 500 , 500)
-    print_time(f'finished calculating the mean: {mean}')
-
+    mean, std = get_mean_std(train_dataset, train_loader, 500 , 500)
+    print('mean, std:', mean, std)
     profiler.stop()
     profiler.print()
-    # -------------------------------------------------------------------------------------------------------
-    print_time('\n ------------------------ \n calling get_loader with calc_mean=True - for std')
-    profiler = Profiler(async_mode='disabled')
-    profiler.start()
-
-    train_loader, train_dataset = get_loader(
-        root_folder=root_folder_images,
-        annotation_file=train_annotation_file,
-        transform=None,  # <=======================
-        num_workers=NUM_WORKER,
-        vocab=vocab,
-        batch_size=batch_size,
-        pin_memory=False,
-        calc_mean=False,
-    )
     
-    profiler.stop()
-    profiler.print()
-
-    # -------------------------------------------------------------------------------------------------------
-    profiler = Profiler(async_mode='disabled')
-    profiler.start()
-
-    print_time('\n ------------------------ \n calling get_std')
-
-    std = get_std(train_dataset, train_loader, mean)
-    print_time(f'finished calculating the std: {std}')
-    profiler.stop()
-    profiler.print()
-
-    # -------------------------------------------------------------------------------------------------------
-
     # Defining the transform to be applied
 #     mp.set_start_method('spawn')
 
