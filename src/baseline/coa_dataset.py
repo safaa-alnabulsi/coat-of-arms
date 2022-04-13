@@ -26,9 +26,14 @@ class CoADataset(td.Dataset):
 
         # Get pixels colum from the dataframe       
         try:
-            self.pixels = self.df["pixels"]
+            self.psum = self.df["psum"]
         except IndexError:
-            print('no pixels columns')
+            print('no pixels sum column')
+            
+        try:
+            self.psum_sq = self.df["psum_sq"]
+        except IndexError:
+            print('no squared pixels sum column')
 
         #Initialize vocabulary and build vocab
         if vocab is None:
@@ -43,10 +48,10 @@ class CoADataset(td.Dataset):
     
     def __getitem__(self, idx):
         if self.calc_mean == True:
-           return torch.tensor([]),torch.tensor([]),float(self.pixels[idx])
+            return torch.tensor([]),torch.tensor([]),float(self.psum[idx]), float(self.psum_sq[idx])
         else:
             try:
-                return self._get_image_tensor(idx), self._get_caption_vec(idx), float(self.pixels[idx])
+                return self._get_image_tensor(idx), self._get_caption_vec(idx), float(self.psum[idx]),float(self.psum_sq[idx])
             except TypeError or IndexError:
                 print(f' Error, cannot find image with index: {str(idx)}')
 

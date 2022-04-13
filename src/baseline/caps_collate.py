@@ -12,21 +12,25 @@ class CapsCollate:
         self.calc_mean = calc_mean
     
     def __call__(self,batch):
-        imgs,targets,pixels = [],[],[]
+        imgs,targets,psum, psum_sq= [],[],[],[]
         if self.calc_mean == True:
             for item in batch:
-                pixels.append(item[2])
+                psum.append(item[2])
+                psum_sq.append(item[3])
+
             imgs = torch.tensor([])
             targets = torch.tensor([])      
         else:    
             for item in batch:
                 imgs.append(item[0].unsqueeze(0))
                 targets.append(item[1])
-                pixels.append(item[2])
+                psum.append(item[2])
+                psum_sq.append(item[3])
             
             imgs = torch.cat(imgs,dim=0)
             targets = pad_sequence(targets, batch_first=self.batch_first, padding_value=self.pad_idx)
         
-        pixels = torch.tensor(pixels)
+        psum = torch.tensor(psum)
+        psum_sq = torch.tensor(psum)
             
-        return imgs,targets,pixels
+        return imgs,targets,psum,psum_sq

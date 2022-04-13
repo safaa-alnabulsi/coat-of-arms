@@ -12,8 +12,8 @@
 echo "I am a job task with ID $SGE_TASK_ID."
 export CUDA_LAUNCH_BLOCKING=1
 
-start_index=$1
-dataset=$2
+start_index=$2
+dataset=$1
 
 echo 
 source /home/salnabulsi/.thesis-py38/bin/activate && python add-pixels-to-caption.py --index=${start_index} --dataset=${dataset}  > output-captions.txt

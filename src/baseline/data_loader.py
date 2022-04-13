@@ -71,14 +71,16 @@ def get_mean(train_dataset, train_loader, img_h=500, img_w=500):
     
     return mean
 
+# Following new way in calculating std
+# https://kozodoi.me/python/deep%20learning/pytorch/tutorial/2021/03/08/image-mean-std.html?fbclid=IwAR2QnsqPGzyOkKw6yYtMMB1mmsNC8dIYt_6HdoKoOs9vFSciULBfDGIQ7Kw#:~:text=mean%3A%20simply%20divide%20the%20sum,%2F%20count%20%2D%20total_mean%20**%202
+
 def get_std(train_dataset, train_loader, mean, img_h=500, img_w=500):
-    num_of_pixels = len(train_dataset) * img_h * img_w
-    sum_of_squared_error = 0
+    count_of_pixels = len(train_dataset) * img_h * img_w
     
     for _, batch in enumerate(iter(train_loader)):
-        sum_of_squared_error += ((batch[2] - mean).pow(2)).sum()
-   
-    std = torch.sqrt(sum_of_squared_error / num_of_pixels)
+        var += (batch[3] / count_of_pixels) - (mean ** 2)
+  
+    std = torch.sqrt(var)
     
     return std
     

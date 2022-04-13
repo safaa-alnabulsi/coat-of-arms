@@ -63,13 +63,13 @@ if __name__ == "__main__":
     print(device)
     
     print('Dataset exists in', data_location)    
-    caption_file = data_location + '/captions-pixels.txt'
+    caption_file = data_location + '/captions-psumsq.txt'
     root_folder_images = data_location + '/images'
     df = pd.read_csv(caption_file)
 
-    train_annotation_file = data_location + '/train_captions_pixels.txt'
-    val_annotation_file  = data_location + '/val_captions_pixels.txt'
-    test_annotation_file  = data_location + '/test_captions_pixels.txt'
+    train_annotation_file = data_location + '/train_captions_psumsq.txt'
+    val_annotation_file  = data_location + '/val_captions_psumsq.txt'
+    test_annotation_file  = data_location + '/test_captions_psumsq.txt'
     
     if resplit:
         train, validate, test = train_validate_test_split(df, train_percent=.6, validate_percent=.2, seed=None)
@@ -99,7 +99,7 @@ if __name__ == "__main__":
     vocab.stoi = {'<PAD>': 0, '<SOS>': 1, '<EOS>': 2, '<UNK>': 3, 'lion': 4, 'rampant': 5, 'passt': 6, 'guard': 7, 'head': 8, 'lions': 9, 'cross': 10, 'moline': 11, 'patonce': 12, 'eagle': 13, 'doubleheaded': 14, 'eagles': 15, 'a': 16, 'b': 17, 'o': 18, 's': 19, 'g': 20, 'e': 21, 'v': 22, '1': 23, '2': 24, '3': 25, '4': 26, '5': 27, '6': 28, '7': 29, '8': 30, '9': 31, '10': 32, '11': 33, 'border': 34, '&': 35}
     vocab.itos = {0: '<PAD>', 1: '<SOS>', 2: '<EOS>', 3: '<UNK>', 4: 'lion', 5: 'rampant', 6: 'passt', 7: 'guard', 8: 'head', 9: 'lions', 10: 'cross', 11: 'moline', 12: 'patonce', 13: 'eagle', 14: 'doubleheaded', 15: 'eagles', 16: 'a', 17: 'b', 18: 'o', 19: 's', 20: 'g', 21: 'e', 22: 'v', 23: '1', 24: '2', 25: '3', 26: '4', 27: '5', 28: '6', 29: '7', 30: '8', 31: '9', 32: '10', 33: '11', 34: 'border', 35: '&'}
     
-    # -------------------------------------------------------------------------------------------------------
+    # ------------------------------------------ initial train loader --------------------------------------------------------
     print_time('\n ------------------------ \n calling get_loader with calc_mean=True - for mean')
     profiler = Profiler(async_mode='disabled')
     profiler.start()
@@ -118,7 +118,7 @@ if __name__ == "__main__":
     profiler.stop()
     profiler.print()
 
-    # -------------------------------------------------------------------------------------------------------
+    # ------------------------------------------ Calc mean -------------------------------------------------------------
     profiler = Profiler(async_mode='disabled')
     profiler.start()
 
@@ -129,26 +129,8 @@ if __name__ == "__main__":
 
     profiler.stop()
     profiler.print()
-    # -------------------------------------------------------------------------------------------------------
-    print_time('\n ------------------------ \n calling get_loader with calc_mean=True - for std')
-    profiler = Profiler(async_mode='disabled')
-    profiler.start()
 
-    train_loader, train_dataset = get_loader(
-        root_folder=root_folder_images,
-        annotation_file=train_annotation_file,
-        transform=None,  # <=======================
-        num_workers=NUM_WORKER,
-        vocab=vocab,
-        batch_size=batch_size,
-        pin_memory=False,
-        calc_mean=False,
-    )
-    
-    profiler.stop()
-    profiler.print()
-
-    # -------------------------------------------------------------------------------------------------------
+    # ----------------------------------------- Calc std --------------------------------------------------
     profiler = Profiler(async_mode='disabled')
     profiler.start()
 
@@ -159,7 +141,7 @@ if __name__ == "__main__":
     profiler.stop()
     profiler.print()
 
-    # -------------------------------------------------------------------------------------------------------
+    # ---------------------------------------- Loaders ---------------------------------------------------------------
 
     # Defining the transform to be applied
 #     mp.set_start_method('spawn')
@@ -187,7 +169,7 @@ if __name__ == "__main__":
     )
 
     print_time('finished writing the dataloader')
-    # -------------------------------------------------------------------------------------------------------
+    # ----------------------------------------- Hyperparams --------------------------------------------------------------
 
     # Hyperparams
     embed_size=300
@@ -206,7 +188,7 @@ if __name__ == "__main__":
                     'vocab_size': vocab_size
                   }
     
-    # -------------------------------------------------------------------------------------------------------
+    # --------------------------------------- Training the model ------------------------------------------------------
     
     # Training the model
     
@@ -223,7 +205,8 @@ if __name__ == "__main__":
     
     print('Bleu Score: ', bleu_score/8091)
     print('Final accuracy: ', final_accuracy)
-    # -------------------------------------------------------------------------------------------------------
+    
+    # ---------------------------------------- Saving the model ----------------------------------------------------
 
     # save the latest model
     now = datetime.now() # current date and time

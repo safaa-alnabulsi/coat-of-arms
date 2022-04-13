@@ -78,10 +78,13 @@ class ArmoriaAPIGeneratorHelper:
         if not my_image.exists():
             print(f'skipping image {image_full_path}, as it does not exist')
 
-        img = Image.open(image_full_path).convert("RGB")
-        trans = T.ToTensor()
-        img = trans(img)
-        return img.sum()
+        img     = Image.open(image_full_path).convert("RGB")
+        trans   = T.ToTensor()
+        img     = trans(img)
+        psum    = img.sum()
+        psum_sq = (img ** 2).sum()
+
+        return psum, psum_sq
 
     def add_pixels_column(self, root_folder, new_caption_file,old_caption_file, start_index=1):
         with open(old_caption_file, 'r') as f:
@@ -92,8 +95,8 @@ class ArmoriaAPIGeneratorHelper:
                     
                 image_name, text_label = line.strip().split(',')
                 image_full_path = root_folder + '/images/' + image_name
-                img_pixels = self._calc_img_pixels(image_full_path)
-                newline = f'{image_name},{text_label},{img_pixels}'
+                psum, psum_sq = self._calc_img_pixels(image_full_path)
+                newline = f'{image_name},{text_label},{psum},{psum_sq}'
 
                 self._write_line_to_file(new_caption_file, newline)
 
