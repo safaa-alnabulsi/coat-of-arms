@@ -188,6 +188,7 @@ if __name__ == "__main__":
                     'vocab_size': vocab_size
                   }
     
+    print('hyper_params: ',hyper_params)
     # --------------------------------------- Training the model ------------------------------------------------------
     
     # Training the model

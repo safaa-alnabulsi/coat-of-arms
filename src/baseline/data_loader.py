@@ -11,7 +11,6 @@ from src.utils import print_time
 def get_loader(root_folder, annotation_file, transform, 
                batch_size=32, num_workers=2, shuffle=True, 
                pin_memory=True, vocab=None, device='cpu', calc_mean=False):
-    print('before CoADataset init')
     dataset = CoADataset(root_folder, 
                          annotation_file, 
                          transform=transform, 
@@ -26,10 +25,8 @@ def get_loader(root_folder, annotation_file, transform,
 #                         .cache(td.modifiers.FromIndex(500, td.cachers.Pickle("./cache")))
 # #                         # You can define your own cachers, modifiers, see docs
 
-    print('after CoADataset init')
     pad_idx = dataset.vocab.stoi["<PAD>"]
   
-    print('before DataLoader init')
     loader = DataLoader(
         dataset=dataset,
         batch_size=batch_size,
@@ -38,7 +35,6 @@ def get_loader(root_folder, annotation_file, transform,
         pin_memory=pin_memory,
         collate_fn=CapsCollate(pad_idx=pad_idx,calc_mean=calc_mean)
     )
-    print('after DataLoader init')
 
     return loader, dataset
 
@@ -76,9 +72,9 @@ def get_mean(train_dataset, train_loader, img_h=500, img_w=500):
 
 def get_std(train_dataset, train_loader, mean, img_h=500, img_w=500):
     count_of_pixels = len(train_dataset) * img_h * img_w
-    
+    var = 0
     for _, batch in enumerate(iter(train_loader)):
-        var += (batch[3] / count_of_pixels) - (mean ** 2)
+        var += (batch[3].sum() / count_of_pixels) - (mean ** 2)
   
     std = torch.sqrt(var)
     
