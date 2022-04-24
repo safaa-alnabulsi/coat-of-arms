@@ -142,6 +142,7 @@ if __name__ == "__main__":
     profiler.print()
 
     # ---------------------------------------- Loaders ---------------------------------------------------------------
+    torch.cuda.empty_cache()
 
     # Defining the transform to be applied
 #     mp.set_start_method('spawn')
