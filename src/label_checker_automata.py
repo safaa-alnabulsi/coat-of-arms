@@ -92,7 +92,9 @@ class LabelCheckerAutomata:
             elif self.is_combination_color(chunk):  # to support multi-color 'O X GB fess checky' or 'G AGG chief'
                 output = output + self.get_combination_color(chunk)
             else:
-                raise ValueError(f'label "{label}" cannot be parsed. The chunk "{chunk}" cannot be fit into any category.')
+                err_message = f'label "{label}" cannot be parsed. The chunk "{chunk}" cannot be fit into any category.'
+                print(err_message)
+#                 raise ValueError(err_message)
         
         return output
 
