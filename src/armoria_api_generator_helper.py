@@ -21,6 +21,12 @@ class ArmoriaAPIGeneratorHelper:
 
             self._write_line_to_file(
                 self.caption_file, sample_name + '.png,' + text_label)
+    
+    def generate_cropped_caption_file(self):
+        for label in self.permutations:
+            text_label = label.strip()
+            self._write_line_to_file(
+                self.caption_file, text_label + '.jpg,' + text_label)
 
     def generate_dataset(self):
 #         with open(self.caption_file, 'r', buffering=100000) as f:
@@ -92,12 +98,20 @@ class ArmoriaAPIGeneratorHelper:
             for line in f:
                 if 'image,caption' in line:
                     continue
+                try:
+                    image_name, text_label = line.strip().split(',')
+                except ValueError as e:
+                    print(f'Invalid label: "{line}" is skipped')
+                    continue
                     
-                image_name, text_label = line.strip().split(',')
-                image_full_path = root_folder + '/images/' + image_name
-                psum, psum_sq = self._calc_img_pixels(image_full_path)
-                newline = f'{image_name},{text_label},{psum},{psum_sq}'
+                try:
+                    image_full_path = root_folder + '/images/' + image_name
+                    psum, psum_sq = self._calc_img_pixels(image_full_path)
+                except FileNotFoundError as e:
+                    print(f'FileNotFoundError: "{image_full_path}"')
+                    continue
 
+                newline = f'{image_name},{text_label},{psum},{psum_sq}'
                 self._write_line_to_file(new_caption_file, newline)
 
         f.close()
