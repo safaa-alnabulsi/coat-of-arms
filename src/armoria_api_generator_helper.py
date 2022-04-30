@@ -22,12 +22,23 @@ class ArmoriaAPIGeneratorHelper:
             self._write_line_to_file(
                 self.caption_file, sample_name + '.png,' + text_label)
     
-    def generate_cropped_caption_file(self):
+    def generate_cropped_caption_file_out(self, images_names):
+        for image_name, label in zip(images_names, self.permutations):
+            text_label = label.strip()
+            c = Caption(text_label, support_plural=True)
+            if c.is_valid_in_armoria:
+                line = image_name + ',' + text_label
+                self._write_line_to_file(self.caption_file, line)
+
+    def generate_cropped_caption_file_out_valid(self):
         for label in self.permutations:
             text_label = label.strip()
-            self._write_line_to_file(
-                self.caption_file, text_label + '.jpg,' + text_label)
-
+            c = Caption(text_label, support_plural=True)
+            if c.is_valid_in_armoria:
+                line = text_label + '.jpg,' + text_label
+                self._write_line_to_file(self.caption_file, line)
+            
+                
     def generate_dataset(self):
 #         with open(self.caption_file, 'r', buffering=100000) as f:
         with open(self.caption_file, 'r') as f:
