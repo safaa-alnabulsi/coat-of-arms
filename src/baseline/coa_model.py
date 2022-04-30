@@ -8,10 +8,17 @@ import torch.nn as nn
 import torch.onnx as onnx
 import torch.optim as optim
 import torchvision.models as models
+import torchvision.transforms as T
+from torch.utils.data import DataLoader,Dataset
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+
 from PIL import Image
 from tqdm import tqdm
 from time import sleep
+
 from src.baseline.model import EncoderCNN, Attention, DecoderRNN, EncoderDecoder
+from src.baseline.data_loader import get_loader, get_mean, get_std
 from src.accuracy import Accuracy
 from src.pytorchtools import EarlyStopping, EarlyStoppingAccuracy
 from src.utils import list_of_tensors_to_numpy_arr
@@ -232,4 +239,168 @@ def load_model_checkpoint(model_path, hyper_params, learning_rate, drop_prob, ig
     loss = checkpoint['loss']
 
     return model, optimizer, epoch, loss
+
+# ---------- testing model function ------------ #
+
+def init_testing_model(test_caption_file, root_folder_images, 
+                       num_worker,vocab,batch_size, device, pin_memory=False,img_h=500, img_w=500):
+    test_loader, test_dataset = get_loader(
+        root_folder=root_folder_images,
+        annotation_file=test_caption_file,
+        transform=None,  # <=======================
+        num_workers=num_worker,
+        vocab=vocab,
+        batch_size=batch_size,
+        device=device,
+        pin_memory=pin_memory
+    )
+
+    mean = get_mean(test_dataset, test_loader, img_h , img_w)
+    std = get_std(test_dataset, test_loader, mean)
+
+    print('mean, std:', mean, std)
+
+    #defining the transform to be applied
+
+    transform = T.Compose([
+        T.Resize(226),                     
+        T.RandomCrop(224),                 
+        T.ToTensor(),                               
+        T.Normalize(mean, std) 
+    ])
+
+    test_loader, test_dataset = get_loader(
+        root_folder=root_folder_images,
+        annotation_file=test_caption_file,
+        transform=transform,  # <=======================
+        num_workers=num_worker,
+        vocab=vocab,
+        batch_size=batch_size,
+        device=device,
+        pin_memory=pin_memory
+    )
     
+    return test_loader, test_dataset
+
+def test_model(model, criterion, test_loader, test_dataset, vocab_size, device):
+    # initialize lists to monitor test loss and accuracy
+    test_loss = 0.0
+    test_losses=[]
+    accuracy_test_list=[]
+
+    model.eval()
+    with torch.no_grad():
+        for idx, (img, correct_cap,_,_) in enumerate(iter(test_loader)):
+            features = model.encoder(img.to(device))
+
+            features_tensors = img[0].detach().clone().unsqueeze(0)
+            features = model.encoder(features_tensors.to(device))
+
+            caps,_ = model.decoder.generate_caption(features, vocab=test_dataset.vocab)   
+            caps = caps[:-1]
+            predicted_caption = ' '.join(caps)
+            print(predicted_caption)
+            # compare predictions to true label
+            correct_caption = []
+            for j in correct_cap.T[0]:
+                if j.item() not in [0, 1, 2 , 3]:
+                    correct_caption.append(test_dataset.vocab.itos[j.item()])
+            correct_caption_s = ' '.join(correct_caption)
+
+            # calc metrics
+            acc_test = Accuracy(predicted_caption,correct_caption_s).get()
+            accuracy_test_list.append(acc_test)
+            print(f'Test Acuuracy (in progress): {acc_test:.6f}\n')
+
+            # ------------------------------------------
+            # calc losses and take the average 
+            image, captions = img.to(device), correct_cap.to(device)
+            outputs, _ = model(image, captions.T)
+            targets    = captions.T[:,1:] 
+            loss       = criterion(outputs.view(-1, vocab_size), targets.reshape(-1))
+            test_losses.append(loss)
+
+            # ------------------------------------------
+
+    # calculate and print avg test loss
+    test_loss = sum(test_losses)/len(test_dataset)
+    print('Test Loss (final): {:.6f}\n'.format(test_loss))
+
+    acc_test_score = (100. * sum(accuracy_test_list) / len(accuracy_test_list))
+
+    print(f'Test Accuracy (Overall): {acc_test_score}%')
+    
+    return test_losses, accuracy_test_list, acc_test_score, test_loss
+
+##  Visualizing the attentions
+# Defining helper functions
+# Given the image generate captions and attention scores</li>
+# Plot the attention scores in the image</li>
+
+# generate caption
+def get_caps_from(model, test_dataset, features_tensors, device):
+    #generate the caption
+    model.eval()
+    with torch.no_grad():
+        features = model.encoder(features_tensors.to(device))
+        caps,alphas = model.decoder.generate_caption(features,vocab=test_dataset.vocab)
+        caption = ' '.join(caps)
+        show_image(features_tensors[0],title=caption)
+    
+    return caps,alphas
+#Show attention
+def plot_attention(img, result, attention_plot):
+    #untransform
+    img[0] = img[0] * 0.229
+    img[1] = img[1] * 0.224 
+    img[2] = img[2] * 0.225 
+    img[0] += 0.485 
+    img[1] += 0.456 
+    img[2] += 0.406
+    
+    img = img.numpy().transpose((1, 2, 0))
+    temp_image = img
+
+    fig = plt.figure(figsize=(15, 15))
+
+    len_result = len(result)
+    for l in range(len_result):
+        temp_att = attention_plot[l].reshape(7,7)
+        
+        ax = fig.add_subplot(len_result//2,len_result//2, l+1)
+        ax.set_title(result[l])
+        img = ax.imshow(temp_image)
+        ax.imshow(temp_att, cmap='gray', alpha=0.7, extent=img.get_extent())
+        
+
+    plt.tight_layout()
+    plt.show()
+    
+def test_rand_image(model, test_dataset, test_loader,device):
+    dataiter = iter(test_loader)
+    images,_,_,_ = next(dataiter)
+
+    img = images[0].detach().clone()
+    img1 = images[0].detach().clone()
+    caps,alphas = get_caps_from(model, test_dataset, img.unsqueeze(0),device)
+
+    plot_attention(img1, caps, alphas)
+
+    #show the tensor image
+def show_image(img, title=None):
+    """Imshow for Tensor."""
+    
+    #unnormalize 
+    img[0] = img[0] * 0.229
+    img[1] = img[1] * 0.224 
+    img[2] = img[2] * 0.225 
+    img[0] += 0.485 
+    img[1] += 0.456 
+    img[2] += 0.406
+    
+    img = img.numpy().transpose((1, 2, 0))
+      
+    plt.imshow(img)
+    if title is not None:
+        plt.title(title)
+    plt.pause(0.001)  # pause a bit so that plots are updated
