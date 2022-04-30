@@ -139,7 +139,9 @@ checkpoint.pt
 cropped/
 output.txt
 cropped
-data
+data/cropped_coas/out/images/
+data/cropped_coas/out_valid/images/
+data/cropped_coas.zip
 models
 baseline-gen-data
 gg
