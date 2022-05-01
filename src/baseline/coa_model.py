@@ -256,7 +256,7 @@ def init_testing_model(test_caption_file, root_folder_images,
     )
 
     mean = get_mean(test_dataset, test_loader, img_h , img_w)
-    std = get_std(test_dataset, test_loader, mean)
+    std = get_std(test_dataset, test_loader, mean, img_h , img_w)
 
     print('mean, std:', mean, std)
 
