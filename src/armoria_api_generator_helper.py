@@ -21,7 +21,8 @@ class ArmoriaAPIGeneratorHelper:
 
             self._write_line_to_file(
                 self.caption_file, sample_name + '.png,' + text_label)
-    
+            
+    # labeling for images in this folder: id_label.jpg            
     def generate_cropped_caption_file_out(self, images_names):
         for image_name, label in zip(images_names, self.permutations):
             text_label = label.strip()
@@ -30,13 +31,18 @@ class ArmoriaAPIGeneratorHelper:
                 line = image_name + ',' + text_label
                 self._write_line_to_file(self.caption_file, line)
 
-    def generate_cropped_caption_file_out_valid(self):
-        for label in self.permutations:
+    # different labeling for images in this folder: label.jpg        
+    def generate_cropped_caption_file_out_valid(self, images_names):
+        for label in images_names:
             text_label = label.strip()
             c = Caption(text_label, support_plural=True)
             if c.is_valid_in_armoria:
                 line = text_label + '.jpg,' + text_label
                 self._write_line_to_file(self.caption_file, line)
+            else:
+                print(f'Label "{label}" is invalid in Armoria API')
+
+              
             
                 
     def generate_dataset(self):
