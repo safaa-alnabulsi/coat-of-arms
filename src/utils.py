@@ -17,10 +17,19 @@ def plot_bar_chart(data):
     plt.show()
 
 
+
 def plot_image(image_file):
     img = mpimg.imread(image_file)
     imgplot = plt.imshow(img)
     plt.show()
+
+def plot_im(im):
+    imgplot = plt.imshow(im)
+    plt.show()
+
+def save_im(im, full_path, format='JPEG'):
+    im.save(full_path, format)
+
 
 def print_time(text):
     now = datetime.now()
