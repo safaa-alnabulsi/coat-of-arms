@@ -30,8 +30,8 @@ class CapsCollate:
                 psum_sq.append(item[3])
                 
                 # syntetic data im.size() = torch.Size([1, 3, 500, 500]), torch.Size([1, 3, 224, 224]) 
-                # real data 
-                print(im.size())
+                # real data varies in size, thus I created notebooks/12-resize-cropped-real-date.ipynb
+                #print(im.size())
                 
             imgs    = torch.cat(imgs,dim=0)
             targets = pad_sequence(targets, 
