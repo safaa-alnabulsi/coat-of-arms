@@ -41,6 +41,7 @@ if __name__ == "__main__":
     parser.add_argument('--epochs', dest='epochs', type=int, help='Number of epochs',default=10)
     parser.add_argument('--batch-size', dest='batch_size', type=int, help='Number of Batch size', default=128)
     parser.add_argument('--resplit', dest='resplit', type=str, help='resplit the samples', default='no', choices=['yes','Yes','y','Y','no','No','n', 'N'])
+    parser.add_argument('--local', dest='local', type=str, help='running on local?', default='no', choices=['yes','Yes','y','Y','no','No','n', 'N'])
 
     args = parser.parse_args()
 
@@ -48,10 +49,17 @@ if __name__ == "__main__":
     batch_size = args.batch_size
     num_epochs = args.epochs
     resplit = args.resplit 
+    local = args.local
+    
     if resplit in ['yes','Yes','y','Y'] :
         resplit = True
     else: 
         resplit = False
+        
+    if local in ['yes','Yes','y','Y'] :
+        local = True
+    else: 
+        local = False
 
     print('data_location is ',data_location)
     print('batch_size is ',batch_size)
@@ -213,8 +221,12 @@ if __name__ == "__main__":
     # save the latest model
     now = datetime.now() # current date and time
     timestr = now.strftime("%m.%d.%Y-%H:%M:%S")
-    model_full_path = f"/home/space/datasets/COA/models/baseline/attention_model-qsub-{timestr}.pth"
-#     model_full_path = f"models/baseline/attention_model_{timestr}.pth"
+    if local:
+        dataset_models_folder = "models/baseline/"
+    else:
+        dataset_models_folder = "/home/space/datasets/COA/models/baseline"        
+    
+    model_full_path = f"{dataset_models_folder}/attention_model-qsub-{timestr}.pth"
 
     save_model(model, optimizer, final_train_loss, final_accuracy, model_full_path, hyper_params)
     print('The trained model has been saved to ', model_full_path)
