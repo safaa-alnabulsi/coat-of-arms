@@ -55,7 +55,7 @@ def get_loaders(root_folder, train_annotation_file, val_annotation_file, test_an
     return train_loader, val_loader, test_loader, train_dataset, val_dataset, test_dataset
 
 def get_mean(train_dataset, train_loader, img_h=500, img_w=500):
-    num_of_pixels = len(train_dataset) * img_h * img_w
+    count_of_pixels = len(train_dataset) * img_h * img_w * 3
 
     total_sum = 0
 
@@ -63,20 +63,34 @@ def get_mean(train_dataset, train_loader, img_h=500, img_w=500):
     for _, batch in enumerate(iter(train_loader)):
         total_sum += batch[2].sum()
     
-    mean = total_sum / num_of_pixels
+    mean = total_sum / count_of_pixels
     
     return mean
 
-# Following new way in calculating std
+# Following new way in calculating std = breaking down the default formula 
 # https://kozodoi.me/python/deep%20learning/pytorch/tutorial/2021/03/08/image-mean-std.html?fbclid=IwAR2QnsqPGzyOkKw6yYtMMB1mmsNC8dIYt_6HdoKoOs9vFSciULBfDGIQ7Kw#:~:text=mean%3A%20simply%20divide%20the%20sum,%2F%20count%20%2D%20total_mean%20**%202
+# TODO: To ask David wehther to calculate one value for three colors channels or three values R,G,B
 
 def get_std(train_dataset, train_loader, mean, img_h=500, img_w=500):
-    count_of_pixels = len(train_dataset) * img_h * img_w
-    var = 0
+    count_of_pixels = len(train_dataset) * img_h * img_w * 3 # 3 for 3 rgb channels
+    psumq_all_image = 0
+    psum_all_image = 0
     for _, batch in enumerate(iter(train_loader)):
-        var += (batch[3].sum() / count_of_pixels) - (mean ** 2)
-  
-    std = torch.sqrt(var)
+        psum_all_image += batch[2].sum()
+        psumq_all_image += batch[3].sum()
+        
+    var = psumq_all_image  - ((psum_all_image ** 2) / count_of_pixels)    
+    std = torch.sqrt(var/count_of_pixels)
     
     return std
-    
+
+# my old way in calculating std
+def get_std_old(train_dataset, train_loader, mean, img_h=500, img_w=500):
+    count_of_pixels = len(train_dataset) * img_h * img_w * 3
+    sum_of_squared_error=0
+    for _, batch in enumerate(iter(train_loader)):
+        sum_of_squared_error += ((batch[2] - mean).pow(2)).sum()
+   
+    std = torch.sqrt(sum_of_squared_error / count_of_pixels)
+    return std
+        
