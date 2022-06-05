@@ -13,7 +13,7 @@ if __name__ == "__main__":
     print('starting the script')
     parser = argparse.ArgumentParser(description='A script for generating armoria dataset')
     parser.add_argument('--dataset', dest='dataset', type=str, help='Full path to the dataset', default='/home/space/datasets/COA/generated-data-api-large')
-    parser.add_argument('--index', dest='index', type=int, help='Start index', default=1)
+    parser.add_argument('--index', dest='index', type=int, help='Start index', default=0)
 
     args = parser.parse_args()
     start_index = args.index
@@ -26,7 +26,7 @@ if __name__ == "__main__":
     
     api_gen_helper = ArmoriaAPIGeneratorHelper(caption_file, FOLDER_NAME,[],start_index) 
 
-    if start_index == 1:
+    if start_index == 0:
         api_gen_helper.creat_caption_file(new_caption_file,columns='image,caption,psum,psum_sq')
 
     api_gen_helper.add_pixels_column(FOLDER_NAME, new_caption_file,caption_file,start_index)
