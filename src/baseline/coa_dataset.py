@@ -65,14 +65,14 @@ class CoADataset(td.Dataset):
             print(f'skipping image {img_name}, as it does not exist')
 
         img = Image.open(img_location).convert("RGB")
-        
+       
         #apply the transfromation to the image
         if self.transform is not None:
-            img = self.transform(img)
+            img_t = self.transform(img)
         else:
             trans = T.ToTensor()
-            img = trans(img)
-        return img
+            img_t = trans(img)
+        return img_t
                 
     def _get_caption_vec(self, idx):
 
