@@ -51,7 +51,7 @@ def get_new_model(hyper_params, learning_rate, ignored_idx, drop_prob, device):
 
 
 # Function to test the model with the val dataset and print the accuracy for the test images
-def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device):
+def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device, tepoch):
 #     print('validate function called')
     accuracy_list = list()
     total = len(val_loader)
@@ -91,7 +91,8 @@ def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device
             targets    = captions.T[:,1:] 
             loss       = criterion(outputs.view(-1, vocab_size), targets.reshape(-1))
             val_losses.append(loss)
-            
+            tepoch.set_postfix({'validatio loss (in progress)': loss})
+
             # ------------------------------------------
            
     # compute the accuracy over all test images
@@ -99,7 +100,7 @@ def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device
 #     avg_loss = sum(val_losses) / len(val_losses)
 #     print('avg_loss, bleu_score, acc_score', avg_loss, bleu_score, acc_score)
 
-    return val_losses, accuracy_list, bleu_score
+    return val_losses, accuracy_list, bleu_score, tepoch
 
 
 def train_model(model, optimizer, criterion, 
@@ -155,9 +156,9 @@ def train_model(model, optimizer, criterion,
             # validate the model #
             ######################
 
-            val_losses, accuracy_list, bleu_score = validate_model(model, criterion, 
+            val_losses, accuracy_list, bleu_score, tepoch = validate_model(model, criterion, 
                                                                    val_loader, val_dataset,
-                                                                   vocab_size, device)
+                                                                   vocab_size, device, tepoch)
 
             ########################################    
             # print training/validation statistics #
