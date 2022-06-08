@@ -145,4 +145,5 @@ data/cropped_coas.zip
 models
 baseline-gen-data
 gg
+data/cropped_coas/out
 *.pt
