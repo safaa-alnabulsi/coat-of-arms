@@ -52,7 +52,7 @@ def get_new_model(hyper_params, learning_rate, ignored_idx, drop_prob, device):
 
 
 # Function to test the model with the val dataset and print the accuracy for the test images
-def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device, tepoch, epoch):
+def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device, tepoch, epoch, writer):
 #     print('validate function called')
     accuracy_list = list()
     total = len(val_loader)
@@ -60,9 +60,6 @@ def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device
     correct = 0
     val_losses = list()
     avg_loss = 0
-    
-    # Writer will output to ./runs/ directory by default
-    writer = SummaryWriter()
 
     model.eval()
     with torch.no_grad():
@@ -162,15 +159,15 @@ def train_model(model, optimizer, criterion,
                 train_losses.append(train_batch_loss)
                 tepoch.set_postfix({'Train loss (in progress)': train_batch_loss})
                 writer.add_scalar("Loss/train", train_batch_loss, epoch)
-
             
-            ######################    
-            # validate the model #
-            ######################
+                ######################    
+                # validate the model #
+                ######################
 
-            val_losses, accuracy_list, bleu_score, tepoch = validate_model(model, criterion, 
-                                                                   val_loader, val_dataset,
-                                                                   vocab_size, device, tepoch, epoch)
+                val_losses, accuracy_list, bleu_score, tepoch = validate_model(model, criterion, 
+                                                                       val_loader, val_dataset,
+                                                                       vocab_size, device,
+                                                                       tepoch, epoch,writer)
 
             ########################################    
             # print training/validation statistics #
