@@ -147,3 +147,4 @@ baseline-gen-data
 gg
 data/cropped_coas/out
 *.pt
+notebooks/runs

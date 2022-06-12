@@ -10,6 +10,7 @@ import torch.optim as optim
 import torchvision.models as models
 import torchvision.transforms as T
 from torch.utils.data import DataLoader,Dataset
+from torch.utils.tensorboard import SummaryWriter
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
@@ -51,7 +52,7 @@ def get_new_model(hyper_params, learning_rate, ignored_idx, drop_prob, device):
 
 
 # Function to test the model with the val dataset and print the accuracy for the test images
-def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device, tepoch):
+def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device, tepoch, epoch):
 #     print('validate function called')
     accuracy_list = list()
     total = len(val_loader)
@@ -59,6 +60,10 @@ def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device
     correct = 0
     val_losses = list()
     avg_loss = 0
+    
+    # Writer will output to ./runs/ directory by default
+    writer = SummaryWriter()
+
     model.eval()
     with torch.no_grad():
         for idx, (img, correct_cap,_,_) in enumerate(iter(val_loader)):
@@ -78,8 +83,8 @@ def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device
             correct_caption_s = ' '.join(correct_caption)
             # ------------------------------------------
             # calc metrics
-
-            accuracy_list.append(Accuracy(predicted_caption,correct_caption_s).get())
+            acc = Accuracy(predicted_caption,correct_caption_s).get()
+            accuracy_list.append(acc)
 
             bleu = nltk.translate.bleu_score.sentence_bleu([correct_caption], caps, weights=(0.5, 0.5))
             bleu_score += bleu
@@ -92,6 +97,8 @@ def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device
             loss       = criterion(outputs.view(-1, vocab_size), targets.reshape(-1))
             val_losses.append(loss)
             tepoch.set_postfix({'validatio loss (in progress)': loss})
+            writer.add_scalar("Loss/validation", loss, epoch)
+            writer.add_scalar("Accuracy/validation", acc, epoch)
 
             # ------------------------------------------
            
@@ -99,6 +106,7 @@ def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device
 #     acc_score = (100 * sum(accuracy_list) / len(accuracy_list))
 #     avg_loss = sum(val_losses) / len(val_losses)
 #     print('avg_loss, bleu_score, acc_score', avg_loss, bleu_score, acc_score)
+    writer.close()
 
     return val_losses, accuracy_list, bleu_score, tepoch
 
@@ -120,6 +128,9 @@ def train_model(model, optimizer, criterion,
     accuracy_list = []
     avg_acc = []
     
+    # Writer will output to ./runs/ directory by default
+    writer = SummaryWriter()
+
     # initialize the early_stopping object
 #     early_stopping = EarlyStopping(patience=patience, verbose=True)
     early_stopping = EarlyStoppingAccuracy(patience=patience, verbose=True)
@@ -150,15 +161,16 @@ def train_model(model, optimizer, criterion,
                 train_batch_loss = loss.item()
                 train_losses.append(train_batch_loss)
                 tepoch.set_postfix({'Train loss (in progress)': train_batch_loss})
+                writer.add_scalar("Loss/train", train_batch_loss, epoch)
 
-               
+            
             ######################    
             # validate the model #
             ######################
 
             val_losses, accuracy_list, bleu_score, tepoch = validate_model(model, criterion, 
                                                                    val_loader, val_dataset,
-                                                                   vocab_size, device, tepoch)
+                                                                   vocab_size, device, tepoch, epoch)
 
             ########################################    
             # print training/validation statistics #
@@ -199,6 +211,7 @@ def train_model(model, optimizer, criterion,
             if early_stopping.early_stop:
                 print("Early stopping")
                 break
+    writer.close()
 
     # load the last checkpoint with the best model
     model.load_state_dict(torch.load('checkpoint.pt'))

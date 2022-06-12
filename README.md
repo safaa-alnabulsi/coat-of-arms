@@ -40,7 +40,11 @@ Work in progress
     
     streamlit run view_crops.py
 
-6- to generate dataset
+6- To check the loss/accuracy while training with tensorboard, run the following command next to `runs` folder. The server will start in http://localhost:6006/ :
+
+    ~/tub/coat-of-arms/notebooks (main*) » tensorboard --logdir=runs --bind_all
+
+7- to generate dataset
 
     python generate-baseline-large.py --index=40787
     python add-pixels-to-caption.py --index=40787 --dataset baseline-gen-data/medium
@@ -69,4 +73,4 @@ The previous simple automata:
 - Early Stopping for PyTorch: https://github.com/Bjarten/early-stopping-pytorch
 - torchdatasets: https://github.com/szymonmaszke/torchdatasets
 - Torch data-loader: https://www.kaggle.com/mdteach/torch-data-loader-flicker-8k
-- 
+- Tensorboard: https://pytorch.org/tutorials/recipes/recipes/tensorboard_with_pytorch.html
