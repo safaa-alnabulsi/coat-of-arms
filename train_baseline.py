@@ -208,7 +208,7 @@ if __name__ == "__main__":
     # early stopping patience; how long to wait after last time validation loss improved.
     patience = 20
 
-    model, train_loss, valid_loss, avg_acc, bleu_score = train_model(model, optimizer, criterion, train_loader, val_loader, val_dataset, vocab_size, batch_size, patience, num_epochs, device)
+    model, train_loss, valid_loss, avg_acc, bleu_score = train_model(model, optimizer, criterion, train_dataset, train_loader, val_loader, val_dataset, vocab_size, batch_size, patience, num_epochs, device)
 
     final_accuracy = np.average(avg_acc)
     final_train_loss = np.average(train_loss)

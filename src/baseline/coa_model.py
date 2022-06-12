@@ -51,6 +51,26 @@ def get_new_model(hyper_params, learning_rate, ignored_idx, drop_prob, device):
     return model, optimizer, criterion
 
 
+def predict_image(model,image, correct_cap, dataset, device):
+    # encode the image to be ready for prediction
+    features = model.encoder(image.to(device))
+    features_tensors = image[0].detach().clone().unsqueeze(0)
+    features = model.encoder(features_tensors.to(device))
+    
+    # predict the caption from the image
+    caps,_ = model.decoder.generate_caption(features, vocab=dataset.vocab)   
+    caps = caps[:-1]
+    predicted_caption = ' '.join(caps)
+    
+    # get the correct caption as a string
+    correct_caption = []
+    for j in correct_cap.T[0]:
+        if j.item() not in [0, 1, 2 , 3]:
+            correct_caption.append(dataset.vocab.itos[j.item()])   
+            
+    return  predicted_caption, correct_caption, caps
+
+
 # Function to test the model with the val dataset and print the accuracy for the test images
 def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device, tepoch, epoch, writer):
 #     print('validate function called')
@@ -64,19 +84,8 @@ def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device
     model.eval()
     with torch.no_grad():
         for idx, (img, correct_cap,_,_) in enumerate(iter(val_loader)):
-            features = model.encoder(img.to(device))
-
-            features_tensors = img[0].detach().clone().unsqueeze(0)
-            features = model.encoder(features_tensors.to(device))
-                        
-            caps,_ = model.decoder.generate_caption(features, vocab=val_dataset.vocab)   
-            caps = caps[:-1]
-            predicted_caption = ' '.join(caps)
-
-            correct_caption = []
-            for j in correct_cap.T[0]:
-                if j.item() not in [0, 1, 2 , 3]:
-                    correct_caption.append(val_dataset.vocab.itos[j.item()])
+            
+            predicted_caption, correct_caption, caps = predict_image(model, img, correct_cap, val_dataset, device)
             correct_caption_s = ' '.join(correct_caption)
             # ------------------------------------------
             # calc metrics
@@ -109,7 +118,8 @@ def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device
 
 
 def train_model(model, optimizer, criterion, 
-                train_loader, val_loader, val_dataset, 
+                train_dataset, train_loader, 
+                val_loader, val_dataset, 
                 vocab_size, batch_size, patience, n_epochs, device):
 
     # to track the training loss as the model trains
@@ -157,9 +167,16 @@ def train_model(model, optimizer, criterion,
                 # record training loss
                 train_batch_loss = loss.item()
                 train_losses.append(train_batch_loss)
+                
                 tepoch.set_postfix({'Train loss (in progress)': train_batch_loss})
                 writer.add_scalar("Loss/train", train_batch_loss, epoch)
-            
+                
+                # nice to have:  training accuracy
+                predicted_caption, correct_caption,caps = predict_image(model, image, captions, train_dataset, device)
+                correct_caption_s = ' '.join(correct_caption)
+                acc = Accuracy(predicted_caption,correct_caption_s).get()
+                writer.add_scalar("Accuracy/train", acc, epoch)
+                
                 ######################    
                 # validate the model #
                 ######################
@@ -302,23 +319,11 @@ def test_model(model, criterion, test_loader, test_dataset, vocab_size, device):
     model.eval()
     with torch.no_grad():
         for idx, (img, correct_cap,_,_) in enumerate(iter(test_loader)):
-            features = model.encoder(img.to(device))
 
-            features_tensors = img[0].detach().clone().unsqueeze(0)
-            features = model.encoder(features_tensors.to(device))
-
-            caps,_ = model.decoder.generate_caption(features, vocab=test_dataset.vocab)   
-            caps = caps[:-1]
-            predicted_caption = ' '.join(caps)
-            print(predicted_caption)
-            # compare predictions to true label
-            correct_caption = []
-            for j in correct_cap.T[0]:
-                if j.item() not in [0, 1, 2 , 3]:
-                    correct_caption.append(test_dataset.vocab.itos[j.item()])
+            predicted_caption, correct_caption,caps = predict_image(model, img, correct_cap, test_dataset, device)
             correct_caption_s = ' '.join(correct_caption)
-
             # calc metrics
+            
             acc_test = Accuracy(predicted_caption,correct_caption_s).get()
             accuracy_test_list.append(acc_test)
             print(f'Test Acuuracy (in progress): {acc_test:.6f}\n')
