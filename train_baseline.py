@@ -35,7 +35,7 @@ import argparse
 
 if __name__ == "__main__":
     print('starting the script')
-    
+
     parser = argparse.ArgumentParser(description='A script for training the baseline model')
     parser.add_argument('--dataset', dest='dataset', type=str, help='Full path to the dataset', default='/home/space/datasets/COA/generated-data-api')
     parser.add_argument('--epochs', dest='epochs', type=int, help='Number of epochs',default=10)
@@ -61,11 +61,20 @@ if __name__ == "__main__":
     else: 
         local = False
 
+    # get the timestamp to create default logsdir
+    now = datetime.now() # current date and time
+    timestr = now.strftime("%m.%d.%Y-%H:%M:%S")
+    if local:
+        logs_folder = f"logs/experiments/run-{timestr}"
+    else:
+        logs_folder = f"/home/space/datasets/COA/logs/experiments/run-{timestr}"        
+
+    print('running on local ',local)
     print('data_location is ',data_location)
+    print('logs_folder is ',logs_folder)
     print('batch_size is ',batch_size)
     print('num_epochs is ',num_epochs)
     print('resplit is ',resplit)
-
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(device)
@@ -208,7 +217,7 @@ if __name__ == "__main__":
     # early stopping patience; how long to wait after last time validation loss improved.
     patience = 20
 
-    model, train_loss, valid_loss, avg_acc, bleu_score = train_model(model, optimizer, criterion, train_dataset, train_loader, val_loader, val_dataset, vocab_size, batch_size, patience, num_epochs, device)
+    model, train_loss, valid_loss, avg_acc, bleu_score = train_model(model, optimizer, criterion, train_dataset, train_loader, val_loader, val_dataset, vocab_size, batch_size, patience, num_epochs, device, logs_folder)
 
     final_accuracy = np.average(avg_acc)
     final_train_loss = np.average(train_loss)

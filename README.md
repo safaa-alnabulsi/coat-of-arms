@@ -40,9 +40,13 @@ Work in progress
     
     streamlit run view_crops.py
 
-6- To check the loss/accuracy while training with tensorboard, run the following command next to `runs` folder. The server will start in http://localhost:6006/ :
+6- To check the loss/accuracy while training with tensorboard, run the following command next to `logs/experiments` folder. The server will start in http://localhost:6006/ :
 
-    ~/tub/coat-of-arms/notebooks (main*) » tensorboard --logdir=runs --bind_all
+    tensorboard --logdir=logs/experiments/ --bind_all
+
+__Note__: if you want to see results from more than one experiment, you need to run it:
+
+    tensorboard --logdir_spec ExperimentA:path/to/dir,ExperimentB:another/path/to/somewhere
 
 7- to generate dataset
 

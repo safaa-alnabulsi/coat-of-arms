@@ -148,4 +148,5 @@ gg
 data/cropped_coas/out
 *.pt
 notebooks/runs
-events.*
+logs/experiments
+runs

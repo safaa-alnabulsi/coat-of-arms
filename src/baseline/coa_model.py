@@ -120,7 +120,7 @@ def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device
 def train_model(model, optimizer, criterion, 
                 train_dataset, train_loader, 
                 val_loader, val_dataset, 
-                vocab_size, batch_size, patience, n_epochs, device):
+                vocab_size, batch_size, patience, n_epochs, device, logs_folder=''):
 
     # to track the training loss as the model trains
     train_losses = []
@@ -135,8 +135,8 @@ def train_model(model, optimizer, criterion,
     accuracy_list = []
     avg_acc = []
     
-    # Writer will output to ./runs/ directory by default
-    writer = SummaryWriter()
+    # Writer will output to ./runs/ directory by default if logs_folder is not provided
+    writer = SummaryWriter(logs_folder)
 
     # initialize the early_stopping object
 #     early_stopping = EarlyStopping(patience=patience, verbose=True)
