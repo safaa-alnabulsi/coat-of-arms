@@ -141,10 +141,9 @@ def train_model(model, optimizer, criterion,
     # initialize the early_stopping object
 #     early_stopping = EarlyStopping(patience=patience, verbose=True)
     early_stopping = EarlyStoppingAccuracy(patience=patience, verbose=True)
-    
     for epoch in range(1, n_epochs + 1):
         with tqdm(train_loader, unit="batch") as tepoch:
-
+            validation_interval = 0
             ###################
             # train the model #
             ###################
@@ -180,11 +179,13 @@ def train_model(model, optimizer, criterion,
                 ######################    
                 # validate the model #
                 ######################
-
-                val_losses, accuracy_list, bleu_score, tepoch = validate_model(model, criterion, 
-                                                                       val_loader, val_dataset,
-                                                                       vocab_size, device,
-                                                                       tepoch, epoch,writer)
+                # validation interval: let's do it 10 times for 1370 batchs (512 batch size)
+                if validation_interval % 150 == 0:
+                    val_losses, accuracy_list, bleu_score, tepoch = validate_model(model, criterion, 
+                                                                        val_loader, val_dataset,
+                                                                        vocab_size, device,
+                                                                        tepoch, epoch,writer)
+                validation_interval+=1
 
             ########################################    
             # print training/validation statistics #
@@ -195,6 +196,7 @@ def train_model(model, optimizer, criterion,
             avg_train_losses.append(train_loss)
 
             # Copy the tensor to host memory first to move tensor to numpy
+            # notice in here you are getting only the latest validation values
             valid_losses = list_of_tensors_to_numpy_arr(val_losses)        
             valid_loss = np.average(valid_losses)
             avg_valid_losses.append(valid_loss)
