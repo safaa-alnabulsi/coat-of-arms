@@ -40,10 +40,6 @@ Work in progress
     
     streamlit run view_crops.py
 
-6- To check the loss/accuracy while training with tensorboard, run the following command next to `logs/experiments` folder. The server will start in http://localhost:6006/ :
-
-    tensorboard --logdir=logs/experiments/ --bind_all
-
 __Note__: if you want to see results from more than one experiment, you need to run it:
 
     tensorboard --logdir_spec ExperimentA:path/to/dir,ExperimentB:another/path/to/somewhere
@@ -53,15 +49,33 @@ __Note__: if you want to see results from more than one experiment, you need to 
     python generate-baseline-large.py --index=40787
     python add-pixels-to-caption.py --index=40787 --dataset baseline-gen-data/medium
 
+The default index is 0
+
 ## Training the baseline model
 
-On the cluster
+- To submit a job to run on one node on the cluster
 
     qsub train_baseline.sh /home/space/datasets/COA/generated-data-api-large 256 1 false
 
-Locally:
+- Locally:
 
     python train_baseline.py --dataset baseline-gen-data/small --batch-size 256 --epochs 1 --resplit no
+
+- To check the loss/accuracy while training with tensorboard locally, run the following command
+
+    tensorboard --logdir=logs/experiments/ --bind_all
+
+The server will start in http://localhost:6006/
+
+- To track the metrics of loss and accuracy in real time:
+
+    tensorboard --logdir=/home/space/datasets/COA/logs/experiments --bind_all
+
+Check the port and then do ssh forwarding:
+
+    ssh -L 6012:cluster:6012 <your-email> -i ~/.ssh/id_rsa
+
+Navigate to http://localhost:6012/ in your browser and check the job logs in real time.
 
 ## The Automata
 
