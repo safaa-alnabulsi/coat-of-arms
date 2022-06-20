@@ -136,6 +136,9 @@ def train_model(model, optimizer, criterion,
     accuracy_list = []
     avg_acc = []
     
+    # number of batchs is needed to calclualte the validation interval
+    num_of_batches = len(train_loader)
+
     # Writer will output to ./runs/ directory by default if logs_folder is not provided
     writer = SummaryWriter(logs_folder)
 
@@ -180,8 +183,15 @@ def train_model(model, optimizer, criterion,
                 ######################    
                 # validate the model #
                 ######################
-                # validation interval: let's do it 10 times for 1370 batchs (512 batch size)
-                if validation_interval % 150 == 0:
+                # validation interval: let's do it 10 times 
+                # for 1370 batchs (512 batch size)
+                # proof:
+                # counter=0
+                # for i in range(0,1370):
+                #     if i%(int(1370/10)) == 0:
+                #         counter+=1
+                # print(counter)
+                if validation_interval % int(num_of_batches/10) == 0:
                     val_losses, accuracy_list, bleu_score, tepoch = validate_model(model, criterion, 
                                                                         val_loader, val_dataset,
                                                                         vocab_size, device,
