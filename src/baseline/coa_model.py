@@ -284,6 +284,16 @@ def load_model_checkpoint(model_path, hyper_params, learning_rate, drop_prob, ig
 
 # ---------- testing model function ------------ #
 
+def get_training_mean_std(run_path):
+    f = open(run_path+"/mean.txt", "r")
+    mean = torch.tensor(float(f.read()), dtype=torch.float)
+
+    f = open(run_path+"/std.txt", "r")
+    std = torch.tensor(float(f.read()), dtype=torch.float)
+    print(f'mean={mean}, std={std}')
+
+    return mean, std
+
 def init_testing_model(test_caption_file, root_folder_images, mean, std,
                        num_worker,vocab,batch_size, device, pin_memory=False,img_h=500, img_w=500):
     test_loader, test_dataset = get_loader(
