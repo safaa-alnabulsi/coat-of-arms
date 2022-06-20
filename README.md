@@ -84,6 +84,15 @@ Check the port and then do ssh forwarding:
 
 Navigate to http://localhost:6012/ in your browser and check the job logs in real time.
 
+## Testing the baseline model
+
+Each run of the training script is stored in the following structure of experiemnts: 
+![alt run](images/run.png)
+
+You can use notebook [09-baseline-model-test.ipynb](notebooks/09-baseline-model-test.ipynb) to load the model and test it on both synthesized data and real data.
+
+TODO Next: create a script for testing
+
 ## The Automata
 
 The visual representation of the implemented automata in [LabelCheckerAutomata](src/label_checker_automata.py)

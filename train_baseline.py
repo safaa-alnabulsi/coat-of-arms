@@ -149,7 +149,7 @@ if __name__ == "__main__":
 
     mean_file = f'{model_folder}/mean.txt'
     with open(mean_file, 'w') as file:
-        file.write(str(mean))
+        file.write(str(float(mean)))
 
     print_time(f'finished calculating the mean: {mean} and saved it to file: {mean_file}')
 
@@ -166,7 +166,7 @@ if __name__ == "__main__":
 
     std_file = f'{model_folder}/std.txt'
     with open(std_file, 'w') as file:
-        file.write(str(std))
+        file.write(str(float(std)))
 
     print_time(f'finished calculating the std: {std} and saved it to file: {std_file}')
 

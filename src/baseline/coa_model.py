@@ -284,7 +284,7 @@ def load_model_checkpoint(model_path, hyper_params, learning_rate, drop_prob, ig
 
 # ---------- testing model function ------------ #
 
-def init_testing_model(test_caption_file, root_folder_images, 
+def init_testing_model(test_caption_file, root_folder_images, mean, std,
                        num_worker,vocab,batch_size, device, pin_memory=False,img_h=500, img_w=500):
     test_loader, test_dataset = get_loader(
         root_folder=root_folder_images,
@@ -296,11 +296,6 @@ def init_testing_model(test_caption_file, root_folder_images,
         device=device,
         pin_memory=pin_memory
     )
-
-    mean = get_mean(test_dataset, test_loader, img_h , img_w)
-    std = get_std(test_dataset, test_loader, mean, img_h , img_w)
-
-    print('mean, std:', mean, std)
 
     #defining the transform to be applied
 
