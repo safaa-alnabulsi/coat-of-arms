@@ -143,8 +143,9 @@ def train_model(model, optimizer, criterion,
     writer = SummaryWriter(f"{model_folder}/logs/")
 
     # initialize the early_stopping object
-#     early_stopping = EarlyStopping(patience=patience, verbose=True)
-    early_stopping = EarlyStoppingAccuracy(patience=patience, verbose=True)
+    checkpoint_file=f"{model_folder}/checkpoint.pt"
+    # early_stopping = EarlyStopping(patience=patience, verbose=True, path=checkpoint_file)
+    early_stopping = EarlyStoppingAccuracy(patience=patience, verbose=True, path=checkpoint_file)
     for epoch in range(1, n_epochs + 1):
         with tqdm(train_loader, unit="batch") as tepoch:
             validation_interval = 0
