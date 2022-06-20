@@ -91,7 +91,20 @@ Each run of the training script is stored in the following structure of experiem
 
 You can use notebook [09-baseline-model-test.ipynb](notebooks/09-baseline-model-test.ipynb) to load the model and test it on both synthesized data and real data.
 
-TODO Next: create a script for testing
+You can also use [test_baseline.py](test_baseline.py) script to test the model:
+
+- Locally:
+
+```bash
+python test_baseline.py --dataset ~/tub/coat-of-arms/baseline-gen-data/small --batch-size 125 --local y --run-name run-06.20.2022-13:01:28 --model-name baseline-model-06.20.2022-13:03:00.pth
+```
+
+- On the cluster:
+
+```bash
+     qsub test_baseline.sh /home/space/datasets/COA/generated-data-api-large run-06.20.2022-13:01:28  baseline-model-06.20.2022-13:03:00.pth 256 1 no
+```
+
 
 ## The Automata
 
