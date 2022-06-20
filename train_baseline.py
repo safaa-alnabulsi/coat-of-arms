@@ -63,7 +63,7 @@ if __name__ == "__main__":
 
     # get the timestamp to create default logsdir
     now = datetime.now() # current date and time
-    timestr = now.strftime("%m.%d.%Y-%H:%M:%S")
+    timestr = now.strftime("%m-%d-%Y-%H:%M:%S")
     if local:
         model_folder = f"experiments/run-{timestr}"
     else:
@@ -244,7 +244,7 @@ if __name__ == "__main__":
 
     # save the latest model
     now = datetime.now() # current date and time
-    timestr = now.strftime("%m.%d.%Y-%H:%M:%S")
+    timestr = now.strftime("%m-%d-%Y-%H:%M:%S")
     model_full_path = f"{model_folder}/baseline-model-{timestr}.pth"
 
     save_model(model, optimizer, final_train_loss, final_accuracy, model_full_path, hyper_params)
