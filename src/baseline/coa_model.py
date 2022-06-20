@@ -72,7 +72,7 @@ def predict_image(model,image, correct_cap, dataset, device):
 
 
 # Function to test the model with the val dataset and print the accuracy for the test images
-def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device, tepoch, epoch, writer):
+def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device, tepoch, writer):
 #     print('validate function called')
     accuracy_list = list()
     total = len(val_loader)
@@ -80,6 +80,7 @@ def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device
     correct = 0
     val_losses = list()
     avg_loss = 0
+    loss_idx_value = 0
 
     model.eval()
     with torch.no_grad():
@@ -103,9 +104,9 @@ def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device
             loss       = criterion(outputs.view(-1, vocab_size), targets.reshape(-1))
             val_losses.append(loss)
             tepoch.set_postfix({'validatio loss (in progress)': loss})
-            writer.add_scalar("Loss/validation", loss, epoch)
-            writer.add_scalar("Accuracy/validation", acc, epoch)
-
+            writer.add_scalar("Loss/validation", loss, loss_idx_value)
+            writer.add_scalar("Accuracy/validation", acc, loss_idx_value)
+            loss_idx_value += 1
             # ------------------------------------------
            
     # compute the accuracy over all test images
@@ -184,7 +185,7 @@ def train_model(model, optimizer, criterion,
                     val_losses, accuracy_list, bleu_score, tepoch = validate_model(model, criterion, 
                                                                         val_loader, val_dataset,
                                                                         vocab_size, device,
-                                                                        tepoch, epoch,writer)
+                                                                        tepoch, writer)
                 validation_interval+=1
 
             ########################################    
