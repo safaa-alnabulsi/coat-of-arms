@@ -65,13 +65,17 @@ if __name__ == "__main__":
     now = datetime.now() # current date and time
     timestr = now.strftime("%m.%d.%Y-%H:%M:%S")
     if local:
-        logs_folder = f"logs/experiments/run-{timestr}"
+        model_folder = f"experiments/run-{timestr}"
     else:
-        logs_folder = f"/home/space/datasets/COA/logs/experiments/run-{timestr}"        
-
+        model_folder = f"/home/space/datasets/COA/experiments/run-{timestr}"
+                
+    # create the folder where all models files will be stored
+    if not os.path.exists(model_folder):
+        os.makedirs(model_folder)
+    
     print('running on local ',local)
     print('data_location is ',data_location)
-    print('logs_folder is ',logs_folder)
+    print('model_folder is ',model_folder)
     print('batch_size is ',batch_size)
     print('num_epochs is ',num_epochs)
     print('resplit is ',resplit)
@@ -142,7 +146,12 @@ if __name__ == "__main__":
     print_time('\n ------------------------ \n calling get_mean')
 
     mean = get_mean(train_dataset, train_loader, 500 , 500)
-    print_time(f'finished calculating the mean: {mean}')
+
+    mean_file = f'{model_folder}/mean.txt'
+    with open(mean_file, 'w') as file:
+        file.write(str(mean))
+
+    print_time(f'finished calculating the mean: {mean} and saved it to file: {mean_file}')
 
     profiler.stop()
     profiler.print()
@@ -154,7 +163,13 @@ if __name__ == "__main__":
     print_time('\n ------------------------ \n calling get_std')
 
     std = get_std(train_dataset, train_loader, mean)
-    print_time(f'finished calculating the std: {std}')
+
+    std_file = f'{model_folder}/std.txt'
+    with open(std_file, 'w') as file:
+        file.write(str(std))
+
+    print_time(f'finished calculating the std: {std} and saved it to file: {std_file}')
+
     profiler.stop()
     profiler.print()
 
@@ -217,7 +232,7 @@ if __name__ == "__main__":
     # early stopping patience; how long to wait after last time validation loss improved.
     patience = 20
 
-    model, train_loss, valid_loss, avg_acc, bleu_score = train_model(model, optimizer, criterion, train_dataset, train_loader, val_loader, val_dataset, vocab_size, batch_size, patience, num_epochs, device, logs_folder)
+    model, train_loss, valid_loss, avg_acc, bleu_score = train_model(model, optimizer, criterion, train_dataset, train_loader, val_loader, val_dataset, vocab_size, batch_size, patience, num_epochs, device, model_folder)
 
     final_accuracy = np.average(avg_acc)
     final_train_loss = np.average(train_loss)
@@ -230,12 +245,7 @@ if __name__ == "__main__":
     # save the latest model
     now = datetime.now() # current date and time
     timestr = now.strftime("%m.%d.%Y-%H:%M:%S")
-    if local:
-        dataset_models_folder = "models/baseline/"
-    else:
-        dataset_models_folder = "/home/space/datasets/COA/models/baseline"        
-    
-    model_full_path = f"{dataset_models_folder}/attention_model-qsub-{timestr}.pth"
+    model_full_path = f"{model_folder}/baseline-model-{timestr}.pth"
 
     save_model(model, optimizer, final_train_loss, final_accuracy, model_full_path, hyper_params)
     print('The trained model has been saved to ', model_full_path)

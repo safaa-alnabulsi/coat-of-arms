@@ -121,7 +121,7 @@ def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device
 def train_model(model, optimizer, criterion, 
                 train_dataset, train_loader, 
                 val_loader, val_dataset, 
-                vocab_size, batch_size, patience, n_epochs, device, logs_folder=''):
+                vocab_size, batch_size, patience, n_epochs, device, model_folder):
 
     # to track the training loss as the model trains
     train_losses = []
@@ -139,8 +139,8 @@ def train_model(model, optimizer, criterion,
     # number of batchs is needed to calclualte the validation interval
     num_of_batches = len(train_loader)
 
-    # Writer will output to ./runs/ directory by default if logs_folder is not provided
-    writer = SummaryWriter(logs_folder)
+    # Writer will store the model training progress
+    writer = SummaryWriter(f"{model_folder}/logs/")
 
     # initialize the early_stopping object
 #     early_stopping = EarlyStopping(patience=patience, verbose=True)
@@ -191,7 +191,7 @@ def train_model(model, optimizer, criterion,
                 #     if i%(int(1370/10)) == 0:
                 #         counter+=1
                 # print(counter)
-                if validation_interval % int(num_of_batches/10) == 0:
+                if validation_interval % (num_of_batches/10) == 0:
                     val_losses, accuracy_list, bleu_score, tepoch = validate_model(model, criterion, 
                                                                         val_loader, val_dataset,
                                                                         vocab_size, device,

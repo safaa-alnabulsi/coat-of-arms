@@ -67,14 +67,14 @@ The default index is 0
 
 - To check the loss/accuracy while training with tensorboard locally, run the following command
 ```sh
-     tensorboard --logdir=logs/experiments/ --bind_all
+     tensorboard --logdir=experiments/ --bind_all
 ```  
 
 The server will start in http://localhost:6006/
 
 - To track the metrics of loss and accuracy in real time:
 ```sh
-     tensorboard --logdir=/home/space/datasets/COA/logs/experiments --bind_all
+     tensorboard --logdir=/home/space/datasets/COA/experiments --bind_all
 ```       
 
 Check the port and then do ssh forwarding:
