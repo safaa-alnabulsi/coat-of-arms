@@ -93,18 +93,34 @@ You can use notebook [09-baseline-model-test.ipynb](notebooks/09-baseline-model-
 
 You can also use [test_baseline.py](test_baseline.py) script to test the model:
 
+### Synthetic data
+
 - Locally:
 
 ```bash
-python test_baseline.py --dataset ~/tub/coat-of-arms/baseline-gen-data/small --batch-size 125 --local y --run-name run-06.20.2022-13:01:28 --model-name baseline-model-06.20.2022-13:03:00.pth
+python test_baseline.py --dataset ~/tub/coat-of-arms/baseline-gen-data/small --batch-size 125 --local y --run-name run-06.20.2022-13:01:28 --model-name baseline-model-06.20.2022-13:03:00.pth --real_data no
 ```
 
 - On the cluster:
 
 ```bash
-     qsub test_baseline.sh /home/space/datasets/COA/generated-data-api-large run-06.20.2022-13:01:28  baseline-model-06.20.2022-13:03:00.pth 256 1 no
+     qsub test_baseline.sh /home/space/datasets/COA/generated-data-api-large run-06.20.2022-13:01:28  baseline-model-06.20.2022-13:03:00.pth 256 1 no no
 ```
 
+### Real data
+
+__Note__: for testing real data, just pass the folder of the dataset to the `dataset` parameter and pass `real_data` as `yes`
+
+- Locally:
+```bash
+python test_baseline.py --dataset /Users/salnabulsi/tub/coat-of-arms/data/cropped_coas/out --batch-size 125 --local y --run-name run-06.20.2022-13:01:28 --model-name baseline-model-06.20.2022-13:03:00.pth --real-data yes
+``` 
+
+- On the cluster:
+
+```bash
+     qsub test_baseline.sh /home/salnabulsi/coat-of-arms/data/cropped_coas/out run-06.20.2022-13:01:28  baseline-model-06.20.2022-13:03:00.pth 256 1 no yes
+```
 
 ## The Automata
 
