@@ -329,11 +329,14 @@ def init_testing_model(test_caption_file, root_folder_images, mean, std,
     
     return test_loader, test_dataset
 
-def test_model(model, criterion, test_loader, test_dataset, vocab_size, device):
+def test_model(model, criterion, test_loader, test_dataset, vocab_size, device, model_folder):
     # initialize lists to monitor test loss and accuracy
     test_loss = 0.0
     test_losses=[]
     accuracy_test_list=[]
+
+    # Writer will store the model test results progress
+    writer = SummaryWriter(f"{model_folder}/logs")
 
     model.eval()
     with torch.no_grad():
@@ -341,8 +344,8 @@ def test_model(model, criterion, test_loader, test_dataset, vocab_size, device):
 
             predicted_caption, correct_caption,caps = predict_image(model, img, correct_cap, test_dataset, device)
             correct_caption_s = ' '.join(correct_caption)
-            # calc metrics
             
+            # calc metrics
             acc_test = Accuracy(predicted_caption,correct_caption_s).get()
             accuracy_test_list.append(acc_test)
             print(f'Test Acuuracy (in progress): {acc_test:.6f}\n')
@@ -356,6 +359,8 @@ def test_model(model, criterion, test_loader, test_dataset, vocab_size, device):
             test_losses.append(loss)
 
             # ------------------------------------------
+            writer.add_scalar("Loss/test", loss, idx)
+            writer.add_scalar("Accuracy/test", acc_test, idx)
 
     # calculate and print avg test loss
     test_loss = sum(test_losses)/len(test_dataset)

@@ -146,7 +146,8 @@ if __name__ == "__main__":
                                                                             test_loader, 
                                                                             test_dataset, 
                                                                             vocab_size, 
-                                                                            device)    
+                                                                            device,
+                                                                            run_path)    
     
     # -------------------------------- Saving the results ----------------------------------------
 
