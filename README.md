@@ -137,3 +137,4 @@ The previous simple automata:
 - torchdatasets: https://github.com/szymonmaszke/torchdatasets
 - Torch data-loader: https://www.kaggle.com/mdteach/torch-data-loader-flicker-8k
 - Tensorboard: https://pytorch.org/tutorials/recipes/recipes/tensorboard_with_pytorch.html
+- baseline model explained: https://towardsdatascience.com/baseline-models-your-guide-for-model-building-1ec3aa244b8d 

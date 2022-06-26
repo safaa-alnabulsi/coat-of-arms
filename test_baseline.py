@@ -147,7 +147,8 @@ if __name__ == "__main__":
                                                                             test_dataset, 
                                                                             vocab_size, 
                                                                             device,
-                                                                            run_path)    
+                                                                            run_path,
+                                                                            real_data)    
     
     # -------------------------------- Saving the results ----------------------------------------
 
