@@ -98,13 +98,13 @@ You can also use [test_baseline.py](test_baseline.py) script to test the model:
 - Locally:
 
 ```bash
-python test_baseline.py --dataset ~/tub/coat-of-arms/baseline-gen-data/small --batch-size 125 --local y --run-name run-06.20.2022-13:01:28 --model-name baseline-model-06.20.2022-13:03:00.pth --real_data no
+python test_baseline.py --dataset ~/tub/coat-of-arms/baseline-gen-data/small --batch-size 516 --local y --run-name 'run-06-22-2022-07:57:31' --model-name 'baseline-model-06-25-2022-20:54:47.pth' --real_data no
 ```
 
 - On the cluster:
 
 ```bash
-     qsub test_baseline.sh /home/space/datasets/COA/generated-data-api-large run-06.20.2022-13:01:28  baseline-model-06.20.2022-13:03:00.pth 516 no no
+     qsub test_baseline.sh /home/space/datasets/COA/generated-data-api-large 'run-06-22-2022-07:57:31' 'baseline-model-06-25-2022-20:54:47.pth' 516 no no
 ```
 
 ### Real data
@@ -113,13 +113,13 @@ __Note__: for testing real data, just pass the folder of the dataset to the `dat
 
 - Locally:
 ```bash
-python test_baseline.py --dataset /Users/salnabulsi/tub/coat-of-arms/data/cropped_coas/out --batch-size 125 --local y --run-name run-06.20.2022-13:01:28 --model-name baseline-model-06.20.2022-13:03:00.pth --real-data yes
+python test_baseline.py --dataset /Users/salnabulsi/tub/coat-of-arms/data/cropped_coas/out --batch-size 256 --local y --run-name 'run-06-22-2022-07:57:31' --model-name 'baseline-model-06-25-2022-20:54:47.pth' --real-data yes
 ``` 
 
 - On the cluster:
 
 ```bash
-     qsub test_baseline.sh /home/salnabulsi/coat-of-arms/data/cropped_coas/out run-06.20.2022-13:01:28  baseline-model-06.20.2022-13:03:00.pth 256 no yes
+     qsub test_baseline.sh /home/salnabulsi/coat-of-arms/data/cropped_coas/out 'run-06-22-2022-07:57:31' 'baseline-model-06-25-2022-20:54:47.pth' 256 no yes
 ```
 
 ## The Automata
