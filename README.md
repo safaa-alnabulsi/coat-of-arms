@@ -104,7 +104,7 @@ python test_baseline.py --dataset ~/tub/coat-of-arms/baseline-gen-data/small --b
 - On the cluster:
 
 ```bash
-     qsub test_baseline.sh /home/space/datasets/COA/generated-data-api-large run-06.20.2022-13:01:28  baseline-model-06.20.2022-13:03:00.pth 256 1 no no
+     qsub test_baseline.sh /home/space/datasets/COA/generated-data-api-large run-06.20.2022-13:01:28  baseline-model-06.20.2022-13:03:00.pth 516 no no
 ```
 
 ### Real data
@@ -119,7 +119,7 @@ python test_baseline.py --dataset /Users/salnabulsi/tub/coat-of-arms/data/croppe
 - On the cluster:
 
 ```bash
-     qsub test_baseline.sh /home/salnabulsi/coat-of-arms/data/cropped_coas/out run-06.20.2022-13:01:28  baseline-model-06.20.2022-13:03:00.pth 256 1 no yes
+     qsub test_baseline.sh /home/salnabulsi/coat-of-arms/data/cropped_coas/out run-06.20.2022-13:01:28  baseline-model-06.20.2022-13:03:00.pth 256 no yes
 ```
 
 ## The Automata
