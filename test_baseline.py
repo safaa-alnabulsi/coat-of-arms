@@ -71,7 +71,7 @@ if __name__ == "__main__":
     
     print('Dataset exists in', data_location)    
     if real_data:
-        root_folder_images = data_location + '/images/resized'
+        root_folder_images = data_location + '/resized'
         test_caption_file  = data_location + '/test_real_captions_psumsq.txt'
     else:
         root_folder_images = data_location + '/images'
