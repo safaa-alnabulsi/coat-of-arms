@@ -146,6 +146,8 @@ def train_model(model, optimizer, criterion,
     checkpoint_file=f"{model_folder}/checkpoint.pt"
     # early_stopping = EarlyStopping(patience=patience, verbose=True, path=checkpoint_file)
     early_stopping = EarlyStoppingAccuracy(patience=patience, verbose=True, path=checkpoint_file)
+    
+    loss_idx_value = 0
     for epoch in range(1, n_epochs + 1):
         with tqdm(train_loader, unit="batch") as tepoch:
             validation_interval = 0
@@ -173,14 +175,15 @@ def train_model(model, optimizer, criterion,
                 train_losses.append(train_batch_loss)
                 
                 tepoch.set_postfix({'Train loss (in progress)': train_batch_loss})
-                writer.add_scalar("Loss/train", train_batch_loss, epoch)
+                writer.add_scalar("Loss/train", train_batch_loss, loss_idx_value)
                 
                 # nice to have:  training accuracy
                 predicted_caption, correct_caption,caps = predict_image(model, image, captions, train_dataset, device)
                 correct_caption_s = ' '.join(correct_caption)
                 acc = Accuracy(predicted_caption,correct_caption_s).get()
-                writer.add_scalar("Accuracy/train", acc, epoch)
-                
+                writer.add_scalar("Accuracy/train", acc, loss_idx_value)
+                loss_idx_value += 1
+
                 ######################    
                 # validate the model #
                 ######################
