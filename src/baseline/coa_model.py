@@ -44,7 +44,7 @@ def get_new_model(hyper_params, learning_rate, ignored_idx, drop_prob, device):
     decoder_dim = hyper_params['decoder_dim']
     attention_dim = hyper_params['attention_dim']
 
-    model = EncoderDecoder(embed_size, vocab_size, attention_dim, encoder_dim, decoder_dim, drop_prob=0.3).to(device)
+    model = EncoderDecoder(embed_size, vocab_size, attention_dim, encoder_dim, decoder_dim, drop_prob).to(device)
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
     criterion = nn.CrossEntropyLoss(ignore_index=ignored_idx)
 
