@@ -37,14 +37,14 @@ def train_validate_test_split(df, train_percent=.6, validate_percent=.2, seed=No
     return train, validate, test
 
 
-def get_new_model(hyper_params, learning_rate, ignored_idx, drop_prob, device):
+def get_new_model(hyper_params, learning_rate, ignored_idx, drop_prob, device, pretrained):
     embed_size = hyper_params['embed_size']
     vocab_size = hyper_params['vocab_size']
     encoder_dim = hyper_params['encoder_dim']
     decoder_dim = hyper_params['decoder_dim']
     attention_dim = hyper_params['attention_dim']
 
-    model = EncoderDecoder(embed_size, vocab_size, attention_dim, encoder_dim, decoder_dim, drop_prob).to(device)
+    model = EncoderDecoder(embed_size, vocab_size, attention_dim, encoder_dim, decoder_dim, drop_prob, pretrained).to(device)
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
     criterion = nn.CrossEntropyLoss(ignore_index=ignored_idx)
 

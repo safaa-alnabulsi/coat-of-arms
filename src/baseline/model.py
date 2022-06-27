@@ -174,9 +174,9 @@ class DecoderRNN(nn.Module):
         return h, c
     
 class EncoderDecoder(nn.Module):
-    def __init__(self,embed_size, vocab_size, attention_dim,encoder_dim,decoder_dim, drop_prob=0.3):
+    def __init__(self, embed_size, vocab_size, attention_dim, encoder_dim, decoder_dim, drop_prob=0.3, pretrained=True):
         super().__init__()
-        self.encoder = EncoderCNN()
+        self.encoder = EncoderCNN(pretrained)
         self.decoder = DecoderRNN(
             embed_size=embed_size,
             vocab_size = vocab_size,
