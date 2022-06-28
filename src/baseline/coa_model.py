@@ -272,9 +272,9 @@ def save_model(model, optimizer, loss, accuracy, model_full_path, hyper_params):
 
     torch.save(model_state, model_full_path)
 
-def load_model(model_path, hyper_params, learning_rate, drop_prob, ignored_idx):
+def load_model(model_path, hyper_params, learning_rate, drop_prob, ignored_idx, pretrained):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    model, optimizer, criterion = get_new_model(hyper_params, learning_rate, ignored_idx, drop_prob, device)
+    model, optimizer, criterion = get_new_model(hyper_params, learning_rate, ignored_idx, drop_prob, device, pretrained)
         
     checkpoint = torch.load(model_path,map_location=torch.device(device))
     model.load_state_dict(checkpoint['model_state_dict'])
@@ -283,8 +283,8 @@ def load_model(model_path, hyper_params, learning_rate, drop_prob, ignored_idx):
 
     return model, optimizer, loss,criterion
 
-def load_model_checkpoint(model_path, hyper_params, learning_rate, drop_prob, ignored_idx):    
-    model, optimizer, criterion = get_new_model(hyper_params, learning_rate, ignored_idx, drop_prob, device)
+def load_model_checkpoint(model_path, hyper_params, learning_rate, drop_prob, ignored_idx, pretrained):    
+    model, optimizer, criterion = get_new_model(hyper_params, learning_rate, ignored_idx, drop_prob, device,pretrained)
         
     checkpoint = torch.load(model_path)
     model.load_state_dict(checkpoint['model_state_dict'])

@@ -227,7 +227,7 @@ if __name__ == "__main__":
     # Training the model
     
     print('initialize new model, loss etc')    
-    model, optimizer, criterion = get_new_model(hyper_params, learning_rate, ignored_idx, drop_prob, device)
+    model, optimizer, criterion = get_new_model(hyper_params, learning_rate, ignored_idx, drop_prob, device, True)
 
     # early stopping patience; how long to wait after last time validation loss improved.
     patience = 20
