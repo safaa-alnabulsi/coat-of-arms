@@ -108,8 +108,8 @@ def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device
     avg_loss = sum(losses)/len(losses)
     avg_acc = sum(accuracies)/len(accuracies)
 
-    writer.add_scalar("Loss/validation", avg_loss, step=step)
-    writer.add_scalar("Accuracy/validation", avg_acc, step=step)
+    writer.add_scalar("Loss/validation", avg_loss, step)
+    writer.add_scalar("Accuracy/validation", avg_acc, step)
     # compute the accuracy over all test images
 #     acc_score = (100 * sum(accuracy_list) / len(accuracy_list))
 #     avg_loss = sum(val_losses) / len(val_losses)
