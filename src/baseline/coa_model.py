@@ -112,11 +112,11 @@ def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device
     writer.add_scalar("Accuracy/validation", avg_acc, step)
     # compute the accuracy over all test images
 #     acc_score = (100 * sum(accuracy_list) / len(accuracy_list))
-#     avg_loss = sum(val_losses) / len(val_losses)
+#     avg_loss = sum(losses) / len(losses)
 #     print('avg_loss, bleu_score, acc_score', avg_loss, bleu_score, acc_score)
     writer.close()
 
-    return val_losses, accuracy_list, bleu_score, tepoch
+    return losses, accuracies, bleu_score, tepoch
 
 
 def train_model(model, optimizer, criterion, 
