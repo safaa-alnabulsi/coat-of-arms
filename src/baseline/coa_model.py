@@ -72,15 +72,13 @@ def predict_image(model,image, correct_cap, dataset, device):
 
 
 # Function to test the model with the val dataset and print the accuracy for the test images
-def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device, tepoch, writer):
+def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device, tepoch, writer, step):
 #     print('validate function called')
-    accuracy_list = list()
     total = len(val_loader)
     bleu_score = 0
-    correct = 0
-    val_losses = list()
-    avg_loss = 0
-    loss_idx_value = 0
+
+    accuracies = []
+    losses = []
 
     model.eval()
     with torch.no_grad():
@@ -91,7 +89,7 @@ def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device
             # ------------------------------------------
             # calc metrics
             acc = Accuracy(predicted_caption,correct_caption_s).get()
-            accuracy_list.append(acc)
+            accuracies.append(acc)
 
             bleu = nltk.translate.bleu_score.sentence_bleu([correct_caption], caps, weights=(0.5, 0.5))
             bleu_score += bleu
@@ -102,13 +100,16 @@ def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device
             outputs, _ = model(image, captions.T)
             targets    = captions.T[:,1:] 
             loss       = criterion(outputs.view(-1, vocab_size), targets.reshape(-1))
-            val_losses.append(loss)
+            losses.append(loss)
             tepoch.set_postfix({'validatio loss (in progress)': loss})
-            writer.add_scalar("Loss/validation", loss, loss_idx_value)
-            writer.add_scalar("Accuracy/validation", acc, loss_idx_value)
-            loss_idx_value += 1
+            
+            
             # ------------------------------------------
-           
+    avg_loss = sum(losses)/len(losses)
+    avg_acc = sum(accuracies)/len(accuracies)
+
+    writer.add_scalar("Loss/validation", avg_loss, step=step)
+    writer.add_scalar("Accuracy/validation", avg_acc, step=step)
     # compute the accuracy over all test images
 #     acc_score = (100 * sum(accuracy_list) / len(accuracy_list))
 #     avg_loss = sum(val_losses) / len(val_losses)
@@ -182,7 +183,6 @@ def train_model(model, optimizer, criterion,
                 correct_caption_s = ' '.join(correct_caption)
                 acc = Accuracy(predicted_caption,correct_caption_s).get()
                 writer.add_scalar("Accuracy/train", acc, loss_idx_value)
-                loss_idx_value += 1
 
                 ######################    
                 # validate the model #
@@ -196,10 +196,19 @@ def train_model(model, optimizer, criterion,
                 #         counter+=1
                 # print(counter)
                 if validation_interval % (num_of_batches/10) == 0:
-                    val_losses, accuracy_list, bleu_score, tepoch = validate_model(model, criterion, 
-                                                                        val_loader, val_dataset,
-                                                                        vocab_size, device,
-                                                                        tepoch, writer)
+                    val_losses, accuracy_list, bleu_score, tepoch = validate_model(
+                        model,
+                        criterion, 
+                        val_loader,
+                        val_dataset,
+                        vocab_size,
+                        device,
+                        tepoch,
+                        writer,
+                        step=loss_idx_value
+                    )
+                    
+                loss_idx_value += 1
                 validation_interval+=1
 
             ########################################    
