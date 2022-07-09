@@ -254,7 +254,7 @@ def train_model(model, optimizer, criterion,
     writer.close()
 
     # load the last checkpoint with the best model
-    model.load_state_dict(torch.load('checkpoint.pt'))
+    model.load_state_dict(torch.load(checkpoint_file))
 
     return  model, avg_train_losses, avg_valid_losses, avg_acc, bleu_score
 
