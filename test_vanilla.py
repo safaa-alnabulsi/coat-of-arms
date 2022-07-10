@@ -77,9 +77,22 @@ if __name__ == "__main__":
     # ------------------------------------------ Get mean & std ---------------------------------------
     mean=0.3272075951099396
     std=0.3805903494358063
+    batch_size = 256
+
+   # ---------------------------------------- Loaders ------------------------------------------------
+    
+    test_loader, test_dataset = init_testing_model(test_caption_file, 
+                                                   root_folder_images, 
+                                                   mean, std,
+                                                   NUM_WORKER,
+                                                   vocab,
+                                                   batch_size, 
+                                                   device, 
+                                                   pin_memory=False,
+                                                   img_h=img_h, 
+                                                   img_w=img_w)
 
     # ----------------------------------------- Hyperparams ---------------------------------
-
     # Hyperparams
 
     embed_size=300
@@ -107,18 +120,7 @@ if __name__ == "__main__":
                                                 ignored_idx, drop_prob, device, 
                                                 pretrained)
     
-    # ---------------------------------------- Loaders ------------------------------------------------
-    
-    test_loader, test_dataset = init_testing_model(test_caption_file, 
-                                                   root_folder_images, 
-                                                   mean, std,
-                                                   NUM_WORKER,
-                                                   vocab,
-                                                   batch_size, 
-                                                   device, 
-                                                   pin_memory=False,
-                                                   img_h=img_h, 
-                                                   img_w=img_w)
+
 
     # --------------------------------- Testing the model ----------------------------------------
     
