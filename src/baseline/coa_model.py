@@ -82,7 +82,7 @@ def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device
 
     model.eval()
     with torch.no_grad():
-        for idx, (img, correct_cap,_,_) in enumerate(iter(val_loader)):
+        for idx, (img, correct_cap,_,_,_) in enumerate(iter(val_loader)):
             
             predicted_caption, correct_caption, caps = predict_image(model, img, correct_cap, val_dataset, device)
             correct_caption_s = ' '.join(correct_caption)
@@ -156,7 +156,7 @@ def train_model(model, optimizer, criterion,
             # train the model #
             ###################
             model.train() # prep model for training
-            for image, captions,_,_ in tepoch: 
+            for image, captions,_,_,_ in tepoch: 
                 tepoch.set_description(f"Epoch {epoch}")
                 # use cuda
                 image, captions = image.to(device), captions.to(device)
@@ -346,6 +346,7 @@ def test_model(model, criterion, test_loader, test_dataset, vocab_size, device, 
     test_loss = 0.0
     test_losses=[]
     accuracy_test_list=[]
+    image_names_list=[]
 
     # Writer will store the model test results progress
     writer = SummaryWriter(f"{model_folder}/logs")
@@ -357,7 +358,7 @@ def test_model(model, criterion, test_loader, test_dataset, vocab_size, device, 
 
     model.eval()
     with torch.no_grad():
-        for idx, (img, correct_cap,_,_) in enumerate(iter(test_loader)):
+        for idx, (img, correct_cap,_,_,image_file_name) in enumerate(iter(test_loader)):
 
             predicted_caption, correct_caption,caps = predict_image(model, img, correct_cap, test_dataset, device)
             correct_caption_s = ' '.join(correct_caption)
@@ -374,6 +375,7 @@ def test_model(model, criterion, test_loader, test_dataset, vocab_size, device, 
             targets    = captions.T[:,1:] 
             loss       = criterion(outputs.view(-1, vocab_size), targets.reshape(-1))
             test_losses.append(loss)
+            image_names_list.append(image_file_name)
 
             # ------------------------------------------
             # TensorBoard scalars
@@ -388,7 +390,38 @@ def test_model(model, criterion, test_loader, test_dataset, vocab_size, device, 
 
     print(f'Test Accuracy (Overall): {acc_test_score}%')
     
-    return test_losses, accuracy_test_list, acc_test_score, test_loss
+    return test_losses, accuracy_test_list, image_names_list, acc_test_score, test_loss
+
+
+def get_min_max_acc_images(accuracy_test_list, image_names_list):
+    """Get the image names of both min and max accuracies
+        TODO: change it later to top 5 of each category
+
+    Args:
+        accuracy_test_list ([float]): list of accuracies of all images
+        image_names_list ([string]): list of image file names
+
+    Returns:
+        [string]: lowest_acc, list of 5 image file name with lowest accuracy 
+        [string]: highest_acc, list of 5 image file name with highest accuracy
+    """
+    highest_acc = []
+    lowest_acc = []
+    sorted_idx_accuracy = np.argsort(accuracy_test_list)
+    for i in image_names_list[:5]:
+        lowest_acc.append(i)
+    for i in image_names_list[-5:]:
+        highest_acc.append(i)
+
+    return lowest_acc, highest_acc
+    # code here to get only two images, min and max 
+    # idx_image_with_max_acc = accuracy_test_list.index(max(accuracy_test_list))
+    # idx_image_with_min_acc = accuracy_test_list.index(min(accuracy_test_list))
+
+    # image_with_max_acc = image_names_list[idx_image_with_max_acc]
+    # image_with_min_acc = image_names_list[idx_image_with_min_acc]
+    
+    # return image_with_max_acc, image_with_min_acc
 
 ##  Visualizing the attentions
 # Defining helper functions

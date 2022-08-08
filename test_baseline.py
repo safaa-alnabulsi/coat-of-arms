@@ -15,7 +15,7 @@ import torchvision.models as models
 from src.baseline.vocabulary import Vocabulary
 from src.utils import print_time, list_of_tensors_to_numpy_arr, plot_image, plot_im
 from src.accuracy import Accuracy
-from src.baseline.coa_model import get_new_model,load_model, train_validate_test_split, init_testing_model, test_model, test_rand_image, get_training_mean_std
+from src.baseline.coa_model import get_new_model,load_model, train_validate_test_split, init_testing_model, test_model, test_rand_image, get_training_mean_std, get_min_max_acc_images
 from pyinstrument import Profiler
 
 import argparse
@@ -142,7 +142,7 @@ if __name__ == "__main__":
 
     # --------------------------------- Testing the model ----------------------------------------
     
-    test_losses, accuracy_test_list, acc_test_score, test_loss = test_model(model, 
+    test_losses, accuracy_test_list, image_names_list, acc_test_score, test_loss = test_model(model, 
                                                                             criterion,
                                                                             test_loader, 
                                                                             test_dataset, 
@@ -152,6 +152,10 @@ if __name__ == "__main__":
                                                                             real_data)    
     
     # -------------------------------- Saving the results ----------------------------------------
+    
+    image_with_max_acc, image_with_min_acc = get_min_max_acc_images(accuracy_test_list, image_names_list)
+    print('image name with max accuracy', image_with_max_acc)
+    print('image name with max accuracy', image_with_min_acc)
 
     # torch.cuda.empty_cache()
 #     test_rand_image(model, test_dataset, test_loader, device)

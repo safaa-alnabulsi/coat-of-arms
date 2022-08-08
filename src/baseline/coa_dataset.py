@@ -45,13 +45,26 @@ class CoADataset(td.Dataset):
     
     def __len__(self):
         return len(self.df)
-    
+
     def __getitem__(self, idx):
+        """Read the image and return needed information to 
+        be used later by the loader
+
+        Args:
+           idx(int): index of the image we want to read in the list
+
+        Returns:
+            tensor: image tensor 
+            string: image caption
+            float: sum of the pixels -> to calculate the mean 
+            float: squared sum of the pixels -> to calculate the std
+            string: image file name 
+        """
         if self.calc_mean == True:
-            return torch.tensor([]),torch.tensor([]),float(self.psum[idx]), float(self.psum_sq[idx])
+            return torch.tensor([]), torch.tensor([]),float(self.psum[idx]), float(self.psum_sq[idx]), self.img_names[idx]
         else:
             try:
-                return self._get_image_tensor(idx), self._get_caption_vec(idx), float(self.psum[idx]),float(self.psum_sq[idx])
+                return self._get_image_tensor(idx), self._get_caption_vec(idx), float(self.psum[idx]),float(self.psum_sq[idx]), self.img_names[idx]
             except TypeError or IndexError:
                 print(f' Error, cannot find image with index: {str(idx)}')
 

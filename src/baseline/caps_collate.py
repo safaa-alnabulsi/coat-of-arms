@@ -12,13 +12,12 @@ class CapsCollate:
         self.calc_mean   = calc_mean
     
     def __call__(self,batch):
-        imgs,targets,psum, psum_sq= [],[],[],[]
-        
+        imgs,targets,img_names,psum, psum_sq= [],[],[],[],[]
         if self.calc_mean == True:
             for item in batch:
                 psum.append(item[2])
                 psum_sq.append(item[3])
-
+                img_names.append(item[4])
             imgs    = torch.tensor([])
             targets = torch.tensor([])      
         else:    
@@ -28,7 +27,8 @@ class CapsCollate:
                 targets.append(item[1])
                 psum.append(item[2])
                 psum_sq.append(item[3])
-                
+                img_names.append(item[4])
+
                 # syntetic data im.size() = torch.Size([1, 3, 500, 500]), torch.Size([1, 3, 224, 224]) 
                 # real data varies in size, thus I created notebooks/12-resize-cropped-real-date.ipynb
                 #print(im.size())
@@ -40,5 +40,5 @@ class CapsCollate:
         
         psum    = torch.tensor(psum)
         psum_sq = torch.tensor(psum_sq)
-            
-        return imgs,targets,psum,psum_sq
+
+        return imgs,targets,psum,psum_sq,img_names
