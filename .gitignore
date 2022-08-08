@@ -150,3 +150,8 @@ data/cropped_coas/out
 notebooks/runs
 experiments
 runs
+output*
+ex.*
+errors*
+notebooks/vanilla-logs/
+vanilla-logs/

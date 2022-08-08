@@ -135,7 +135,8 @@ if __name__ == "__main__":
                                     hyper_params, 
                                     learning_rate,
                                     drop_prob, 
-                                    ignored_idx)
+                                    ignored_idx,
+                                    pretrained=True)
     profiler.stop()
     profiler.print()
 
