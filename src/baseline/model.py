@@ -6,7 +6,9 @@ import torchvision.models as models
 class EncoderCNN(nn.Module):
     def __init__(self, pretrained=True):
         super(EncoderCNN, self).__init__()
-        resnet = models.resnet50(pretrained=pretrained)
+        # resnet = models.resnet50(pretrained=pretrained) # encoder_dim -> 2048
+        # resnet = models.resnet34(pretrained=pretrained) # encoder_dim -> 512
+        resnet = models.resnet18(pretrained=pretrained)   # encoder_dim -> 512
         for param in resnet.parameters():
             param.requires_grad_(False)
         
