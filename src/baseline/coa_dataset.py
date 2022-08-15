@@ -68,6 +68,7 @@ class CoADataset(td.Dataset):
             except TypeError or IndexError:
                 print(f' Error, cannot find image with index: {str(idx)}')
 
+
     def _get_image_tensor(self, idx):
         img_name = self.img_names[idx]
         
@@ -76,16 +77,22 @@ class CoADataset(td.Dataset):
         my_image = Path(img_location)
         if not my_image.exists():
             print(f'skipping image {img_name}, as it does not exist')
-
+        
         img = Image.open(img_location).convert("RGB")
-       
-        #apply the transfromation to the image
+        
+        # # resize the image t0 100x100 to improve the iteration time
+        # crops_size = 100,100
+        # img.thumbnail(crops_size, Image.ANTIALIAS)
+
+        # apply the transfromation to the image
         if self.transform is not None:
             img_t = self.transform(img)
         else:
             trans = T.ToTensor()
             img_t = trans(img)
+                     
         return img_t
+           
                 
     def _get_caption_vec(self, idx):
 

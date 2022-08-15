@@ -38,9 +38,6 @@ class Attention(nn.Module):
         
         self.A = nn.Linear(attention_dim,1)
         
-        
-        
-        
     def forward(self, features, hidden_state):
         u_hs = self.U(features)     #(batch_size,num_layers,attention_dim)
         w_ah = self.W(hidden_state) #(batch_size,attention_dim)
