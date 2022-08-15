@@ -20,6 +20,7 @@ from PIL import Image
 from datetime import datetime
 from tqdm import tqdm
 from time import sleep
+from src.baseline.noise import Noise
 from src.baseline.vocabulary import Vocabulary
 from src.baseline.data_loader import get_loader, get_loaders, get_mean, get_std
 from src.accuracy import Accuracy
@@ -183,7 +184,8 @@ if __name__ == "__main__":
         T.Resize(226),                     
         T.RandomCrop(224),                 
         T.ToTensor(),                               
-        T.Normalize(mean, std) 
+        T.Normalize(mean, std),
+        Noise(0.1, 0.05)
     ])
 
     print_time('writing the dataloader')

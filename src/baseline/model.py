@@ -6,13 +6,20 @@ import torchvision.models as models
 class EncoderCNN(nn.Module):
     def __init__(self, pretrained=True):
         super(EncoderCNN, self).__init__()
+        # create a pretrained ResNet-xx model
         # resnet = models.resnet50(pretrained=pretrained) # encoder_dim -> 2048
         # resnet = models.resnet34(pretrained=pretrained) # encoder_dim -> 512
         resnet = models.resnet18(pretrained=pretrained)   # encoder_dim -> 512
+        
+        # freeze the layers by stopping them from accumulating gradients by using requires_grad()
+        # We need to do this for every parameter in the network.
         for param in resnet.parameters():
             param.requires_grad_(False)
         
-        modules = list(resnet.children())[:-2]
+        #  Get all layers of the network except the last two items
+        modules = list(resnet.children())[:-2] 
+        
+        # assign back to the network without the last two layers 
         self.resnet = nn.Sequential(*modules)
         
 
@@ -69,19 +76,14 @@ class DecoderRNN(nn.Module):
         self.embedding = nn.Embedding(vocab_size,embed_size)
         self.attention = Attention(encoder_dim,decoder_dim,attention_dim)
         
-        
         self.init_h = nn.Linear(encoder_dim, decoder_dim)  
         self.init_c = nn.Linear(encoder_dim, decoder_dim)  
         self.lstm_cell = nn.LSTMCell(embed_size+encoder_dim,decoder_dim,bias=True)
         self.f_beta = nn.Linear(decoder_dim, encoder_dim)
         
-        
         self.fcn = nn.Linear(decoder_dim,vocab_size)
         self.drop = nn.Dropout(drop_prob)
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
-        
-        
     
     def forward(self, features, captions):
         
@@ -101,7 +103,6 @@ class DecoderRNN(nn.Module):
         preds = torch.zeros(batch_size, seq_length, self.vocab_size).to(self.device)
         alphas = torch.zeros(batch_size, seq_length,num_features).to(self.device)
 
-
         for s in range(seq_length):
             alpha,context = self.attention(features, h)
             
@@ -117,7 +118,6 @@ class DecoderRNN(nn.Module):
             preds[:,s] = output
             alphas[:,s] = alpha  
         
-        
         return preds, alphas
     
     def generate_caption(self,features,max_len=20,vocab=None):
@@ -132,7 +132,6 @@ class DecoderRNN(nn.Module):
         #starting input
         word = torch.tensor(vocab.stoi['<SOS>']).view(1,-1).to(self.device)
         embeds = self.embedding(word)
-
         
         captions = []
         

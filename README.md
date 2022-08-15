@@ -138,3 +138,4 @@ The previous simple automata:
 - Torch data-loader: https://www.kaggle.com/mdteach/torch-data-loader-flicker-8k
 - Tensorboard: https://pytorch.org/tutorials/recipes/recipes/tensorboard_with_pytorch.html
 - baseline model explained: https://towardsdatascience.com/baseline-models-your-guide-for-model-building-1ec3aa244b8d 
+- Transfer Learning and Other Tricks: https://www.oreilly.com/library/view/programming-pytorch-for/9781492045342/ch04.html
