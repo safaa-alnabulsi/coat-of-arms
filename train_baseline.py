@@ -208,7 +208,8 @@ if __name__ == "__main__":
     embed_size=300
     vocab_size = len(train_dataset.vocab)
     attention_dim=256
-    encoder_dim=2048
+    # encoder_dim=2048  ### resnet50
+    encoder_dim=512  ### resnet34 & resnet18
     decoder_dim=512
     learning_rate = 0.01 # 3e-4
     drop_prob=0.3
