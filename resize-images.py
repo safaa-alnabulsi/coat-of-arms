@@ -6,7 +6,7 @@ from PIL import Image
 
 if __name__ == "__main__":
     
-    data_location = '/home/space/datasets/COA/generated-data-api'
+    data_location = '/home/space/datasets/COA/generated-data-api-large'
     # data_location =  '/home/space/datasets/COA/generated-data-api-small'
     # data_location =  'baseline-gen-data/large'
     # data_location =  'baseline-gen-data/medium'
