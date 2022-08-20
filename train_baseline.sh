@@ -17,6 +17,7 @@ batch_size=$2
 epochs=$3
 resplit=$4
 local=$5
+resized=$6
 timestamp=$(date +%s)
 
-source /home/salnabulsi/.thesis-py38/bin/activate && python train_baseline.py --dataset ${dataset} --batch-size ${batch_size} --epochs ${epochs} --resplit ${resplit} --local ${local} >> output-${timestamp}.txt 2>&1 >> errors-${timestamp}.txt
+source /home/salnabulsi/.thesis-py38/bin/activate && python train_baseline.py --dataset ${dataset} --batch-size ${batch_size} --epochs ${epochs} --resplit ${resplit} --local ${local} --resized-images ${resized} >> output-${timestamp}.txt 2>&1 >> errors-${timestamp}.txt

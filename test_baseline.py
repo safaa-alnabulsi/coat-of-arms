@@ -31,6 +31,7 @@ if __name__ == "__main__":
     parser.add_argument('--batch-size', dest='batch_size', type=int, help='Number of Batch size', default=128)
     parser.add_argument('--local', dest='local', type=str, help='running on local?', default='no', choices=['yes','Yes','y','Y','no','No','n', 'N'])
     parser.add_argument('--real-data', dest='real_data', type=str, help='testing cropped real dataset?', default='no', choices=['yes','Yes','y','Y','no','No','n', 'N'])
+    parser.add_argument('--resized-images', dest='resized_images', type=str, help='smaller resized images?', default='no', choices=['yes','Yes','y','Y','no','No','n', 'N'])
 
     args = parser.parse_args()
 
@@ -40,7 +41,8 @@ if __name__ == "__main__":
     batch_size = args.batch_size
     local = args.local
     real_data = args.real_data
-            
+    resized_images = args.resized_images
+
     if local in ['yes','Yes','y','Y'] :
         local = True
     else: 
@@ -58,6 +60,12 @@ if __name__ == "__main__":
     else: 
         real_data = False
         
+    if resized_images in ['yes','Yes','y','Y'] :
+        resized_images = True
+    else: 
+        resized_images = False
+
+       
     print('testing cropped real dataset? ',real_data)
     print('running on local ',local)
     print('data_location is ',data_location)
@@ -74,9 +82,12 @@ if __name__ == "__main__":
         root_folder_images = data_location + '/resized'
         test_caption_file  = data_location + '/test_real_captions_psumsq.txt'
     else:
-        root_folder_images = data_location + '/images'
+        if resized_images:
+            root_folder_images = data_location + '/res_images'            
+        else:
+            root_folder_images = data_location + '/images'
         test_caption_file  = data_location + '/test_captions_psumsq.txt'
-    
+ 
     df = pd.read_csv(test_caption_file)
     print("There are {} test images".format(len(df)))
 

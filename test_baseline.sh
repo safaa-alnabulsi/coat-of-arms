@@ -18,6 +18,7 @@ model_name=$3
 batch_size=$4
 local=$5
 real_data=$6
+resized=$7
 timestamp=$(date +%s)
 
-source /home/salnabulsi/.thesis-py38/bin/activate && python test_baseline.py --dataset ${dataset} --run-name ${run_name} --model-name ${model_name} --batch-size ${batch_size} --local ${local} --real-data ${real_data} >> output-${timestamp}.txt 2>&1 >> errors-${timestamp}.txt
+source /home/salnabulsi/.thesis-py38/bin/activate && python test_baseline.py --dataset ${dataset} --run-name ${run_name} --model-name ${model_name} --batch-size ${batch_size} --local ${local} --real-data ${real_data} --resized-images ${resized} >> output-${timestamp}.txt 2>&1 >> errors-${timestamp}.txt

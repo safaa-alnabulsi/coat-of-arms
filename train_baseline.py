@@ -43,6 +43,7 @@ if __name__ == "__main__":
     parser.add_argument('--batch-size', dest='batch_size', type=int, help='Number of Batch size', default=128)
     parser.add_argument('--resplit', dest='resplit', type=str, help='resplit the samples', default='no', choices=['yes','Yes','y','Y','no','No','n', 'N'])
     parser.add_argument('--local', dest='local', type=str, help='running on local?', default='no', choices=['yes','Yes','y','Y','no','No','n', 'N'])
+    parser.add_argument('--resized-images', dest='resized_images', type=str, help='smaller resized images?', default='no', choices=['yes','Yes','y','Y','no','No','n', 'N'])
 
     args = parser.parse_args()
 
@@ -51,6 +52,7 @@ if __name__ == "__main__":
     num_epochs = args.epochs
     resplit = args.resplit 
     local = args.local
+    resized_images = args.resized_images
     
     if resplit in ['yes','Yes','y','Y'] :
         resplit = True
@@ -61,6 +63,11 @@ if __name__ == "__main__":
         local = True
     else: 
         local = False
+
+    if resized_images in ['yes','Yes','y','Y'] :
+        resized_images = True
+    else: 
+        resized_images = False
 
     # get the timestamp to create default logsdir
     now = datetime.now() # current date and time
@@ -86,7 +93,11 @@ if __name__ == "__main__":
     
     print('Dataset exists in', data_location)    
     caption_file = data_location + '/captions-psumsq.txt'
-    root_folder_images = data_location + '/images'
+    if resized_images:
+        root_folder_images = data_location + '/res_images'
+    else:
+        root_folder_images = data_location + '/images'
+
     df = pd.read_csv(caption_file)
 
     train_annotation_file = data_location + '/train_captions_psumsq.txt'
