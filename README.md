@@ -130,6 +130,42 @@ The visual representation of the implemented automata in [LabelCheckerAutomata](
 The previous simple automata: 
 ![alt automata](images/simple-automata2.jpg)
 
+## Helping scripts
+
+### Dataset generation script
+
+This script generates dataset from permutations. It sends requests to Armoria API and creates `caption.txt` file.
+
+```bash
+    python generate-baseline-large.py --index=40787
+``` 
+
+### Generate script
+
+This script generates two values `psum, psum_sq` for each image in the given dataset and store the result in a new text file `captions-psumsq.txt`.
+
+* psum: total sum of pixles in the image
+* psum_sq: sum of the squared of pixles in the image 
+
+```bash
+    python add-pixels-to-caption.py --index=40787 --dataset baseline-gen-data/medium
+``` 
+
+### Resizing images script
+
+This script resize the images in the given folder to 100x100 and store them in `res_images`. No params as it's for one-time use. 
+
+- Locally:
+```bash
+    python resize-images.py
+``` 
+
+- On the cluster:
+
+```bash
+     qsub resize-images.sh
+```
+
 ## References:
 - automata-lib: https://pypi.org/project/automata-lib/#class-dfafa
 - Armoria API: https://github.com/Azgaar/armoria-api
