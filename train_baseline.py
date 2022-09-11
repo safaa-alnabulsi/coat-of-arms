@@ -35,7 +35,7 @@ import argparse
 
 
 if __name__ == "__main__":
-    print('starting the script')
+    print('starting the training script')
 
     parser = argparse.ArgumentParser(description='A script for training the baseline model')
     parser.add_argument('--dataset', dest='dataset', type=str, help='Full path to the dataset', default='/home/space/datasets/COA/generated-data-api')
@@ -44,6 +44,7 @@ if __name__ == "__main__":
     parser.add_argument('--resplit', dest='resplit', type=str, help='resplit the samples', default='no', choices=['yes','Yes','y','Y','no','No','n', 'N'])
     parser.add_argument('--local', dest='local', type=str, help='running on local?', default='no', choices=['yes','Yes','y','Y','no','No','n', 'N'])
     parser.add_argument('--resized-images', dest='resized_images', type=str, help='smaller resized images?', default='no', choices=['yes','Yes','y','Y','no','No','n', 'N'])
+    parser.add_argument('--checkpoint', dest='checkpoint', type=str, help='continue training from last saved checkpoint? yes, will load the model and no will create a new empty model', default='no', choices=['yes','Yes','y','Y','no','No','n', 'N'])
 
     args = parser.parse_args()
 
@@ -53,6 +54,7 @@ if __name__ == "__main__":
     resplit = args.resplit 
     local = args.local
     resized_images = args.resized_images
+    continue_from_checkpoint = args.checkpoint
     
     if resplit in ['yes','Yes','y','Y'] :
         resplit = True
@@ -68,6 +70,11 @@ if __name__ == "__main__":
         resized_images = True
     else: 
         resized_images = False
+
+    if continue_from_checkpoint in ['yes','Yes','y','Y'] :
+        continue_from_checkpoint = True
+    else: 
+        continue_from_checkpoint = False
 
     # get the timestamp to create default logsdir
     now = datetime.now() # current date and time
@@ -239,10 +246,18 @@ if __name__ == "__main__":
     # --------------------------------------- Training the model ------------------------------------------------------
     
     # Training the model
-    
-    print('initialize new model, loss etc')    
+    print('Initialize new model, loss etc')
     model, optimizer, criterion = get_new_model(hyper_params, learning_rate, ignored_idx, drop_prob, device, True)
 
+    # if continue_from_checkpoint:
+    #     print('Loading model from latest saved checkpoint')   
+    #     checkpoint = torch.load(model_folder + '/checkpoint.pt', map_location=torch.device(device))
+    #     model.load_state_dict(checkpoint['model_state_dict'])
+    #     optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+    #     epoch = checkpoint['epoch']
+    #     loss = checkpoint['loss']
+
+    # --------------
     # early stopping patience; how long to wait after last time validation loss improved.
     patience = 20
 

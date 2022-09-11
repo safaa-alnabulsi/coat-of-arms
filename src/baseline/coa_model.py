@@ -9,6 +9,7 @@ import torch.onnx as onnx
 import torch.optim as optim
 import torchvision.models as models
 import torchvision.transforms as T
+
 from torch.utils.data import DataLoader,Dataset
 from torch.utils.tensorboard import SummaryWriter
 import matplotlib.pyplot as plt
@@ -23,6 +24,7 @@ from src.baseline.data_loader import get_loader, get_mean, get_std
 from src.accuracy import Accuracy
 from src.pytorchtools import EarlyStopping, EarlyStoppingAccuracy
 from src.utils import list_of_tensors_to_numpy_arr
+from datetime import datetime
 
 
 def train_validate_test_split(df, train_percent=.6, validate_percent=.2, seed=None):
@@ -118,6 +120,10 @@ def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device
 
     return losses, accuracies, bleu_score, tepoch
 
+def print_time_now(epoch):
+    now = datetime.now()
+    current_time = now.strftime("%H:%M:%S")
+    print(f"Current Time ={current_time} in epoch {epoch}")
 
 def train_model(model, optimizer, criterion, 
                 train_dataset, train_loader, 
@@ -127,6 +133,7 @@ def train_model(model, optimizer, criterion,
     # to track the training loss as the model trains
     train_losses = []
     # to track the validation loss as the model trains
+    valid_loss=0
     valid_losses = []
     # to track the average training loss per epoch as the model trains
     avg_train_losses = []
@@ -149,7 +156,9 @@ def train_model(model, optimizer, criterion,
     early_stopping = EarlyStoppingAccuracy(patience=patience, verbose=True, path=checkpoint_file)
     
     loss_idx_value = 0
+    
     for epoch in range(1, n_epochs + 1):
+        print_time_now(epoch)
         with tqdm(train_loader, unit="batch") as tepoch:
             validation_interval = 0
             ###################
@@ -195,21 +204,21 @@ def train_model(model, optimizer, criterion,
                 #     if i%(int(1370/10)) == 0:
                 #         counter+=1
                 # print(counter)
-                if validation_interval % (num_of_batches/10) == 0:
-                    val_losses, accuracy_list, bleu_score, tepoch = validate_model(
-                        model,
-                        criterion, 
-                        val_loader,
-                        val_dataset,
-                        vocab_size,
-                        device,
-                        tepoch,
-                        writer,
-                        step=loss_idx_value
-                    )
+                # if validation_interval % (num_of_batches/10) == 0:
+                #     val_losses, accuracy_list, bleu_score, tepoch = validate_model(
+                #         model,
+                #         criterion, 
+                #         val_loader,
+                #         val_dataset,
+                #         vocab_size,
+                #         device,
+                #         tepoch,
+                #         writer,
+                #         step=loss_idx_value
+                #     )
                     
-                loss_idx_value += 1
-                validation_interval+=1
+                # loss_idx_value += 1
+                # validation_interval+=1
 
             ########################################    
             # print training/validation statistics #
@@ -221,9 +230,9 @@ def train_model(model, optimizer, criterion,
 
             # Copy the tensor to host memory first to move tensor to numpy
             # notice in here you are getting only the latest validation values
-            valid_losses = list_of_tensors_to_numpy_arr(val_losses)        
-            valid_loss = np.average(valid_losses)
-            avg_valid_losses.append(valid_loss)
+            # valid_losses = list_of_tensors_to_numpy_arr(val_losses)        
+            # valid_loss = np.average(valid_losses)
+            # avg_valid_losses.append(valid_loss)
 
             # calculate average accuracy over an epoch       
             accuracy = np.average(accuracy_list)
@@ -251,6 +260,29 @@ def train_model(model, optimizer, criterion,
             if early_stopping.early_stop:
                 print("Early stopping")
                 break
+            
+        val_losses, accuracy_list, bleu_score, tepoch = validate_model(
+                        model,
+                        criterion, 
+                        val_loader,
+                        val_dataset,
+                        vocab_size,
+                        device,
+                        tepoch,
+                        writer,
+                        step=loss_idx_value
+                    )
+        valid_losses = list_of_tensors_to_numpy_arr(val_losses)        
+        valid_loss = np.average(valid_losses)
+        avg_valid_losses.append(valid_loss)
+        print_msg = (f'[{epoch:>{epoch_len}}/{n_epochs:>{epoch_len}}] ' +
+                        f'train_loss: {train_loss:.5f} , ' +
+                        f'valid_loss: {valid_loss:.5f} , ' +
+                        f'accuracy: {accuracy:.5f}')
+    
+        print(print_msg)
+
+
     writer.close()
 
     # load the last checkpoint with the best model
