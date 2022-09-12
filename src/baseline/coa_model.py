@@ -244,7 +244,7 @@ def train_model(model, optimizer, criterion,
                          f'train_loss: {train_loss:.5f} , ' +
                          f'valid_loss: {valid_loss:.5f} , ' +
                          f'accuracy: {accuracy:.5f}')
-        
+
             print(print_msg)
 
             # clear lists to track next epoch
@@ -254,11 +254,11 @@ def train_model(model, optimizer, criterion,
 
             # early_stopping needs the validation loss to check if it has decresed, 
             # and if it has, it will make a checkpoint of the current model
-    #         early_stopping(valid_loss, model)
-            early_stopping(accuracy, model)
+    #         early_stopping(valid_loss, model, optimizer)
+            early_stopping(accuracy, model, optimizer)
 
             if early_stopping.early_stop:
-                print("Early stopping")
+                print("Early stopping. Stopping the training of the model.")
                 break
             
         val_losses, accuracy_list, bleu_score, tepoch = validate_model(
@@ -272,6 +272,7 @@ def train_model(model, optimizer, criterion,
                         writer,
                         step=loss_idx_value
                     )
+        
         valid_losses = list_of_tensors_to_numpy_arr(val_losses)        
         valid_loss = np.average(valid_losses)
         avg_valid_losses.append(valid_loss)
@@ -279,16 +280,17 @@ def train_model(model, optimizer, criterion,
                         f'train_loss: {train_loss:.5f} , ' +
                         f'valid_loss: {valid_loss:.5f} , ' +
                         f'accuracy: {accuracy:.5f}')
-    
-        print(print_msg)
 
+        print(print_msg)
 
     writer.close()
 
     # load the last checkpoint with the best model
-    model.load_state_dict(torch.load(checkpoint_file))
-
+    model, _ = load_model_checkpoint(checkpoint_file, model, optimizer, device)
+    
     return  model, avg_train_losses, avg_valid_losses, avg_acc, bleu_score
+
+# ---------- model save/load function ------------ #
 
 # helper function to save the model 
 # https://pytorch.org/tutorials/recipes/recipes/saving_and_loading_a_general_checkpoint.html
@@ -315,16 +317,18 @@ def load_model(model_path, hyper_params, learning_rate, drop_prob, ignored_idx, 
 
     return model, optimizer, loss,criterion
 
-def load_model_checkpoint(model_path, hyper_params, learning_rate, drop_prob, ignored_idx, pretrained):    
-    model, optimizer, criterion = get_new_model(hyper_params, learning_rate, ignored_idx, drop_prob, device,pretrained)
-        
-    checkpoint = torch.load(model_path)
+# ---------- checkpoint save/load function ------------ #
+
+def load_model_checkpoint(checkpoint_file, model, optimizer, device):    
+    checkpoint = torch.load(checkpoint_file, map_location=torch.device(device))
     model.load_state_dict(checkpoint['model_state_dict'])
     optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-    epoch = checkpoint['epoch']
-    loss = checkpoint['loss']
+    # epoch = checkpoint['epoch']
+    # loss = checkpoint['loss']
 
-    return model, optimizer, epoch, loss
+    # return model, optimizer, epoch, loss
+        
+    return model, optimizer
 
 # ---------- testing model function ------------ #
 

@@ -70,6 +70,13 @@ The default index is 0
      tensorboard --logdir=experiments/ --bind_all
 ```  
 
+### To continue training from latest saved checkpoint
+
+```bash
+
+    python train_baseline.py --dataset ~/tub/coat-of-arms/baseline-gen-data/small --batch-size 256 --local y --resplit no --resized-images yes --epochs 5 --checkpoint yes --run-folder run-09-12-2022-10:48:20
+```
+
 The server will start in http://localhost:6006/
 
 - To track the metrics of loss and accuracy in real time:

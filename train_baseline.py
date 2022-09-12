@@ -24,7 +24,7 @@ from src.baseline.noise import Noise
 from src.baseline.vocabulary import Vocabulary
 from src.baseline.data_loader import get_loader, get_loaders, get_mean, get_std
 from src.accuracy import Accuracy
-from src.baseline.coa_model import save_model, get_new_model, train_model, train_validate_test_split
+from src.baseline.coa_model import save_model, get_new_model, train_model, train_validate_test_split, load_model_checkpoint
 import torch.multiprocessing as mp
 from src.utils import print_time
 
@@ -45,6 +45,7 @@ if __name__ == "__main__":
     parser.add_argument('--local', dest='local', type=str, help='running on local?', default='no', choices=['yes','Yes','y','Y','no','No','n', 'N'])
     parser.add_argument('--resized-images', dest='resized_images', type=str, help='smaller resized images?', default='no', choices=['yes','Yes','y','Y','no','No','n', 'N'])
     parser.add_argument('--checkpoint', dest='checkpoint', type=str, help='continue training from last saved checkpoint? yes, will load the model and no will create a new empty model', default='no', choices=['yes','Yes','y','Y','no','No','n', 'N'])
+    parser.add_argument('--run-folder', dest='run_folder', type=str, help='Run Folder name where checkpoint.pt file exists', default='')
 
     args = parser.parse_args()
 
@@ -55,6 +56,7 @@ if __name__ == "__main__":
     local = args.local
     resized_images = args.resized_images
     continue_from_checkpoint = args.checkpoint
+    run_folder = args.run_folder
     
     if resplit in ['yes','Yes','y','Y'] :
         resplit = True
@@ -79,11 +81,17 @@ if __name__ == "__main__":
     # get the timestamp to create default logsdir
     now = datetime.now() # current date and time
     timestr = now.strftime("%m-%d-%Y-%H:%M:%S")
+   
     if local:
-        model_folder = f"experiments/run-{timestr}"
+        path_to_model =  "experiments"
     else:
-        model_folder = f"/home/space/datasets/COA/experiments/run-{timestr}"
-                
+        path_to_model = "/home/space/datasets/COA/experiments"
+        
+    if continue_from_checkpoint: 
+        model_folder = f"{path_to_model}/{run_folder}"
+    else:
+        model_folder = f"{path_to_model}/run-{timestr}"
+               
     # create the folder where all models files will be stored
     if not os.path.exists(model_folder):
         os.makedirs(model_folder)
@@ -249,13 +257,9 @@ if __name__ == "__main__":
     print('Initialize new model, loss etc')
     model, optimizer, criterion = get_new_model(hyper_params, learning_rate, ignored_idx, drop_prob, device, True)
 
-    # if continue_from_checkpoint:
-    #     print('Loading model from latest saved checkpoint')   
-    #     checkpoint = torch.load(model_folder + '/checkpoint.pt', map_location=torch.device(device))
-    #     model.load_state_dict(checkpoint['model_state_dict'])
-    #     optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-    #     epoch = checkpoint['epoch']
-    #     loss = checkpoint['loss']
+    if continue_from_checkpoint:
+        print('Loading model from latest saved checkpoint')   
+        model, optimizer = load_model_checkpoint(model_folder + '/checkpoint.pt', model, optimizer, device)
 
     # --------------
     # early stopping patience; how long to wait after last time validation loss improved.
