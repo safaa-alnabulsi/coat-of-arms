@@ -1,3 +1,4 @@
+from itertools import starmap
 import os
 import spacy
 import nltk
@@ -128,7 +129,7 @@ def print_time_now(epoch):
 def train_model(model, optimizer, criterion, 
                 train_dataset, train_loader, 
                 val_loader, val_dataset, 
-                vocab_size, batch_size, patience, n_epochs, device, model_folder):
+                vocab_size, batch_size, patience, n_epochs, device, model_folder, starting_epoch=1):
 
     # to track the training loss as the model trains
     train_losses = []
@@ -157,7 +158,9 @@ def train_model(model, optimizer, criterion,
     
     loss_idx_value = 0
     
-    for epoch in range(1, n_epochs + 1):
+    print(f"Starting training from epoch {starting_epoch}")
+    
+    for epoch in range(starting_epoch, n_epochs + 1):
         print_time_now(epoch)
         with tqdm(train_loader, unit="batch") as tepoch:
             validation_interval = 0
@@ -255,7 +258,7 @@ def train_model(model, optimizer, criterion,
             # early_stopping needs the validation loss to check if it has decresed, 
             # and if it has, it will make a checkpoint of the current model
     #         early_stopping(valid_loss, model, optimizer)
-            early_stopping(accuracy, model, optimizer)
+            early_stopping(accuracy, model, optimizer, epoch)
 
             if early_stopping.early_stop:
                 print("Early stopping. Stopping the training of the model.")
@@ -286,7 +289,7 @@ def train_model(model, optimizer, criterion,
     writer.close()
 
     # load the last checkpoint with the best model
-    model, _ = load_model_checkpoint(checkpoint_file, model, optimizer, device)
+    model, _, _ = load_model_checkpoint(checkpoint_file, model, optimizer, device)
     
     return  model, avg_train_losses, avg_valid_losses, avg_acc, bleu_score
 
@@ -323,12 +326,9 @@ def load_model_checkpoint(checkpoint_file, model, optimizer, device):
     checkpoint = torch.load(checkpoint_file, map_location=torch.device(device))
     model.load_state_dict(checkpoint['model_state_dict'])
     optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-    # epoch = checkpoint['epoch']
-    # loss = checkpoint['loss']
-
-    # return model, optimizer, epoch, loss
+    epoch = checkpoint['epoch']
         
-    return model, optimizer
+    return model, optimizer, epoch
 
 # ---------- testing model function ------------ #
 

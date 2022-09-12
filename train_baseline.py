@@ -256,16 +256,16 @@ if __name__ == "__main__":
     # Training the model
     print('Initialize new model, loss etc')
     model, optimizer, criterion = get_new_model(hyper_params, learning_rate, ignored_idx, drop_prob, device, True)
-
+    starting_epoch = 1
     if continue_from_checkpoint:
         print('Loading model from latest saved checkpoint')   
-        model, optimizer = load_model_checkpoint(model_folder + '/checkpoint.pt', model, optimizer, device)
+        model, optimizer, starting_epoch = load_model_checkpoint(model_folder + '/checkpoint.pt', model, optimizer, device)
 
     # --------------
     # early stopping patience; how long to wait after last time validation loss improved.
     patience = 20
 
-    model, train_loss, valid_loss, avg_acc, bleu_score = train_model(model, optimizer, criterion, train_dataset, train_loader, val_loader, val_dataset, vocab_size, batch_size, patience, num_epochs, device, model_folder)
+    model, train_loss, valid_loss, avg_acc, bleu_score = train_model(model, optimizer, criterion, train_dataset, train_loader, val_loader, val_dataset, vocab_size, batch_size, patience, num_epochs, device, model_folder, starting_epoch)
 
     final_accuracy = np.average(avg_acc)
     final_train_loss = np.average(train_loss)
