@@ -220,7 +220,7 @@ def train_model(model, optimizer, criterion,
                 #         step=loss_idx_value
                 #     )
                     
-                # loss_idx_value += 1
+                loss_idx_value += 1
                 # validation_interval+=1
 
             ########################################    
