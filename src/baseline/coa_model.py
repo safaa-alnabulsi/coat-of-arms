@@ -194,7 +194,7 @@ def train_model(model, optimizer, criterion,
                 predicted_caption, correct_caption,caps = predict_image(model, image, captions, train_dataset, device)
                 correct_caption_s = ' '.join(correct_caption)
                 acc = Accuracy(predicted_caption,correct_caption_s).get()
-                writer.add_scalar("Accuracy/train", acc, loss_idx_value)
+                writer.add_scalar("Accuracy/train per batch", acc, loss_idx_value)
 
                 ######################    
                 # validate the model #
