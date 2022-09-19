@@ -188,7 +188,7 @@ def train_model(model, optimizer, criterion,
                 train_losses.append(train_batch_loss)
                 
                 tepoch.set_postfix({'Train loss (in progress)': train_batch_loss})
-                writer.add_scalar("Loss/train", train_batch_loss, loss_idx_value)
+                writer.add_scalar("Loss/train per batch", train_batch_loss, loss_idx_value)
                 
                 # nice to have:  training accuracy
                 predicted_caption, correct_caption,caps = predict_image(model, image, captions, train_dataset, device)
@@ -230,6 +230,7 @@ def train_model(model, optimizer, criterion,
             # calculate average loss over an epoch
             train_loss = np.average(train_losses)
             avg_train_losses.append(train_loss)
+            writer.add_scalar("Loss/train per epoch", train_loss, epoch)
 
             # Copy the tensor to host memory first to move tensor to numpy
             # notice in here you are getting only the latest validation values
@@ -240,6 +241,7 @@ def train_model(model, optimizer, criterion,
             # calculate average accuracy over an epoch       
             accuracy = np.average(accuracy_list)
             avg_acc.append(accuracy)
+            writer.add_scalar("Accuracy/train per epoch", accuracy, epoch)
 
             epoch_len = len(str(n_epochs))
 
@@ -273,7 +275,7 @@ def train_model(model, optimizer, criterion,
                         device,
                         tepoch,
                         writer,
-                        step=loss_idx_value
+                        step=epoch
                     )
         
         valid_losses = list_of_tensors_to_numpy_arr(val_losses)        
