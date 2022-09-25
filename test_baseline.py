@@ -167,7 +167,7 @@ if __name__ == "__main__":
     
     image_with_max_acc, image_with_min_acc = get_min_max_acc_images(accuracy_test_list, image_names_list)
     print('image name with max accuracy', image_with_max_acc)
-    print('image name with max accuracy', image_with_min_acc)
+    print('image name with min accuracy', image_with_min_acc)
 
     # torch.cuda.empty_cache()
 #     test_rand_image(model, test_dataset, test_loader, device)
