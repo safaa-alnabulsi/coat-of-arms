@@ -85,7 +85,7 @@ def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device
 
     model.eval()
     with torch.no_grad():
-        for idx, (imgs, correct_caps,_,_,_) in enumerate(iter(val_loader)):
+        for idx, (imgs, correct_caps,_,_,image_file_names) in enumerate(iter(val_loader)):
             # ------------------------------------------
             # calc losses and take the average 
             images, captions = imgs.to(device), correct_caps.to(device)
@@ -95,13 +95,18 @@ def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device
             losses.append(loss)
             tepoch.set_postfix({'validatio loss (in progress)': loss})
             
-            for img, correct_cap in zip(imgs,correct_caps):
+            for img, correct_cap,image_file_name in zip(imgs,correct_caps, image_file_names):
         
                 predicted_caption, correct_caption, caps = predict_image(model, img, correct_cap, val_dataset, device)
                 correct_caption_s = ' '.join(correct_caption)
                 # ------------------------------------------
                 # calc metrics
-                acc = Accuracy(predicted_caption,correct_caption_s).get()
+                try:
+                    acc = Accuracy(predicted_caption,correct_caption_s).get()
+                except ValueError as e:
+                    print(f'Problem in Image {image_file_name}') 
+                    raise e
+                
                 accuracies.append(acc)
 
                 bleu = nltk.translate.bleu_score.sentence_bleu([correct_caption], caps, weights=(0.5, 0.5))
