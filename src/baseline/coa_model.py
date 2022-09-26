@@ -498,6 +498,7 @@ def get_caps_from(model, test_dataset, features_tensors, device):
         show_image(features_tensors[0],title=caption)
     
     return caps,alphas
+
 #Show attention
 def plot_attention(img, result, attention_plot):
     #untransform
