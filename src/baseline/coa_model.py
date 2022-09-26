@@ -57,6 +57,7 @@ def get_new_model(hyper_params, learning_rate, ignored_idx, drop_prob, device, p
 def predict_image(model,image, correct_cap, dataset, device):
     # encode the image to be ready for prediction
     # features = model.encoder(image.to(device))
+    print(f'predict_image function len(image) {len(image)}')
     features_tensor = image.detach().clone().unsqueeze(0)
     features = model.encoder(features_tensor.to(device))
     
@@ -64,7 +65,8 @@ def predict_image(model,image, correct_cap, dataset, device):
     caps,_ = model.decoder.generate_caption(features, vocab=dataset.vocab)   
     caps = caps[:-1]
     predicted_caption = ' '.join(caps)
-    
+    print(f'predict_image function predicted_caption {predicted_caption}')
+
     # get the correct caption as a string
     correct_caption = []
     for j in correct_cap.T:
@@ -76,7 +78,7 @@ def predict_image(model,image, correct_cap, dataset, device):
 
 # Function to test the model with the val dataset and print the accuracy for the test images
 def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device, tepoch, writer, step):
-#     print('validate function called')
+    print('validate function called')
     total = len(val_loader)
     bleu_score = 0
 
@@ -96,7 +98,7 @@ def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device
             tepoch.set_postfix({'validatio loss (in progress)': loss})
             
             for img, correct_cap,image_file_name in zip(imgs,correct_caps, image_file_names):
-        
+                print(f'len(img) {len(img)}')
                 predicted_caption, correct_caption, caps = predict_image(model, img, correct_cap, val_dataset, device)
                 correct_caption_s = ' '.join(correct_caption)
                 # ------------------------------------------
