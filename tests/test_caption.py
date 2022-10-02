@@ -76,6 +76,8 @@ struc_labels = {
                                                                                 'rampant'], 'number': '1'},
                                                                             {'charge': 'eagle', 'color': 'A', 'modifiers': ['doubleheaded'], 'number': '1'}]},
 
+    "s lions passt guard":{'shield': {'color': 'A', 'modifiers': []},
+                             'objects': [{'charge': 'lions', 'color': 's', 'modifiers': ['passt guard'], 'number': '1'}]}
 }
 
 
@@ -88,4 +90,6 @@ class CaptionTest(TestCase):
     def test_is_valid_in_armoria(self):
         assert Caption('B OA 3 fleurs-de-lis & border').is_valid_in_armoria == False
         assert Caption('A A A A lion rampant cross eagle doubleheaded & border').is_valid_in_armoria == True
-            
+        assert Caption('O lions passt & border').is_valid_in_armoria == True #<=== A is added by default as a shield color
+        assert Caption('s lions passt').is_valid_in_armoria == True #<=== A is added by default as a shield color
+           

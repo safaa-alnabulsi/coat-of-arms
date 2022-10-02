@@ -47,7 +47,7 @@ class Caption:
           
     
     def get_structured(self):
-
+        default_shield_color = 'A'  # DEFAULT_SHIELD color
         charge = {'color': '', 'object': '', 'modifiers': []}
         output = {
             'shield': {},
@@ -55,7 +55,13 @@ class Caption:
         }
 
         aligned_label = self.get_aligned()
-      
+        # ------------------------------------------------------------------
+        
+        # Exceptional use-case: when there is one object and one color, take the color for the object and use the default shield color
+        if len(aligned_label['objects']) > 0 and len(aligned_label['colors']) == 1:
+            aligned_label['colors'].insert(0, default_shield_color)
+        # ------------------------------------------------------------------
+
         # Reserve the first color as a shield color; it's a rule
         try:
             shield_color = aligned_label['colors'][0]
@@ -65,8 +71,7 @@ class Caption:
 
         except IndexError:
             print(f'No shield color found in this label: "{self.label}"')
-            shield_color = 'A'  # DEFAULT_SHIELD
-            output['shield'] = {'color': shield_color, 'modifiers': []}
+            output['shield'] = {'color': default_shield_color, 'modifiers': []}
 
         for item in aligned_label['shield_modifiers']:
             output['shield']['modifiers'].append(item)
@@ -104,7 +109,7 @@ class Caption:
                     output['objects'][i]['number'] = aligned_label['numbers'][i]
                 except IndexError:
                     pass
-
+                
         return output
 
     # (['A', 'lion rampant’])
