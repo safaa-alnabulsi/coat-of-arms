@@ -57,7 +57,6 @@ def get_new_model(hyper_params, learning_rate, ignored_idx, drop_prob, device, p
 def predict_image(model,image, correct_cap, dataset, device):
     # encode the image to be ready for prediction
     # features = model.encoder(image.to(device))
-    print(f'predict_image function len(image) {len(image)}')
     features_tensor = image.detach().clone().unsqueeze(0)
     features = model.encoder(features_tensor.to(device))
     
