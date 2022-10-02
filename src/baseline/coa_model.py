@@ -440,12 +440,17 @@ def test_model(model, criterion, test_loader, test_dataset, vocab_size, device, 
 
             avg_batch_acc = sum(accuracy_batch_list)/len(accuracy_batch_list)
             accuracy_test_list.append(avg_batch_acc)
-            print(f'Test Acuuracy (in progress): {avg_batch_acc:.6f}\n')
+            
+            test_batch_loss_per = 100. * avg_batch_acc
+            print(f'Test Acuuracy (in progress): {test_batch_loss_per}%')
+            print("--------------------------")
             writer.add_scalar(f"Accuracy/test {scalar_test}", avg_batch_acc, idx)
 
     # calculate and print avg test loss
     test_loss = sum(test_losses)/len(test_dataset)
-    print('Test Loss (final): {:.6f}\n'.format(test_loss))
+    test_loss_per = 100. * test_loss
+    
+    print(f'Test Loss (final): {test_loss_per}%')
 
     acc_test_score = (100. * sum(accuracy_test_list) / len(accuracy_test_list))
 
