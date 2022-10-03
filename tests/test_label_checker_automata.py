@@ -55,7 +55,7 @@ aligned_parsed_labels = {
     "B A O 3 lions 3 eagles": {'colors': ['B', 'A', 'O'], 'objects': ['lions', 'eagles'], 'modifiers': [''], 'numbers': ['3', '3'], 'positions': [], 'shield_modifiers': []},
     "A A A lion eagle doubleheaded & border":  {'colors': ['A', 'A', 'A'], 'objects': ['lion', 'eagle'], 'modifiers': ['','doubleheaded'], 'numbers': [], 'positions': ['&'], 'shield_modifiers': ['border']},
     "A A bear rampant chained lion":  {'colors': ['A', 'A'], 'objects': ['bear','lion'], 'modifiers': ['rampant','chained'], 'numbers': [], 'positions': [], 'shield_modifiers': []},
-
+    'v v lions passt': {'colors': ['v', 'v'], 'objects': ['lions'], 'modifiers': ['passt'], 'numbers': [], 'positions': [], 'shield_modifiers': []},
 }
 
 class LabelCheckerAutomataTest(TestCase):
@@ -79,7 +79,6 @@ class LabelCheckerAutomataTest(TestCase):
             print(label)
             with self.assertRaises(ValueError):
                 automata.parse_label(label)
-
 
     def test_is_combination_color(self):
         assert automata.is_combination_color('AA') == True

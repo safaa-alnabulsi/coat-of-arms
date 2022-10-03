@@ -97,7 +97,6 @@ def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device
             tepoch.set_postfix({'validatio loss (in progress)': loss})
             
             for img, correct_cap,image_file_name in zip(imgs,correct_caps, image_file_names):
-                print(f'len(img) {len(img)}')
                 predicted_caption, correct_caption, caps = predict_image(model, img, correct_cap, val_dataset, device)
                 correct_caption_s = ' '.join(correct_caption)
                 # ------------------------------------------
@@ -105,8 +104,8 @@ def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device
                 try:
                     acc = Accuracy(predicted_caption,correct_caption_s).get()
                 except ValueError as e:
-                    print(f'Problem in Image {image_file_name}') 
-                    raise e
+                    print(f'Problem in Image {image_file_name}, {correct_caption_s}, {predicted_caption}') 
+                    acc = 0.0
                 
                 accuracies.append(acc)
 
