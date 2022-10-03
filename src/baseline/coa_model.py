@@ -64,7 +64,6 @@ def predict_image(model,image, correct_cap, dataset, device):
     caps,_ = model.decoder.generate_caption(features, vocab=dataset.vocab)   
     caps = caps[:-1]
     predicted_caption = ' '.join(caps)
-    print(f'predict_image function predicted_caption {predicted_caption}')
 
     # get the correct caption as a string
     correct_caption = []
@@ -101,6 +100,7 @@ def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device
                 correct_caption_s = ' '.join(correct_caption)
                 # ------------------------------------------
                 # calc metrics
+                print(f'Calculating Accuracy - filename:"{image_file_name}", correct_caption_s:"{correct_caption_s}", predicted_caption:"{predicted_caption}"') 
                 try:
                     acc = Accuracy(predicted_caption,correct_caption_s).get()
                 except ValueError as e:
@@ -111,7 +111,8 @@ def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device
 
                 bleu = nltk.translate.bleu_score.sentence_bleu([correct_caption], caps, weights=(0.5, 0.5))
                 bleu_score += bleu
-        
+                print("------------------------------------------")
+
             # ------------------------------------------
     avg_loss = sum(losses)/len(losses)
     avg_acc = sum(accuracies)/len(accuracies)
