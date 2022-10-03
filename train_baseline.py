@@ -263,7 +263,7 @@ if __name__ == "__main__":
 
     # --------------
     # early stopping patience; how long to wait after last time validation loss improved.
-    patience = 20
+    patience = 5
 
     model, train_loss, valid_loss, avg_acc, bleu_score = train_model(model, optimizer, criterion, train_dataset, train_loader, val_loader, val_dataset, vocab_size, batch_size, patience, num_epochs, device, model_folder, starting_epoch)
 
