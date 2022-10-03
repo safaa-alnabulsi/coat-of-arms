@@ -271,8 +271,10 @@ if __name__ == "__main__":
     final_train_loss = np.average(train_loss)
     
     print('Bleu Score: ', bleu_score/8091)
-    print('Final accuracy: ', final_accuracy)
-    
+    print('Final accuracy: ',  final_accuracy)
+    print('Final train_loss: ',  final_train_loss)
+    print('Final valid_loss: ',  np.average(valid_loss))
+
     # ---------------------------------------- Saving the model ----------------------------------------------------
 
     # save the latest model

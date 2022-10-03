@@ -110,7 +110,7 @@ def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device
                 correct_caption_s = get_correct_caption_as_string(val_dataset, correct_cap)
                 # ------------------------------------------
                 # calc metrics
-                print(f'Calc Accuracy image_file_name: {image_file_name}, correct_caption_s: {correct_caption_s}, predicted_caption: {predicted_caption}') 
+                # print(f'Calc Accuracy image_file_name: {image_file_name}, correct_caption_s: {correct_caption_s}, predicted_caption: {predicted_caption}') 
                 try:
                     acc = Accuracy(predicted_caption,correct_caption_s).get()
                 except ValueError as e:
