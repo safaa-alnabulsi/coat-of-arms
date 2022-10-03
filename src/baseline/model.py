@@ -73,6 +73,7 @@ class DecoderRNN(nn.Module):
         self.attention_dim = attention_dim
         self.decoder_dim = decoder_dim
         
+        # double check with david if we need this embedding, the caption is already tokenized and comes as a vector of number
         self.embedding = nn.Embedding(vocab_size,embed_size)
         self.attention = Attention(encoder_dim,decoder_dim,attention_dim)
         
@@ -105,10 +106,18 @@ class DecoderRNN(nn.Module):
 
         for s in range(seq_length):
             alpha,context = self.attention(features, h)
+            # print(embeds.shape) 
+            # print(context.shape)
             
-#             print(embeds.shape) # torch.Size([7, 10, 300])
-#             print(context.shape) # torch.Size([10, 2048])
+            # print(f'seq_length {seq_length}')
+            # pad_sequence batch_first True
+            # embeds torch.Size([9, 10, 300])
+            # context torch.Size([10, 512])
 
+            # pad_sequence batch_first False
+            # embeds torch.Size([10, 9, 300])
+            # context torch.Size([10, 512])
+            
             # https://pytorch.org/docs/stable/generated/torch.cat.html
             lstm_input = torch.cat((embeds[:, s], context), dim=1) ##### <=== breaking here
             h, c = self.lstm_cell(lstm_input, (h, c))

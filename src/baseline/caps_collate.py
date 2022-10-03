@@ -6,7 +6,7 @@ class CapsCollate:
     """
     Collate to apply the padding to the captions with dataloader
     """
-    def __init__(self,pad_idx,batch_first=False,calc_mean=False):
+    def __init__(self,pad_idx,batch_first=True,calc_mean=False):
         self.pad_idx     = pad_idx
         self.batch_first = batch_first
         self.calc_mean   = calc_mean
@@ -34,8 +34,12 @@ class CapsCollate:
                 #print(im.size())
                 
             imgs    = torch.cat(imgs,dim=0)
+            
+            # Padding is important to make all captions on the same size
+            # batch_first MUST be True in here, otherwise the padding will happen in not a desired way
+            # https://pytorch.org/docs/stable/generated/torch.nn.utils.rnn.pad_sequence.html
             targets = pad_sequence(targets, 
-                                   batch_first=self.batch_first,
+                                   batch_first=True,
                                    padding_value=self.pad_idx)
         
         psum    = torch.tensor(psum)

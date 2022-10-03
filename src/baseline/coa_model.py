@@ -54,7 +54,7 @@ def get_new_model(hyper_params, learning_rate, ignored_idx, drop_prob, device, p
     return model, optimizer, criterion
 
 
-def predict_image(model,image, correct_cap, dataset, device):
+def predict_image(model,image, dataset, device):
     # encode the image to be ready for prediction
     # features = model.encoder(image.to(device))
     features_tensor = image.detach().clone().unsqueeze(0)
@@ -64,14 +64,19 @@ def predict_image(model,image, correct_cap, dataset, device):
     caps,_ = model.decoder.generate_caption(features, vocab=dataset.vocab)   
     caps = caps[:-1]
     predicted_caption = ' '.join(caps)
+            
+    return  predicted_caption, caps
 
-    # get the correct caption as a string
+
+def get_correct_caption_as_string(dataset, correct_cap):
     correct_caption = []
     for j in correct_cap.T:
-        if j.item() not in [0, 1, 2 , 3]:
-            correct_caption.append(dataset.vocab.itos[j.item()])   
-            
-    return  predicted_caption, correct_caption, caps
+        # 0: '<PAD>', 1: '<SOS>', 2: '<EOS>', 3: '<UNK>'
+        item = j.item()
+        if item not in [0, 1, 2 , 3]:
+            itos = dataset.vocab.itos[item]
+            correct_caption.append(itos) 
+    return ' '.join(correct_caption)
 
 
 # Function to test the model with the val dataset and print the accuracy for the test images
@@ -85,22 +90,27 @@ def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device
 
     model.eval()
     with torch.no_grad():
+        # loop over batches
         for idx, (imgs, correct_caps,_,_,image_file_names) in enumerate(iter(val_loader)):
             # ------------------------------------------
             # calc losses and take the average 
             images, captions = imgs.to(device), correct_caps.to(device)
-            outputs, _ = model(images, captions.T)
-            targets    = captions.T[:,1:] 
+            # predicted - forward pass: compute predicted outputs by passing inputs to the model
+            outputs, _ = model(images, captions)
+            # correct            
+            targets    = captions[:,1:] 
             loss       = criterion(outputs.view(-1, vocab_size), targets.reshape(-1))
             losses.append(loss)
             tepoch.set_postfix({'validatio loss (in progress)': loss})
             
-            for img, correct_cap,image_file_name in zip(imgs,correct_caps, image_file_names):
-                predicted_caption, correct_caption, caps = predict_image(model, img, correct_cap, val_dataset, device)
-                correct_caption_s = ' '.join(correct_caption)
+            # loop over images of one batch and predict them one by one to calculate accuracy
+            for img, correct_cap,image_file_name in zip(images,correct_caps, image_file_names):
+                predicted_caption, caps = predict_image(model, img, val_dataset, device)
+                # get the correct caption as a string
+                correct_caption_s = get_correct_caption_as_string(val_dataset, correct_cap)
                 # ------------------------------------------
                 # calc metrics
-                print(f'Calculating Accuracy - filename:"{image_file_name}", correct_caption_s:"{correct_caption_s}", predicted_caption:"{predicted_caption}"') 
+                print(f'Calc Accuracy image_file_name: {image_file_name}, correct_caption_s: {correct_caption_s}, predicted_caption: {predicted_caption}') 
                 try:
                     acc = Accuracy(predicted_caption,correct_caption_s).get()
                 except ValueError as e:
@@ -109,9 +119,8 @@ def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device
                 
                 accuracies.append(acc)
 
-                bleu = nltk.translate.bleu_score.sentence_bleu([correct_caption], caps, weights=(0.5, 0.5))
-                bleu_score += bleu
-                print("------------------------------------------")
+                # bleu = nltk.translate.bleu_score.sentence_bleu([correct_caption], caps, weights=(0.5, 0.5))
+                # bleu_score += bleu
 
             # ------------------------------------------
     avg_loss = sum(losses)/len(losses)
@@ -182,9 +191,9 @@ def train_model(model, optimizer, criterion,
                 # clear the gradients of all optimized variables
                 optimizer.zero_grad()
                 # forward pass: compute predicted outputs by passing inputs to the model
-                outputs, attentions = model(batch_images, captions.T)
+                outputs, attentions = model(batch_images, captions)
                 # calculate the loss
-                targets = captions.T[:,1:]  ####### the fix in here
+                targets = captions[:,1:]  ####### the fix in here
                 loss = criterion(outputs.view(-1, vocab_size), targets.reshape(-1))
                 # backward pass: compute gradient of the loss with respect to model parameters
                 loss.backward()
@@ -200,8 +209,9 @@ def train_model(model, optimizer, criterion,
                 # # Accuracy of training
                 # for img, correct_cap in zip(batch_images, captions):
                 #     # nice to have:  training accuracy
-                #     predicted_caption, correct_caption,caps = predict_image(model, img, correct_cap, train_dataset, device)
-                #     correct_caption_s = ' '.join(correct_caption)
+                #     predicted_caption,caps = predict_image(model, img, train_dataset, device)
+                #     # get the correct caption as a string
+                #     correct_caption_s = get_correct_caption_as_string(train_dataset, correct_cap)
                 #     acc = Accuracy(predicted_caption,correct_caption_s).get()
                 #     accuracy_training_list.append(acc)
                 #     writer.add_scalar("Accuracy/train per batch image", acc, loss_idx_value)
@@ -415,8 +425,10 @@ def test_model(model, criterion, test_loader, test_dataset, vocab_size, device, 
 
             # calc losses and take the average 
             images, captions = batch_images.to(device), correct_cap.to(device)
-            outputs, _ = model(images, captions.T)
-            targets    = captions.T[:,1:] 
+            # forward pass: compute predicted outputs by passing inputs to the model
+            outputs, _ = model(images, captions)
+            targets    = captions[:,1:] 
+            # calculate the loss
             loss       = criterion(outputs.view(-1, vocab_size), targets.reshape(-1))
             test_losses.append(loss)
            
@@ -426,9 +438,11 @@ def test_model(model, criterion, test_loader, test_dataset, vocab_size, device, 
             accuracy_batch_list=[]
             for img, correct_cap, image_file_name in zip(batch_images, correct_cap, image_file_names):
             
-                predicted_caption, correct_caption,_ = predict_image(model, img, correct_cap, test_dataset, device)
-                correct_caption_s = ' '.join(correct_caption)
+                predicted_caption,_ = predict_image(model, img, test_dataset, device)
                 
+                # get the correct caption as a string
+                correct_caption_s = get_correct_caption_as_string(test_dataset, correct_cap)
+
                 # calc metrics
                 acc_image = Accuracy(predicted_caption, correct_caption_s).get()
                 accuracy_batch_list.append(acc_image)
