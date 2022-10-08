@@ -1,0 +1,213 @@
+image,caption,psum,psum_sq
+-1_A G lion rampant.jpg,A G lion rampant,1884396.875,1445563.875
+-1_B G lion passt.jpg,B G lion passt,81013.5859375,56832.4140625
+-1_B O cross.jpg,B O cross,1532679.125,986881.75
+-1_G O cross moline.jpg,G O cross moline,1928652.75,1383184.125
+-1_G O cross of Toulouse.jpg,G O cross of Toulouse,1763222.5,1219941.75
+-1_G O lion rampant.jpg,G O lion rampant,1657027.125,1124069.125
+-1_O B lion rampant.jpg,O B lion rampant,1683685.5,1206458.25
+-1_O G lion rampant.jpg,O G lion rampant,204253.140625,134630.8125
+-1_O S lion naissant.jpg,O S lion naissant,2250308.0,1727137.75
+1000_G O lion rampant.jpg,G O lion rampant,763626.4375,546829.0
+10303_A B cross.jpg,A B cross,752435.0,563351.125
+10651_A G lion rampant.jpg,A G lion rampant,1675386.0,1295331.875
+10757_B O eagle.jpg,B O eagle,643013.125,467208.65625
+10840_B A lion rampant.jpg,B A lion rampant,913940.5,581327.5
+1154_A G lion rampant.jpg,A G lion rampant,806175.125,612873.375
+12396_G O eagle doubleheaded.jpg,G O eagle doubleheaded,725389.875,516566.875
+12436_V A cross.jpg,V A cross,823834.5625,604859.5
+1293_O G lion rampant.jpg,O G lion rampant,806470.6875,624526.125
+1307_O G eagle.jpg,O G eagle,731722.5,544144.8125
+1319_O S lion rampant.jpg,O S lion rampant,735184.0,544038.4375
+1335_G A lion rampant.jpg,G A lion rampant,834458.1875,628618.5
+1515_B O lion rampant.jpg,B O lion rampant,677605.8125,501439.09375
+1537_A S eagle doubleheaded.jpg,A S eagle doubleheaded,607444.8125,439137.71875
+1543_G O lion passt guard.jpg,G O lion passt guard,702297.625,505457.25
+1579_O G cross.jpg,O G cross,810021.625,612901.125
+15902_O S eagle.jpg,O S eagle,784491.125,609637.375
+16464_A G lion passt guard.jpg,A G lion passt guard,550173.25,447715.59375
+16674_O S cross.jpg,O S cross,841029.75,635370.5
+1667_O G lion rampant.jpg,O G lion rampant,59447.85546875,40465.8125
+16712_S O eagle.jpg,S O eagle,708384.4375,501898.46875
+16760_G O lion q.f..jpg,G O lion q.f.,597554.5,423036.75
+16852_A B eagle doubleheaded.jpg,A B eagle doubleheaded,179250.40625,106874.203125
+1739_A G cross patonce.jpg,A G cross patonce,724933.0,557413.5
+17591_S A eagle.jpg,S A eagle,599646.625,418033.4375
+17637_B O lion rampant.jpg,B O lion rampant,634803.625,447496.0
+17661_V A cross.jpg,V A cross,575745.3125,412299.28125
+17708_O G cross moline.jpg,O G cross moline,732607.3125,549875.4375
+1771_A S lion rampant.jpg,A S lion rampant,753555.25,591453.75
+17921_O S eagle doubleheaded.jpg,O S eagle doubleheaded,665619.1875,500535.75
+17923_B O lion rampant.jpg,B O lion rampant,599960.875,423763.53125
+17925_G A lion q.f..jpg,G A lion q.f.,731328.25,540431.125
+17931_O B lion rampant.jpg,O B lion rampant,617899.0,447645.5
+17941_A G lion rampant.jpg,A G lion rampant,808294.125,632085.875
+17947_G O lion rampant.jpg,G O lion rampant,678998.125,518639.9375
+17972_O G eagle.jpg,O G eagle,799930.25,602176.75
+18098_O S eagle per fess.jpg,O S eagle per fess,1003251.125,582112.5625
+18202_S A eagle.jpg,S A eagle,33832.77734375,22160.0
+18220_A S lion rampant.jpg,A S lion rampant,3330191.25,2296496.25
+18746_S A eagle.jpg,S A eagle,880971.4375,601956.4375
+18825_O S eagle doubleheaded.jpg,O S eagle doubleheaded,875004.0625,703326.6875
+18847_B A eagle.jpg,B A eagle,326885.1875,205885.703125
+18863_B A lion rampant.jpg,B A lion rampant,1002275.75,686595.875
+188_A V lion rampant.jpg,A V lion rampant,690813.0,473443.625
+19142_V O lion rampant.jpg,V O lion rampant,563928.125,374550.1875
+19174_O G lion rampant.jpg,O G lion rampant,816639.4375,577024.75
+19188_O G cross.jpg,O G cross,888832.9375,691527.6875
+19245_O B lion rampant.jpg,O B lion rampant,711067.9375,502554.53125
+19320_A S cross.jpg,A S cross,32016.72265625,24683.09765625
+19342_G A eagle.jpg,G A eagle,372504.0,219003.625
+19679_A G lion rampant.jpg,A G lion rampant,154865.890625,97468.2890625
+196_G O cross moline.jpg,G O cross moline,744393.4375,545301.4375
+19997_B A cross.jpg,B A cross,159195.875,100614.890625
+20149_O S lion rampant.jpg,O S lion rampant,1300685.625,943790.6875
+2096_A S eagle.jpg,A S eagle,848168.9375,641162.625
+21370_A B lion rampant.jpg,A B lion rampant,770137.9375,586665.3125
+21398_A B lion rampant.jpg,A B lion rampant,18132.931640625,10052.0263671875
+2145_O S lion naissant.jpg,O S lion naissant,638113.5,473606.8125
+22011_O S cross moline.jpg,O S cross moline,685398.0,501014.4375
+22050_B A lion rampant.jpg,B A lion rampant,808753.375,575747.125
+22069_B O eagle.jpg,B O eagle,677407.5,470455.875
+22117_O B cross patriarchal.jpg,O B cross patriarchal,696633.875,521719.9375
+22122_O S cross.jpg,O S cross,653380.3125,459646.125
+22124_B O lion rampant.jpg,B O lion rampant,850149.875,643400.75
+22189_V O eagle.jpg,V O eagle,703980.625,480120.875
+22205_B A cross.jpg,B A cross,796564.125,595740.5
+22211_A G cross.jpg,A G cross,656458.5,441642.46875
+22212_A G eagle.jpg,A G eagle,808526.0,594291.625
+22270_S O lion rampant.jpg,S O lion rampant,603478.75,428738.0625
+22314_V O eagle.jpg,V O eagle,632000.25,432217.59375
+22315_G A lion q.f..jpg,G A lion q.f.,745092.375,526473.875
+22319_O G lion q.f..jpg,O G lion q.f.,749159.0625,547962.625
+22323_O S cross moline.jpg,O S cross moline,766590.75,565109.25
+22337_G O lion rampant.jpg,G O lion rampant,804485.3125,577575.25
+22346_O S cross moline.jpg,O S cross moline,929041.625,698880.375
+22364_B A lion rampant.jpg,B A lion rampant,628966.0,438086.90625
+22472_A S lion rampant.jpg,A S lion rampant,846649.5,658151.5
+22514_A G eagle.jpg,A G eagle,815770.75,605656.4375
+22627_G O lion rampant.jpg,G O lion rampant,608231.25,434472.9375
+22635_S A cross patonce.jpg,S A cross patonce,595105.25,440243.0625
+22705_B O cross.jpg,B O cross,754122.625,569393.0
+22749_O B lion rampant.jpg,O B lion rampant,804214.4375,604411.375
+22780_B O lion passt guard cr..jpg,B O lion passt guard cr.,709901.625,536310.75
+22807_G A eagle doubleheaded.jpg,G A eagle doubleheaded,594182.5,426042.6875
+22863_A B lion rampant.jpg,A B lion rampant,765387.0625,584369.8125
+22874_O G cross.jpg,O G cross,751080.9375,566635.6875
+22910_O B cross.jpg,O B cross,664445.375,479891.09375
+22919_B G eagle.jpg,B G eagle,659989.75,459386.25
+22947_O G cross.jpg,O G cross,19089.015625,12408.357421875
+23024_B O eagle.jpg,B O eagle,732537.3125,543401.5625
+23263_B A cross moline.jpg,B A cross moline,731380.8125,507085.1875
+23292_O S eagle.jpg,O S eagle,671038.75,488873.1875
+23303_A B cross moline.jpg,A B cross moline,699226.3125,527536.125
+2452_S A eagle doubleheaded.jpg,S A eagle doubleheaded,183741.640625,105155.828125
+2461_G A cross moline.jpg,G A cross moline,726273.25,495012.8125
+2467_A G cross.jpg,A G cross,862881.375,659089.375
+2540_B A lion rampant.jpg,B A lion rampant,665462.3125,469259.5625
+255_O V cross.jpg,O V cross,754602.1875,557018.75
+2617_O G cross.jpg,O G cross,725253.9375,522591.28125
+2618_O S cross.jpg,O S cross,721358.0,530439.0
+2639_A G eagle.jpg,A G eagle,720089.0,524307.0
+2712_G A eagle.jpg,G A eagle,747045.0,536772.375
+27617_G O lion rampant.jpg,G O lion rampant,702264.0,491365.625
+27618_A S lion rampant.jpg,A S lion rampant,750374.0625,533395.625
+2870_O S lion rampant.jpg,O S lion rampant,370219.71875,231043.09375
+29377_A G eagle.jpg,A G eagle,493595.15625,388447.71875
+29394_G O eagle doubleheaded.jpg,G O eagle doubleheaded,975758.1875,743420.625
+29489_S O lion rampant.jpg,S O lion rampant,378127.4375,253383.140625
+29733_O G cross.jpg,O G cross,926253.625,768294.1875
+29743_O A eagle.jpg,O A eagle,921024.6875,787127.5
+30031_G O eagle.jpg,G O eagle,547660.25,422547.75
+30115_A S cross tau retracted.jpg,A S cross tau retracted,516286.4375,446447.40625
+30932_A S lion rampant.jpg,A S lion rampant,62065.05078125,42283.671875
+31494_O A cross botonny.jpg,O A cross botonny,135316.25,91296.3203125
+31942_A S lion rampant.jpg,A S lion rampant,1195158.5,766010.0
+32013_B A lion rampant.jpg,B A lion rampant,1271994.0,800525.75
+3324_O G lion rampant.jpg,O G lion rampant,6985328.0,4433022.0
+3420_O S eagle.jpg,O S eagle,381988.40625,259340.09375
+3551_G A eagle.jpg,G A eagle,611033.625,438603.90625
+3783_A S cross.jpg,A S cross,711785.375,531667.125
+3837_A S lion rampant.jpg,A S lion rampant,720291.625,544593.9375
+384_O G lion rampant.jpg,O G lion rampant,520635.25,313958.78125
+3859_O S lion rampant.jpg,O S lion rampant,63468.515625,43835.70703125
+3957_G A eagle.jpg,G A eagle,793824.5,575147.4375
+398_A S lion rampant.jpg,A S lion rampant,673480.625,517651.34375
+4056_G A eagle doubleheaded.jpg,G A eagle doubleheaded,802487.5,587884.125
+4150_A G eagle doubleheaded.jpg,A G eagle doubleheaded,776201.25,581553.0625
+4218_A G cross moline.jpg,A G cross moline,816951.375,621639.9375
+4250_G O lion rampant.jpg,G O lion rampant,646826.0,469125.96875
+4289_V A lion rampant.jpg,V A lion rampant,724164.0,505349.0
+4353_B O cross moline.jpg,B O cross moline,620916.3125,445817.15625
+4459_B O eagle.jpg,B O eagle,621500.625,425808.4375
+4488_A B lion rampant.jpg,A B lion rampant,683357.9375,474499.15625
+456_O S eagle.jpg,O S eagle,703719.375,428341.6875
+4660_G O eagle.jpg,G O eagle,20763.322265625,12018.087890625
+4708_O S eagle doubleheaded.jpg,O S eagle doubleheaded,510199.375,277858.71875
+4709_O S eagle.jpg,O S eagle,843660.875,649829.1875
+4717_B O cross moline.jpg,B O cross moline,681374.875,468565.125
+47_A S eagle.jpg,A S eagle,719853.4375,536062.375
+4914_O S eagle doubleheaded.jpg,O S eagle doubleheaded,279748.0,176096.5625
+4959_G O cross formy.jpg,G O cross formy,756226.8125,559150.125
+5049_A G cross.jpg,A G cross,790460.0625,591834.125
+5152_G O lion rampant.jpg,G O lion rampant,699244.125,505548.90625
+5234_A S cross forked in base.jpg,A S cross forked in base,1293907.25,836819.4375
+5269_G O cross.jpg,G O cross,787403.5,584632.1875
+5302_O B cross moline.jpg,O B cross moline,736149.625,530970.6875
+5303_A V lion rampant.jpg,A V lion rampant,751802.4375,589576.125
+5351_A B lion rampant.jpg,A B lion rampant,626395.75,473416.46875
+5391_V O cross.jpg,V O cross,647032.875,473925.59375
+5401_B O eagle.jpg,B O eagle,793865.25,582447.1875
+561_B A cross.jpg,B A cross,1403181.625,1039309.0
+5712_A S lion passt.jpg,A S lion passt,787901.25,561746.875
+5756_G A lion rampant.jpg,G A lion rampant,639018.5625,462277.90625
+5855_O S cross.jpg,O S cross,766410.25,578411.6875
+586_S O lion rampant.jpg,S O lion rampant,577475.0,372394.5
+597_V O cross moline.jpg,V O cross moline,756259.5,523348.875
+6099_A S lion rampant.jpg,A S lion rampant,780103.4375,604907.625
+6126_A B eagle.jpg,A B eagle,211026.703125,133869.609375
+6150_A G cross.jpg,A G cross,912683.625,723021.9375
+6153_B O cross.jpg,B O cross,859587.625,638887.9375
+6156_A S cross.jpg,A S cross,848645.875,649708.25
+6178_A G eagle doubleheaded.jpg,A G eagle doubleheaded,763150.375,568127.3125
+6227_S A eagle doubleheaded.jpg,S A eagle doubleheaded,744424.625,546958.625
+6250_G O eagle.jpg,G O eagle,393477.5,269655.375
+6252_G A lion rampant.jpg,G A lion rampant,146613.828125,92357.1171875
+6358_A V lion rampant.jpg,A V lion rampant,703273.0,517930.0
+6384_A G cross moline.jpg,A G cross moline,884902.0,689053.6875
+6425_G O eagle.jpg,G O eagle,792439.25,596239.625
+6539_B O lion rampant.jpg,B O lion rampant,1029643.25,647908.9375
+6587_G A eagle.jpg,G A eagle,705742.75,536007.25
+6610_O S lion rampant.jpg,O S lion rampant,164896.4375,117329.28125
+6679_O S eagle.jpg,O S eagle,656315.875,476226.90625
+6736_O B lion rampant.jpg,O B lion rampant,792105.4375,587029.25
+6870_S O eagle.jpg,S O eagle,840800.625,661782.9375
+687_A S eagle.jpg,A S eagle,746538.0,537117.4375
+6926_O B lion rampant.jpg,O B lion rampant,704008.125,510016.15625
+7037_A G cross.jpg,A G cross,861318.0625,659472.875
+70_A G cross moline.jpg,A G cross moline,888740.9375,706162.5625
+7131_A G lion rampant.jpg,A G lion rampant,826671.0625,617170.75
+715_O S lion rampant.jpg,O S lion rampant,651357.75,477549.90625
+723_B A cross.jpg,B A cross,676405.8125,496148.375
+7305_A G cross.jpg,A G cross,587151.25,406110.71875
+7350_A V lion rampant.jpg,A V lion rampant,22876.92578125,16553.87109375
+73_A G cross.jpg,A G cross,583211.5,422053.5
+74_G A lion rampant.jpg,G A lion rampant,780995.3125,562163.375
+7566_O G lion rampant.jpg,O G lion rampant,170273.71875,117467.671875
+7582_O S eagle doubleheaded.jpg,O S eagle doubleheaded,635594.75,458410.125
+7598_O G lion rampant.jpg,O G lion rampant,605518.875,417631.625
+7788_S A cross.jpg,S A cross,811074.125,593958.3125
+7793_G O lion rampant.jpg,G O lion rampant,706605.875,516560.625
+7830_O G eagle doubleheaded.jpg,O G eagle doubleheaded,761482.5,553296.75
+7831_O G lion acc. double tressure flory-counterflory.jpg,O G lion acc. double tressure flory-counterflory,18957.9375,10475.7880859375
+7835_O G cross moline.jpg,O G cross moline,765291.8125,574825.5625
+7908_G A cross formy.jpg,G A cross formy,766288.5,579942.25
+87_G A cross.jpg,G A cross,450564.4375,312856.1875
+9189_A G cross.jpg,A G cross,787902.0,602856.0625
+9298_G O lion rampant.jpg,G O lion rampant,796153.0,591254.4375
+9460_A G lion naissant.jpg,A G lion naissant,156388.96875,96338.65625
+9628_O G cross fleuretty.jpg,O G cross fleuretty,677397.375,481881.40625
+9771_B O eagle.jpg,B O eagle,311313.1875,183790.03125
+9790_B A cross formy fitchy.jpg,B A cross formy fitchy,662960.5625,451898.09375
+9929_A S eagle.jpg,A S eagle,697821.0,517255.25
+9961_O G lion rampant.jpg,O G lion rampant,672959.625,457319.15625
