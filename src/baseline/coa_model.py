@@ -405,8 +405,11 @@ def test_model(model, criterion, test_loader, test_dataset, vocab_size, device, 
     test_losses=[]
     accuracy_test_list=[] # to calculate average accuracy per all batches, only one value per batch
     accuracy_batch_list=[] # to calculate average accuracy per all images in one batch, re-emptied every batch
-    accuracy_all_images_list=[] # to save all values of accuracy of all images to be used in get_min_max_acc_images function
+    
+    # to save all values of accuracy of all images to be used in get_min_max_acc_images
+    accuracy_all_images_list=[] 
     image_names_list=[]
+    predictions_list=[]
 
     # Writer will store the model test results progress
     writer = SummaryWriter(f"{model_folder}/logs")
@@ -450,6 +453,7 @@ def test_model(model, criterion, test_loader, test_dataset, vocab_size, device, 
                 # to be used later in get_min_max_acc_images function
                 accuracy_all_images_list.append(acc_image)
                 image_names_list.append(image_file_name)
+                predictions_list.append(predicted_caption)
 
             avg_batch_acc = sum(accuracy_batch_list)/len(accuracy_batch_list)
             accuracy_test_list.append(avg_batch_acc)
@@ -469,29 +473,31 @@ def test_model(model, criterion, test_loader, test_dataset, vocab_size, device, 
 
     print(f'Test Accuracy (Overall): {acc_test_score}%')
     
-    return test_losses, accuracy_test_list, image_names_list, acc_test_score, test_loss
+    return test_losses, accuracy_test_list, image_names_list, predictions_list, acc_test_score, test_loss
 
 
-def get_min_max_acc_images(accuracy_test_list, image_names_list):
+def get_min_max_acc_images(accuracy_test_list, image_names_list, prediction_list):
     """Get the image names of both min and max accuracies inserted together
         TODO: change it later to top 5 of each category
 
     Args:
         accuracy_test_list ([float]): list of accuracies of all images
         image_names_list ([string]): list of image file names
+        prediction_list ([string]): list of images' predictions (i.e. captions)
 
     Returns:
-        [string]: lowest_acc, list of 5 image file name with lowest accuracy 
-        [string]: highest_acc, list of 5 image file name with highest accuracy
+        [{}]: lowest_acc, list of 5 hashes with lowest accuracy; each hash contains {image file name, prediction, accuracy value}  
+        [{}]: highest_acc, list of 5 hashes with highest accuracy; each hash contains {image file name, prediction, accuracy value}  
     """
     highest_acc = []
     lowest_acc = []
     sorted_idx_accuracy = np.argsort(accuracy_test_list)
 
     for i in sorted_idx_accuracy[:5]:
-        lowest_acc.append(image_names_list[i])
+        lowest_acc.append({image_names_list[i], prediction_list[i], accuracy_test_list[i]})
+        
     for i in sorted_idx_accuracy[-5:]:
-        highest_acc.append(image_names_list[i])
+        highest_acc.append({image_names_list[i], prediction_list[i], accuracy_test_list[i]})
 
     # the list needs to be reversed so the bigger number which was inserted first becomes the first one in highest_acc list
     highest_acc.reverse()    

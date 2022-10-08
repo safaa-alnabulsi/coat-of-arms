@@ -18,7 +18,7 @@ import pandas as pd
 
 from src.baseline.vocabulary import Vocabulary
 from src.baseline.data_loader import get_loader, get_mean, get_std
-from src.baseline.coa_model import get_new_model, init_testing_model,test_model,test_rand_image
+from src.baseline.coa_model import get_new_model, init_testing_model,test_model,get_min_max_acc_images
 
 import argparse
 
@@ -124,8 +124,7 @@ if __name__ == "__main__":
 
 
     # --------------------------------- Testing the model ----------------------------------------
-    
-    test_losses, accuracy_test_list, acc_test_score, test_loss = test_model(model, 
+    test_losses, accuracy_test_list, image_names_list, predictions_list, acc_test_score, test_loss = test_model(model, 
                                                                             criterion,
                                                                             test_loader, 
                                                                             test_dataset, 
@@ -134,10 +133,16 @@ if __name__ == "__main__":
                                                                             'vanilla-logs',
                                                                             real_data)    
 
+
     print("test_loss: ", test_loss)
     print("acc_test_score: ", acc_test_score)
     
     # -------------------------------- Saving the results ----------------------------------------
+    
+    image_with_min_acc, image_with_max_acc = get_min_max_acc_images(accuracy_test_list, image_names_list, predictions_list)
+    print('images with highest accuracy', image_with_max_acc)
+    print('images with lowest accuracy', image_with_min_acc)
+
 
     # torch.cuda.empty_cache()
 #     test_rand_image(model, test_dataset, test_loader, device)
