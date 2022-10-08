@@ -433,7 +433,10 @@ def test_model(model, criterion, test_loader, test_dataset, vocab_size, device, 
             targets    = captions[:,1:] 
             # calculate the loss
             loss       = criterion(outputs.view(-1, vocab_size), targets.reshape(-1))
-            test_losses.append(loss)
+            # record training loss
+            test_batch_loss = loss.item()
+
+            test_losses.append(test_batch_loss)
            
             # TensorBoard scalars
             writer.add_scalar(f"Loss/test {scalar_test}", loss, idx)
@@ -458,21 +461,16 @@ def test_model(model, criterion, test_loader, test_dataset, vocab_size, device, 
             avg_batch_acc = sum(accuracy_batch_list)/len(accuracy_batch_list)
             accuracy_test_list.append(avg_batch_acc)
             
-            test_batch_loss_per = 100. * avg_batch_acc
-            print(f'Test Acuuracy (in progress): {test_batch_loss_per}%')
-            print("--------------------------")
+            print('Test Accuracy (in progress): {}%'.format(100. * round(avg_batch_acc, 2)))
             writer.add_scalar(f"Accuracy/test {scalar_test}", avg_batch_acc, idx)
 
     # calculate and print avg test loss
-    test_loss = sum(test_losses)/len(test_dataset)
-    test_loss_per = 100. * test_loss
+    test_loss = sum(test_losses)/len(test_losses)
+    acc_test_score = sum(accuracy_test_list) / len(accuracy_test_list)
     
-    print(f'Test Loss (final): {test_loss_per}%')
+    print('Test Accuracy (Overall): {}%'.format(100. * round(acc_test_score, 2)))
+    print('Test Loss (final):  {}%'.format(100. * round(test_loss, 2)))
 
-    acc_test_score = (100. * sum(accuracy_test_list) / len(accuracy_test_list))
-
-    print(f'Test Accuracy (Overall): {acc_test_score}%')
-    
     return test_losses, accuracy_test_list, image_names_list, predictions_list, acc_test_score, test_loss
 
 
@@ -494,10 +492,10 @@ def get_min_max_acc_images(accuracy_test_list, image_names_list, prediction_list
     sorted_idx_accuracy = np.argsort(accuracy_test_list)
 
     for i in sorted_idx_accuracy[:5]:
-        lowest_acc.append({image_names_list[i], prediction_list[i], accuracy_test_list[i]})
+        lowest_acc.append({image_names_list[i], prediction_list[i], round(accuracy_test_list[i], 2)})
         
     for i in sorted_idx_accuracy[-5:]:
-        highest_acc.append({image_names_list[i], prediction_list[i], accuracy_test_list[i]})
+        highest_acc.append({image_names_list[i], prediction_list[i], round(accuracy_test_list[i], 2)})
 
     # the list needs to be reversed so the bigger number which was inserted first becomes the first one in highest_acc list
     highest_acc.reverse()    
