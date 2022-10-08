@@ -267,13 +267,14 @@ if __name__ == "__main__":
 
     model, train_loss, valid_loss, avg_acc, bleu_score = train_model(model, optimizer, criterion, train_dataset, train_loader, val_loader, val_dataset, vocab_size, batch_size, patience, num_epochs, device, model_folder, starting_epoch)
 
-    final_accuracy = np.average(avg_acc)
-    final_train_loss = np.average(train_loss)
+    final_accuracy = sum(avg_acc)/len(avg_acc)
+    final_train_loss = sum(train_loss)/len(train_loss)
+    final_valid_loss = sum(valid_loss)/len(valid_loss)
     
-    print('Bleu Score: ', bleu_score/8091)
+    # print('Bleu Score: ', bleu_score/8091)
     print('Final accuracy: {}%'.format(100. * round(final_accuracy, 2)))
     print('Final train_loss:  {}%'.format(100. * round(final_train_loss, 2)))
-    print('Final valid_loss:  {}%'.format(100. * round(np.average(valid_loss), 2)))
+    print('Final valid_loss:  {}%'.format(100. * round(final_valid_loss, 2)))
 
     # ---------------------------------------- Saving the model ----------------------------------------------------
 
