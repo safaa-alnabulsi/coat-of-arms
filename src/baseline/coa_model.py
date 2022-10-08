@@ -487,26 +487,21 @@ def get_min_max_acc_images(accuracy_test_list, image_names_list):
     highest_acc = []
     lowest_acc = []
     sorted_idx_accuracy = np.argsort(accuracy_test_list)
-    for i in image_names_list[:5]:
-        lowest_acc.append(i)
-    for i in image_names_list[-5:]:
-        highest_acc.append(i)
+
+    for i in sorted_idx_accuracy[:5]:
+        lowest_acc.append(image_names_list[i])
+    for i in sorted_idx_accuracy[-5:]:
+        highest_acc.append(image_names_list[i])
+
+    # the list needs to be reversed so the bigger number which was inserted first becomes the first one in highest_acc list
+    highest_acc.reverse()    
 
     return lowest_acc, highest_acc
-    # code here to get only two images, min and max 
-    # idx_image_with_max_acc = accuracy_test_list.index(max(accuracy_test_list))
-    # idx_image_with_min_acc = accuracy_test_list.index(min(accuracy_test_list))
 
-    # image_with_max_acc = image_names_list[idx_image_with_max_acc]
-    # image_with_min_acc = image_names_list[idx_image_with_min_acc]
-    
-    # return image_with_max_acc, image_with_min_acc
-
-##  Visualizing the attentions
+# ---------- Visualizing the attentions ------------ #
 # Defining helper functions
 # Given the image generate captions and attention scores</li>
 # Plot the attention scores in the image</li>
-
 # generate caption
 def get_caps_from(model, test_dataset, features_tensors, device):
     #generate the caption
