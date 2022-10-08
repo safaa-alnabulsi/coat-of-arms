@@ -31,6 +31,7 @@ if __name__ == "__main__":
     parser.add_argument('--batch-size', dest='batch_size', type=int, help='Number of Batch size', default=128)
     parser.add_argument('--local', dest='local', type=str, help='running on local?', default='no', choices=['yes','Yes','y','Y','no','No','n', 'N'])
     parser.add_argument('--real-data', dest='real_data', type=str, help='testing cropped real dataset?', default='no', choices=['yes','Yes','y','Y','no','No','n', 'N'])
+    parser.add_argument('--caption-file', dest='caption_file', type=str, help='caption file for test images', default='test_captions_psumsq.txt')
     parser.add_argument('--resized-images', dest='resized_images', type=str, help='smaller resized images?', default='no', choices=['yes','Yes','y','Y','no','No','n', 'N'])
 
     args = parser.parse_args()
@@ -42,6 +43,7 @@ if __name__ == "__main__":
     local = args.local
     real_data = args.real_data
     resized_images = args.resized_images
+    caption_file = args.caption_file
 
     if local in ['yes','Yes','y','Y'] :
         local = True
@@ -64,7 +66,7 @@ if __name__ == "__main__":
         resized_images = True
     else: 
         resized_images = False
-
+        
        
     print('testing cropped real dataset? ',real_data)
     print('running on local ',local)
@@ -77,17 +79,20 @@ if __name__ == "__main__":
     
     # --------------------------------------- test dataset ---------------------------------
     
-    print('Dataset exists in', data_location)    
+    print('Dataset exists in', data_location)  
+    
+    test_caption_file  = data_location + '/' + caption_file
+    print('Test caption file path: ', test_caption_file)    
+  
     if real_data:
         root_folder_images = data_location + '/resized'
-        test_caption_file  = data_location + '/test_real_captions_psumsq.txt'
     else:
         if resized_images:
             root_folder_images = data_location + '/res_images'            
         else:
             root_folder_images = data_location + '/images'
-        test_caption_file  = data_location + '/test_captions_psumsq.txt'
- 
+    
+
     df = pd.read_csv(test_caption_file)
     print("There are {} test images".format(len(df)))
 
