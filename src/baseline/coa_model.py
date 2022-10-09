@@ -76,7 +76,6 @@ def get_correct_caption_as_string(dataset, correct_cap):
         if item not in [0, 1, 2 , 3]:
             itos = dataset.vocab.itos[item]
             correct_caption.append(itos) 
-    print(correct_cap, correct_caption)
     return ' '.join(correct_caption)
 
 
