@@ -273,8 +273,8 @@ if __name__ == "__main__":
     
     # print('Bleu Score: ', bleu_score/8091)
     print('Final accuracy: {}%'.format(100. * round(final_accuracy, 2)))
-    print('Final train_loss:  {}%'.format(100. * round(final_train_loss, 2)))
-    print('Final valid_loss:  {}%'.format(100. * round(final_valid_loss, 2)))
+    print('Final train_loss:  {}'.format(round(final_train_loss, 2)))
+    print('Final valid_loss:  {}'.format(round(final_valid_loss, 2)))
 
     # ---------------------------------------- Saving the model ----------------------------------------------------
 

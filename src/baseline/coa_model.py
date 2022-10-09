@@ -128,11 +128,6 @@ def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device
 
     writer.add_scalar("Loss/validation", avg_loss, step)
     writer.add_scalar("Accuracy/validation", avg_acc, step)
-    
-    # compute the accuracy over all test images
-#     acc_score = (100 * sum(accuracy_list) / len(accuracy_list))
-#     avg_loss = sum(losses) / len(losses)
-#     print('avg_loss, bleu_score, acc_score', avg_loss, bleu_score, acc_score)
     writer.close()
 
     return losses, accuracies, bleu_score, tepoch
@@ -448,11 +443,12 @@ def test_model(model, criterion, test_loader, test_dataset, vocab_size, device, 
                 # calc metrics
                 acc_image = Accuracy(predicted_caption, correct_caption_s).get()
                 accuracy_batch_list.append(acc_image)
-                
+                # ------------------------------------------
                 # to be used later in get_min_max_acc_images function
                 accuracy_all_images_list.append(acc_image)
                 image_names_list.append(image_file_name)
                 predictions_list.append(predicted_caption)
+                # ------------------------------------------
 
             avg_batch_acc = sum(accuracy_batch_list)/len(accuracy_batch_list)
             accuracy_test_list.append(avg_batch_acc)
@@ -465,9 +461,9 @@ def test_model(model, criterion, test_loader, test_dataset, vocab_size, device, 
     acc_test_score = sum(accuracy_test_list) / len(accuracy_test_list)
     
     print('Test Accuracy (Overall): {}%'.format(100. * round(acc_test_score, 2)))
-    print('Test Loss (final):  {}%'.format(100. * round(test_loss, 2)))
+    print('Test Loss (final):  {}'.format(round(test_loss, 2)))
 
-    return test_losses, accuracy_test_list, image_names_list, predictions_list, acc_test_score, test_loss
+    return test_losses, accuracy_all_images_list, image_names_list, predictions_list, acc_test_score, test_loss
 
 
 def get_min_max_acc_images(accuracy_test_list, image_names_list, prediction_list):
