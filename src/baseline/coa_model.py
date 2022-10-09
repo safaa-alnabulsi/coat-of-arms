@@ -70,12 +70,13 @@ def predict_image(model,image, dataset, device):
 
 def get_correct_caption_as_string(dataset, correct_cap):
     correct_caption = []
-    for j in correct_cap.T:
+    for j in correct_cap:
         # 0: '<PAD>', 1: '<SOS>', 2: '<EOS>', 3: '<UNK>'
         item = j.item()
         if item not in [0, 1, 2 , 3]:
             itos = dataset.vocab.itos[item]
             correct_caption.append(itos) 
+    print(correct_cap, correct_caption)
     return ' '.join(correct_caption)
 
 
@@ -178,6 +179,7 @@ def train_model(model, optimizer, criterion,
     
     for epoch in range(starting_epoch, n_epochs + 1):
         print_time_now(epoch)
+        
         with tqdm(train_loader, unit="batch") as tepoch:
             validation_interval = 0
             ###################
@@ -206,6 +208,8 @@ def train_model(model, optimizer, criterion,
                 tepoch.set_postfix({'Train loss (in progress)': train_batch_loss})
                 writer.add_scalar("Loss/train per batch", train_batch_loss, loss_idx_value)
                 
+                loss_idx_value += 1
+
                 # # Accuracy of training
                 # for img, correct_cap in zip(batch_images, captions):
                 #     # nice to have:  training accuracy
@@ -240,53 +244,22 @@ def train_model(model, optimizer, criterion,
                 #         step=loss_idx_value
                 #     )
                     
-                loss_idx_value += 1
                 # validation_interval+=1
 
-            ########################################    
-            # print training/validation statistics #
-            ########################################
+        ########################################    
+        # print training statistics            #
+        ########################################
+        epoch_len = len(str(n_epochs))
 
-            # calculate average loss over an epoch
-            train_loss = np.average(train_losses)
-            avg_train_losses.append(train_loss)
-            writer.add_scalar("Loss/train per epoch", train_loss, epoch)
+        # calculate average loss over an epoch
+        avg_train_loss_epoch = sum(train_losses) / len(train_losses)
+        writer.add_scalar("Loss/train per epoch", avg_train_loss_epoch, epoch)
 
-            # Copy the tensor to host memory first to move tensor to numpy
-            # notice in here you are getting only the latest validation values
-            # valid_losses = list_of_tensors_to_numpy_arr(val_losses)        
-            # valid_loss = np.average(valid_losses)
-            # avg_valid_losses.append(valid_loss)
-
-            # calculate average accuracy over an epoch       
-            accuracy = np.average(accuracy_list)
-            avg_acc.append(accuracy)
-            writer.add_scalar("Accuracy/train per epoch", accuracy, epoch)
-
-            epoch_len = len(str(n_epochs))
-
-            print_msg = (f'[{epoch:>{epoch_len}}/{n_epochs:>{epoch_len}}] ' +
-                         f'train_loss: {train_loss:.5f} , ' +
-                         f'valid_loss: {valid_loss:.5f} , ' +
-                         f'accuracy: {accuracy:.5f}')
-
-            print(print_msg)
-
-            # clear lists to track next epoch
-            train_losses = []
-            valid_losses = []
-            accuracy_list = []
-
-            # early_stopping needs the validation loss to check if it has decresed, 
-            # and if it has, it will make a checkpoint of the current model
-    #         early_stopping(valid_loss, model, optimizer)
-            early_stopping(accuracy, model, optimizer, epoch)
-
-            if early_stopping.early_stop:
-                print("Early stopping. Stopping the training of the model.")
-                break
-            
-        val_losses, accuracy_list, bleu_score, tepoch = validate_model(
+        #########################################    
+        # validate the model - print statistics #
+        #########################################
+    
+        val_losses, val_accuracy_list, bleu_score, tepoch = validate_model(
                         model,
                         criterion, 
                         val_loader,
@@ -298,15 +271,39 @@ def train_model(model, optimizer, criterion,
                         step=epoch
                     )
         
+        # calculate average accuracy over an epoch       
+        val_accuracy = sum(val_accuracy_list) / len(val_accuracy_list)
+        writer.add_scalar("Accuracy/validation per epoch", val_accuracy, epoch)
+
         valid_losses = list_of_tensors_to_numpy_arr(val_losses)        
-        valid_loss = np.average(valid_losses)
-        avg_valid_losses.append(valid_loss)
+        avg_valid_loss_epoch = sum(valid_losses) / len(valid_losses)
+        writer.add_scalar("Loss/validation per epoch", avg_valid_loss_epoch, epoch)
+
         print_msg = (f'[{epoch:>{epoch_len}}/{n_epochs:>{epoch_len}}] ' +
-                        f'train_loss: {train_loss:.5f} , ' +
-                        f'valid_loss: {valid_loss:.5f} , ' +
-                        f'accuracy: {accuracy:.5f}')
+                        f'train_loss: {avg_train_loss_epoch:.2f} , ' +
+                        f'valid_loss: {avg_valid_loss_epoch:.2f} , ' +
+                        f'valid_accuracy: {val_accuracy:.2f}')
 
         print(print_msg)
+        
+        # clear lists to track next batch
+        val_accuracy_list = []
+        valid_losses = []
+        train_losses = []
+
+        # saving average values per epoch
+        avg_train_losses.append(avg_train_loss_epoch)
+        avg_valid_losses.append(avg_valid_loss_epoch)
+        avg_acc.append(val_accuracy)
+
+        # early_stopping needs the validation loss to check if it has decresed, 
+        # and if it has, it will make a checkpoint of the current model
+#         early_stopping(valid_loss, model, optimizer)
+        early_stopping(val_accuracy, model, optimizer, epoch)
+
+        if early_stopping.early_stop:
+            print("Early stopping. Stopping the training of the model.")
+            break
 
     writer.close()
 
