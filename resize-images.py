@@ -11,10 +11,14 @@ if __name__ == "__main__":
     # data_location =  'baseline-gen-data/large'
     # data_location =  'baseline-gen-data/medium'
     # data_location =  'baseline-gen-data/small'
+    # data_location = '/Users/salnabulsi/tub/coat-of-arms/data/cropped_coas/out'
 
     caption_file = data_location + '/captions-psumsq.txt'
+    # caption_file = data_location + '/test_real_captions_psumsq.txt'
+
     root_folder_images = data_location + '/images/'
     new_image_directory = data_location + '/res_images/'
+    # new_image_directory = data_location + '/resized/'
     
     if not os.path.exists(new_image_directory):
         os.mkdir(new_image_directory)
@@ -32,4 +36,4 @@ if __name__ == "__main__":
         img.thumbnail(crops_size, Image.ANTIALIAS)
         img.save(new_image_path)
         
-        print('Image {0} has been resized!', new_image_path)
+        print(f'Image {new_image_path} has been resized!')
