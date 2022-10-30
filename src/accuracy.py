@@ -5,6 +5,8 @@ WEIGHT_MAP = {'shield_color': 1, 'shield_mod': 1, 'charge_color': 1, 'charge': 1
 
 WEIGHT_MAP_OLD = {'shield_color': 10, 'charge_color': 10, 'charge': 60, 'modifier': 20}
 
+WEIGHT_MAP_ONLY_CHARGE = {'shield_color': 0, 'shield_mod': 0, 'charge_color': 0, 'charge': 1, 'modifier': 0}
+
 # Notes:
 # acc = number of True answers / number of samples
 
@@ -15,7 +17,7 @@ WEIGHT_MAP_OLD = {'shield_color': 10, 'charge_color': 10, 'charge': 60, 'modifie
 class Accuracy:
     
     def __init__(self, predicted, correct, 
-                 weights_map=WEIGHT_MAP):
+                 weights_map=WEIGHT_MAP_ONLY_CHARGE):
         self.predicted = Caption(predicted, support_plural=True).get_structured()
         self.correct = Caption(correct, support_plural=True).get_structured()
         self.weights_map= weights_map
