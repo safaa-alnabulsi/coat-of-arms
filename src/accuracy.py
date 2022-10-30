@@ -5,7 +5,7 @@ WEIGHT_MAP = {'shield_color': 1, 'shield_mod': 1, 'charge_color': 1, 'charge': 1
 
 WEIGHT_MAP_OLD = {'shield_color': 10, 'charge_color': 10, 'charge': 60, 'modifier': 20}
 
-WEIGHT_MAP_ONLY_CHARGE = {'shield_color': 0, 'shield_mod': 0, 'charge_color': 0, 'charge': 1, 'modifier': 0}
+WEIGHT_MAP_ONLY_CHARGE = {'shield_color': 0, 'shield_mod': 0, 'charge_color': 0, 'charge': 1, 'modifier': 1}
 
 # Notes:
 # acc = number of True answers / number of samples
@@ -27,8 +27,12 @@ class Accuracy:
     
     def get(self):
         charge_score = self.get_charges_acc()
-        shield_score = self.get_shield_acc()
 
+        if self.weights_map == WEIGHT_MAP_ONLY_CHARGE:
+            return charge_score
+    
+        shield_score = self.get_shield_acc()
+        
         return (charge_score + shield_score) / 2
 
     def get_charges_acc(self):
@@ -44,8 +48,13 @@ class Accuracy:
             color1 = obj1['color']
             mods1  = obj1['modifiers']
             
-            total= 2 + len(mods1)
+            # total = number of modifiers + obj's color + obj's charge + 
+            total = len(mods1) + 2
             
+            # we drop the color of the charge here, we don't care about it
+            if self.weights_map == WEIGHT_MAP_ONLY_CHARGE:
+                total =  len(mods1) + 1
+
             obj_acc=[]
 
             for obj2 in self.predicted['objects']:
