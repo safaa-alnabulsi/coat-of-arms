@@ -23,7 +23,7 @@ from time import sleep
 from src.baseline.noise import Noise
 from src.baseline.vocabulary import Vocabulary
 from src.baseline.data_loader import get_loader, get_loaders, get_mean, get_std
-from src.accuracy import Accuracy
+from src.accuracy import WEIGHT_MAP, WEIGHT_MAP_ONLY_SHIELD_COLOR, WEIGHT_MAP_ONLY_CHARGE, WEIGHT_MAP_ONLY_CHARGE_COLOR
 from src.baseline.coa_model import save_model, get_new_model, train_model, train_validate_test_split, load_model_checkpoint
 import torch.multiprocessing as mp
 from src.utils import print_time
@@ -46,6 +46,7 @@ if __name__ == "__main__":
     parser.add_argument('--resized-images', dest='resized_images', type=str, help='smaller resized images?', default='no', choices=['yes','Yes','y','Y','no','No','n', 'N'])
     parser.add_argument('--checkpoint', dest='checkpoint', type=str, help='continue training from last saved checkpoint? yes, will load the model and no will create a new empty model', default='no', choices=['yes','Yes','y','Y','no','No','n', 'N'])
     parser.add_argument('--run-folder', dest='run_folder', type=str, help='Run Folder name where checkpoint.pt file exists', default='')
+    parser.add_argument('--accuracy', dest='accuracy', type=str, help='type of accuracy', default='all', choices=['all','charge-mod-only','charge-color-only','shield-color-only'])
 
     args = parser.parse_args()
 
@@ -57,6 +58,7 @@ if __name__ == "__main__":
     resized_images = args.resized_images
     continue_from_checkpoint = args.checkpoint
     run_folder = args.run_folder
+    accuracy = args.accuracy
     
     if resplit in ['yes','Yes','y','Y'] :
         resplit = True
@@ -91,7 +93,16 @@ if __name__ == "__main__":
         model_folder = f"{path_to_model}/{run_folder}"
     else:
         model_folder = f"{path_to_model}/run-{timestr}"
-               
+  
+    # choices=['all','charge-mod-only','charge-color-only','shield-color-only']  
+    weights_map = WEIGHT_MAP           
+    if accuracy == 'charge-mod-only':
+        weights_map = WEIGHT_MAP_ONLY_CHARGE
+    elif accuracy == 'charge-color-only':
+        weights_map = WEIGHT_MAP_ONLY_CHARGE_COLOR
+    elif accuracy == 'shield-color-only':
+        weights_map = WEIGHT_MAP_ONLY_SHIELD_COLOR        
+        
     # create the folder where all models files will be stored
     if not os.path.exists(model_folder):
         os.makedirs(model_folder)
@@ -102,6 +113,7 @@ if __name__ == "__main__":
     print('batch_size is ',batch_size)
     print('num_epochs is ',num_epochs)
     print('resplit is ',resplit)
+    print(f'accuracy is {accuracy} and the weights_map is {weights_map}')
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(device)
@@ -265,7 +277,7 @@ if __name__ == "__main__":
     # early stopping patience; how long to wait after last time validation loss improved.
     patience = 5
 
-    model, train_loss, valid_loss, avg_acc, bleu_score = train_model(model, optimizer, criterion, train_dataset, train_loader, val_loader, val_dataset, vocab_size, batch_size, patience, num_epochs, device, model_folder, starting_epoch)
+    model, train_loss, valid_loss, avg_acc, bleu_score = train_model(model, optimizer, criterion, train_dataset, train_loader, val_loader, val_dataset, vocab_size, batch_size, patience, num_epochs, device, model_folder, starting_epoch, weights_map)
 
     final_accuracy = sum(avg_acc)/len(avg_acc)
     final_train_loss = sum(train_loss)/len(train_loss)

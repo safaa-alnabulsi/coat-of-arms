@@ -22,4 +22,6 @@ local=$5
 resized=$6
 checkpoint=$7
 run_folder=$8
-source /home/salnabulsi/.thesis-py38/bin/activate && python train_baseline.py --dataset ${dataset} --batch-size ${batch_size} --epochs ${epochs} --resplit ${resplit} --local ${local} --resized-images ${resized} --checkpoint ${checkpoint} --run-folder ${run_folder}
+accuracy=$9
+
+source /home/salnabulsi/.thesis-py38/bin/activate && python train_baseline.py --dataset ${dataset} --batch-size ${batch_size} --epochs ${epochs} --resplit ${resplit} --local ${local} --resized-images ${resized} --checkpoint ${checkpoint} --run-folder ${run_folder} --accuracy ${accuracy}

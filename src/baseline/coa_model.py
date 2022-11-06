@@ -22,7 +22,7 @@ from time import sleep
 
 from src.baseline.model import EncoderCNN, Attention, DecoderRNN, EncoderDecoder
 from src.baseline.data_loader import get_loader, get_mean, get_std
-from src.accuracy import Accuracy
+from src.accuracy import Accuracy, WEIGHT_MAP
 from src.pytorchtools import EarlyStopping, EarlyStoppingAccuracy
 from src.utils import list_of_tensors_to_numpy_arr
 from datetime import datetime
@@ -80,7 +80,8 @@ def get_correct_caption_as_string(dataset, correct_cap):
 
 
 # Function to test the model with the val dataset and print the accuracy for the test images
-def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device, tepoch, writer, step):
+def validate_model(model, criterion, val_loader, val_dataset, vocab_size, 
+                   device, tepoch, writer, step, weights_map=WEIGHT_MAP):
     print('validate function called')
     total = len(val_loader)
     bleu_score = 0
@@ -112,7 +113,7 @@ def validate_model(model, criterion, val_loader, val_dataset, vocab_size, device
                 # calc metrics
                 # print(f'Calc Accuracy image_file_name: {image_file_name}, correct_caption_s: {correct_caption_s}, predicted_caption: {predicted_caption}') 
                 try:
-                    acc = Accuracy(predicted_caption,correct_caption_s).get()
+                    acc = Accuracy(predicted_caption,correct_caption_s,weights_map).get()
                 except ValueError as e:
                     print(f'Problem in Image {image_file_name}, {correct_caption_s}, {predicted_caption}') 
                     acc = 0.0
@@ -140,7 +141,8 @@ def print_time_now(epoch):
 def train_model(model, optimizer, criterion, 
                 train_dataset, train_loader, 
                 val_loader, val_dataset, 
-                vocab_size, batch_size, patience, n_epochs, device, model_folder, starting_epoch=1):
+                vocab_size, batch_size, patience, n_epochs, 
+                device, model_folder, starting_epoch=1, weights_map=WEIGHT_MAP):
 
     # to track the training loss as the model trains
     train_losses = []
@@ -262,7 +264,8 @@ def train_model(model, optimizer, criterion,
                         device,
                         tepoch,
                         writer,
-                        step=epoch
+                        step=epoch,
+                        weights_map=weights_map
                     )
         
         # calculate average accuracy over an epoch       
@@ -390,7 +393,8 @@ def init_testing_model(test_caption_file, root_folder_images, mean, std,
     
     return test_loader, test_dataset
 
-def test_model(model, criterion, test_loader, test_dataset, vocab_size, device, model_folder, real_data):
+def test_model(model, criterion, test_loader, test_dataset, vocab_size, 
+               device, model_folder, real_data, weights_map=WEIGHT_MAP):
     # initialize lists to monitor test loss and accuracy
     test_loss = 0.0
     test_losses=[]
@@ -441,7 +445,7 @@ def test_model(model, criterion, test_loader, test_dataset, vocab_size, device, 
                 correct_caption_s = get_correct_caption_as_string(test_dataset, correct_cap)
 
                 # calc metrics
-                acc_image = Accuracy(predicted_caption, correct_caption_s).get()
+                acc_image = Accuracy(predicted_caption, correct_caption_s, weights_map).get()
                 accuracy_batch_list.append(acc_image)
                 # ------------------------------------------
                 # to be used later in get_min_max_acc_images function

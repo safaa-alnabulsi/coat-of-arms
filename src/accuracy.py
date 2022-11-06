@@ -7,6 +7,10 @@ WEIGHT_MAP_OLD = {'shield_color': 10, 'charge_color': 10, 'charge': 60, 'modifie
 
 WEIGHT_MAP_ONLY_CHARGE = {'shield_color': 0, 'shield_mod': 0, 'charge_color': 0, 'charge': 1, 'modifier': 1}
 
+WEIGHT_MAP_ONLY_CHARGE_COLOR = {'shield_color': 0, 'shield_mod': 0, 'charge_color': 1, 'charge': 0, 'modifier': 0}
+
+WEIGHT_MAP_ONLY_SHIELD_COLOR = {'shield_color': 1, 'shield_mod': 0, 'charge_color': 0, 'charge': 0, 'modifier': 0}
+
 # Notes:
 # acc = number of True answers / number of samples
 
@@ -17,7 +21,7 @@ WEIGHT_MAP_ONLY_CHARGE = {'shield_color': 0, 'shield_mod': 0, 'charge_color': 0,
 class Accuracy:
     
     def __init__(self, predicted, correct, 
-                 weights_map=WEIGHT_MAP_ONLY_CHARGE):
+                 weights_map=WEIGHT_MAP):
         self.predicted = Caption(predicted, support_plural=True).get_structured()
         self.correct = Caption(correct, support_plural=True).get_structured()
         self.weights_map= weights_map
@@ -26,12 +30,14 @@ class Accuracy:
         self.total_mods = 9 # counted from armoria_api.py ### maybe fix each ch with mod ==> count them together in next iteration
     
     def get(self):
+        shield_score = self.get_shield_acc()
+        if self.weights_map == WEIGHT_MAP_ONLY_SHIELD_COLOR:
+            return shield_score
+            
         charge_score = self.get_charges_acc()
-
-        if self.weights_map == WEIGHT_MAP_ONLY_CHARGE:
+        if self.weights_map == WEIGHT_MAP_ONLY_CHARGE or self.weights_map == WEIGHT_MAP_ONLY_CHARGE_COLOR:
             return charge_score
     
-        shield_score = self.get_shield_acc()
         
         return (charge_score + shield_score) / 2
 
@@ -54,6 +60,9 @@ class Accuracy:
             # we drop the color of the charge here, we don't care about it
             if self.weights_map == WEIGHT_MAP_ONLY_CHARGE:
                 total =  len(mods1) + 1
+            # we drop the number of modifier here and the charge itself
+            elif self.weights_map == WEIGHT_MAP_ONLY_CHARGE_COLOR:
+                total = 1
 
             obj_acc=[]
 
@@ -136,6 +145,11 @@ class Accuracy:
         
         hits = hits_sh_colors * self.weights_map['shield_color'] + \
               hits_mod * self.weights_map['shield_mod']
+              
+        
+        # we drop the number of modifier here and the charge itself
+        if self.weights_map == WEIGHT_MAP_ONLY_SHIELD_COLOR:
+            total = 1
 
         return round(hits / total, 2)
 
