@@ -1,9 +1,7 @@
 #!/usr/bin/python
 
-#imports 
-import os
-import nltk
-import spacy
+# imports 
+import random
 import numpy as np
 import pandas as pd
 import torch
@@ -34,8 +32,23 @@ if __name__ == "__main__":
     parser.add_argument('--caption-file', dest='caption_file', type=str, help='caption file for test images', default='test_captions_psumsq.txt')
     parser.add_argument('--resized-images', dest='resized_images', type=str, help='smaller resized images?', default='no', choices=['yes','Yes','y','Y','no','No','n', 'N'])
     parser.add_argument('--accuracy', dest='accuracy', type=str, help='type of accuracy', default='all', choices=['all','charge-mod-only','charge-color-only','shield-color-only'])
-
+    parser.add_argument('--seed', dest='seed', type=int, help='reproducibility seed', default=1234)
+    
     args = parser.parse_args()
+
+    # ---------------------- Reproducibility -------------------
+    
+    seed = args.seed
+    random.seed(seed)     # python random generator
+    np.random.seed(seed)  # numpy random generator
+
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+    
+    # ----------------------------------------------------------------- 
 
     data_location = args.dataset
     run_name = args.run_name

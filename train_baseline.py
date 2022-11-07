@@ -4,13 +4,12 @@
 import os
 from xmlrpc.client import boolean
 import torch
-import spacy
+import random
 import pandas as pd
 import numpy as np
 import torchvision.transforms as T
 import matplotlib.pyplot as plt
 import torch
-import nltk
 import numpy as np
 import torch.nn as nn
 import torch.onnx as onnx
@@ -47,8 +46,23 @@ if __name__ == "__main__":
     parser.add_argument('--checkpoint', dest='checkpoint', type=str, help='continue training from last saved checkpoint? yes, will load the model and no will create a new empty model', default='no', choices=['yes','Yes','y','Y','no','No','n', 'N'])
     parser.add_argument('--run-folder', dest='run_folder', type=str, help='Run Folder name where checkpoint.pt file exists', default='')
     parser.add_argument('--accuracy', dest='accuracy', type=str, help='type of accuracy', default='all', choices=['all','charge-mod-only','charge-color-only','shield-color-only'])
-
+    parser.add_argument('--seed', dest='seed', type=int, help='reproducibility seed', default=1234)
+    
     args = parser.parse_args()
+
+    # ---------------------- Reproducibility -------------------
+    
+    seed = args.seed
+    random.seed(seed)     # python random generator
+    np.random.seed(seed)  # numpy random generator
+
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+    
+    # ----------------------------------------------------------------- 
 
     data_location = args.dataset
     batch_size = args.batch_size
@@ -116,8 +130,10 @@ if __name__ == "__main__":
     print(f'accuracy is {accuracy} and the weights_map is {weights_map}')
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(device)
-    
+    print('device is ',device)
+
+    # ---------------------------------------------------------------------
+
     print('Dataset exists in', data_location)    
     caption_file = data_location + '/captions-psumsq.txt'
     if resized_images:

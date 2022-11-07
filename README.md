@@ -182,3 +182,4 @@ This script resize the images in the given folder to 100x100 and store them in `
 - Tensorboard: https://pytorch.org/tutorials/recipes/recipes/tensorboard_with_pytorch.html
 - baseline model explained: https://towardsdatascience.com/baseline-models-your-guide-for-model-building-1ec3aa244b8d 
 - Transfer Learning and Other Tricks: https://www.oreilly.com/library/view/programming-pytorch-for/9781492045342/ch04.html
+- Reproducibility: https://gist.github.com/Guitaricet/28fbb2a753b1bb888ef0b2731c03c031
