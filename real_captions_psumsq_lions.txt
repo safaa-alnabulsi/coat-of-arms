@@ -1,0 +1,133 @@
+image,caption,psum,psum_sq
+2870_O S lion rampant.jpg,O S lion rampant,370219.71875,231043.09375
+17931_O B lion rampant.jpg,O B lion rampant,617899.0,447645.5
+1543_G O lion passt guard.jpg,G O lion passt guard,702297.625,505457.25
+16797_A G 2 lions rampant addorsed.jpg,A G 2 lions rampant addorsed,530263.8125,423255.59375
+1154_A G lion rampant.jpg,A G lion rampant,806175.125,612873.37
+9575_O B 3 lions passt cr..jpg,O B 3 lions passt cr.,400662.625,248863.6875
+2540_B A lion rampant.jpg,B A lion rampant,665462.3125,469259.5625
+1426_G O 3 lions.jpg,G O 3 lions,705377.375,509613.6875
+22319_O G lion q.f..jpg,O G lion q.f.,749159.0625,547962.625
+27623_G A 3 lions.jpg,G A 3 lions,767689.6875,534979.75
+-1_O G lion rampant.jpg,O G lion rampant,204253.140625,134630.8125
+22863_A B lion rampant.jpg,A B lion rampant,765387.0625,584369.8125
+3298_O S 3 lions.jpg,O S 3 lions,724046.375,441295.625
+6926_O B lion rampant.jpg,O B lion rampant,704008.125,510016.15625
+-1_B O 3 lions.jpg,B O 3 lions,209502.203125,146541.0
+5351_A B lion rampant.jpg,A B lion rampant,626395.75,473416.46875
+22315_G A lion q.f..jpg,G A lion q.f.,745092.375,526473.875
+17637_B O lion rampant.jpg,B O lion rampant,634803.625,447496.0
+-1_S O 2 lions passt guard.jpg,S O 2 lions passt guard,1387995.25,896610.9375
+22367_O B 3 lions.jpg,O B 3 lions,777776.625,554625.875
+7831_O G lion acc. double tressure flory-counterflory.jpg,O G lion acc. double tressure flory-counterflory,18957.9375,10475.7880859375
+22337_G O lion rampant.jpg,G O lion rampant,804485.3125,577575.25
+18885_O S 3 lions passt guard.jpg,O S 3 lions passt guard,2817084.5,1838049.75
+32013_B A lion rampant.jpg,B A lion rampant,1271994.0,800525.75
+16760_G O lion q.f..jpg,G O lion q.f.,597554.5,423036.75
+779_O S 3 lions.jpg,O S 3 lions,757471.6875,571275.375
+30932_A S lion rampant.jpg,A S lion rampant,62065.05078125,42283.671875
+5756_G A lion rampant.jpg,G A lion rampant,639018.5625,462277.90625
+-1_A G lion rampant.jpg,A G lion rampant,1884396.875,1445563.875
+22708_B A 2 lions passt guard.jpg,B A 2 lions passt guard,816586.75,629360.375
+10651_A G lion rampant.jpg,A G lion rampant,1675386.0,1295331.875
+22364_B A lion rampant.jpg,B A lion rampant,628966.0,438086.90625
+2_A S 3 lions.jpg,A S 3 lions,850872.4375,668934.75
+703_S O 2 lions passt guard.jpg,S O 2 lions passt guard,481082.1875,318011.46875
+1771_A S lion rampant.jpg,A S lion rampant,753555.25,591453.75
+22124_B O lion rampant.jpg,B O lion rampant,850149.875,643400.75
+6539_B O lion rampant.jpg,B O lion rampant,1029643.25,647908.9375
+6252_G A lion rampant.jpg,G A lion rampant,146613.828125,92357.1171875
+4250_G O lion rampant.jpg,G O lion rampant,646826.0,469125.96875
+715_O S lion rampant.jpg,O S lion rampant,651357.75,477549.90625
+10840_B A lion rampant.jpg,B A lion rampant,913940.5,581327.5
+74_G A lion rampant.jpg,G A lion rampant,780995.3125,562163.375
+19679_A G lion rampant.jpg,A G lion rampant,154865.890625,97468.2890625
+-1_O S lion naissant.jpg,O S lion naissant,2250308.0,1727137.75
+7598_O G lion rampant.jpg,O G lion rampant,605518.875,417631.625
+22749_O B lion rampant.jpg,O B lion rampant,804214.4375,604411.375
+188_A V lion rampant.jpg,A V lion rampant,690813.0,473443.625
+22611_G A 3 lions.jpg,G A 3 lions,759114.0625,577763.75
+3324_O G lion rampant.jpg,O G lion rampant,6985328.0,4433022.0
+5008_G A 2 lions passt guard.jpg,G A 2 lions passt guard,794486.75,610316.625
+1000_G O lion rampant.jpg,G O lion rampant,763626.4375,546829.0
+5712_A S lion passt.jpg,A S lion passt,787901.25,561746.875
+31942_A S lion rampant.jpg,A S lion rampant,1195158.5,766010.0
+5152_G O lion rampant.jpg,G O lion rampant,699244.125,505548.90625
+19142_V O lion rampant.jpg,V O lion rampant,563928.125,374550.1875
+27618_A S lion rampant.jpg,A S lion rampant,750374.0625,533395.625
+17701_G A 3 lions.jpg,G A 3 lions,796419.25,606304.875
+1667_O G lion rampant.jpg,O G lion rampant,59447.85546875,40465.8125
+12016_G A 3 lions cr.(1).jpg,G A 3 lions cr.(1),746111.1875,534747.4375
+348_A G 4 lions.jpg,A G 4 lions,758886.5,555271.75
+4289_V A lion rampant.jpg,V A lion rampant,724164.0,505349.0
+21370_A B lion rampant.jpg,A B lion rampant,770137.9375,586665.3125
+6610_O S lion rampant.jpg,O S lion rampant,164896.4375,117329.28125
+3837_A S lion rampant.jpg,A S lion rampant,720291.625,544593.9375
+1382_B O 3 lions.jpg,B O 3 lions,697366.8125,532337.4375
+-1_O B lion rampant.jpg,O B lion rampant,1683685.5,1206458.25
+3859_O S lion rampant.jpg,O S lion rampant,63468.515625,43835.70703125
+9298_G O lion rampant.jpg,G O lion rampant,796153.0,591254.4375
+5303_A V lion rampant.jpg,A V lion rampant,751802.4375,589576.125
+22583_G A 3 lions.jpg,G A 3 lions,677805.1875,474229.0625
+1087_A G 3 lions.jpg,A G 3 lions,854385.0,680258.625
+19245_O B lion rampant.jpg,O B lion rampant,711067.9375,502554.53125
+6352_A V 2 lions passt cr..jpg,A V 2 lions passt cr.,710460.875,505242.0625
+4488_A B lion rampant.jpg,A B lion rampant,683357.9375,474499.15625
+20149_O S lion rampant.jpg,O S lion rampant,1300685.625,943790.6875
+3423_G O 2 lions passt guard.jpg,G O 2 lions passt guard,10412.0869140625,5085.2421875
+-1_G O lion rampant.jpg,G O lion rampant,1657027.125,1124069.125
+16446_A G 2 lions passt guard cr..jpg,A G 2 lions passt guard cr.,157722.09375,98279.8046875
+7350_A V lion rampant.jpg,A V lion rampant,22876.92578125,16553.87109375
+6358_A V lion rampant.jpg,A V lion rampant,703273.0,517930.0
+17923_B O lion rampant.jpg,B O lion rampant,599960.875,423763.53125
+2736_A S 2 lions passt guard cowardly.jpg,A S 2 lions passt guard cowardly,3149245.0,2078928.375
+4518_O G 2 lions passt.jpg,O G 2 lions passt,21358.666015625,12819.2060546875
+2737_A S 2 lions passt guard.jpg,A S 2 lions passt guard,472269.84375,398069.5625
+-1_G O 3 lions passt guard.jpg,G O 3 lions passt guard,21513.232421875,13558.9833984375
+2145_O S lion naissant.jpg,O S lion naissant,638113.5,473606.8125
+3921_A S 2 lions passt guard.jpg,A S 2 lions passt guard,650552.0,477128.3125
+7131_A G lion rampant.jpg,A G lion rampant,826671.0625,617170.75
+1319_O S lion rampant.jpg,O S lion rampant,735184.0,544038.4375
+9961_O G lion rampant.jpg,O G lion rampant,672959.625,457319.15625
+22270_S O lion rampant.jpg,S O lion rampant,603478.75,428738.0625
+301_A S 3 lions.jpg,A S 3 lions,121144.671875,69290.4296875
+6736_O B lion rampant.jpg,O B lion rampant,792105.4375,587029.25
+2539_G A 3 lions.jpg,G A 3 lions,834877.125,638354.0625
+17941_A G lion rampant.jpg,A G lion rampant,808294.125,632085.875
+9516_O S 3 lions passt guard.jpg,O S 3 lions passt guard,2808575.75,1690876.75
+384_O G lion rampant.jpg,O G lion rampant,520635.25,313958.78125
+22780_B O lion passt guard cr..jpg,B O lion passt guard cr.,709901.625,536310.75
+22269_V A 3 lions.jpg,V A 3 lions,721438.8125,511432.96875
+16464_A G lion passt guard.jpg,A G lion passt guard,550173.25,447715.59375
+3227_G O 2 lions passt guard.jpg,G O 2 lions passt guard,862655.5,666679.375
+22350_A G 2 lions rampant addorsed.jpg,A G 2 lions rampant addorsed,1070673.5,887820.25
+-1_B G lion passt.jpg,B G lion passt,81013.5859375,56832.4140625
+21398_A B lion rampant.jpg,A B lion rampant,18132.931640625,10052.0263671875
+1335_G A lion rampant.jpg,G A lion rampant,834458.1875,628618.5
+29489_S O lion rampant.jpg,S O lion rampant,378127.4375,253383.140625
+17949_S O 2 lions passt guard.jpg,S O 2 lions passt guard,590216.25,421700.03125
+586_S O lion rampant.jpg,S O lion rampant,577475.0,372394.5
+392_G A 3 lions.jpg,G A 3 lions,725097.5,524907.0
+4382_B A 2 lions passt guard.jpg,B A 2 lions passt guard,591329.5,415385.84375
+22918_G O 3 lions passt guard.jpg,G O 3 lions passt guard,802938.0,619768.375
+27617_G O lion rampant.jpg,G O lion rampant,702264.0,491365.625
+18863_B A lion rampant.jpg,B A lion rampant,1002275.75,686595.875
+5007_G O 2 lions passt guard.jpg,G O 2 lions passt guard,665055.8125,468688.90625
+7793_G O lion rampant.jpg,G O lion rampant,706605.875,516560.625
+19174_O G lion rampant.jpg,O G lion rampant,816639.4375,577024.75
+1515_B O lion rampant.jpg,B O lion rampant,677605.8125,501439.09375
+22472_A S lion rampant.jpg,A S lion rampant,846649.5,658151.5
+17925_G A lion q.f..jpg,G A lion q.f.,731328.25,540431.125
+9460_A G lion naissant.jpg,A G lion naissant,156388.96875,96338.65625
+6099_A S lion rampant.jpg,A S lion rampant,780103.4375,604907.625
+7566_O G lion rampant.jpg,O G lion rampant,170273.71875,117467.671875
+1293_O G lion rampant.jpg,O G lion rampant,806470.6875,624526.125
+17947_G O lion rampant.jpg,G O lion rampant,678998.125,518639.9375
+22627_G O lion rampant.jpg,G O lion rampant,608231.25,434472.9375
+22050_B A lion rampant.jpg,B A lion rampant,808753.375,575747.125
+20773_A G 2 lions passt.jpg,A G 2 lions passt,1255108.125,838571.6875
+17945_A G 3 lions.jpg,A G 3 lions,818365.9375,640010.125
+18220_A S lion rampant.jpg,A S lion rampant,3330191.25,2296496.25
+398_A S lion rampant.jpg,A S lion rampant,673480.625,517651.34375
+249_O G 2 lions passt.jpg,O G 2 lions passt,871046.0625,677358.0625
+7881_G O 2 lions passt guard.jpg,G O 2 lions passt guard,689131.375,483920.34375
