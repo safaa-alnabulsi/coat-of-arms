@@ -23,7 +23,7 @@ from src.baseline.noise import Noise
 from src.baseline.vocabulary import Vocabulary
 from src.baseline.data_loader import get_loader, get_loaders, get_mean, get_std
 from src.accuracy import WEIGHT_MAP, WEIGHT_MAP_ONLY_SHIELD_COLOR, WEIGHT_MAP_ONLY_CHARGE, WEIGHT_MAP_ONLY_CHARGE_COLOR
-from src.baseline.coa_model import save_model, get_new_model, train_model, train_validate_test_split, load_model_checkpoint
+from src.baseline.coa_model import save_model, get_new_model, train_model, train_validate_test_split, load_model_checkpoint, load_model
 import torch.multiprocessing as mp
 from src.utils import print_time
 
@@ -49,6 +49,7 @@ if __name__ == "__main__":
     parser.add_argument('--seed', dest='seed', type=int, help='reproducibility seed', default=1234)
     parser.add_argument('--caption-file', dest='caption_file', type=str, help='caption file for train images', default='captions-psumsq.txt')
     parser.add_argument('--real-data', dest='real_data', type=str, help='training on cropped real dataset?', default='no', choices=['yes','Yes','y','Y','no','No','n', 'N'])
+    parser.add_argument('--baseline-model', dest='baseline_model', type=str, help='baseline_model file name', default='')
 
     args = parser.parse_args()
 
@@ -77,7 +78,8 @@ if __name__ == "__main__":
     accuracy = args.accuracy
     caption_file = args.caption_file
     real_data = args.real_data
-
+    baseline_model = args.baseline_model
+    
     if resplit in ['yes','Yes','y','Y'] :
         resplit = True
     else: 
@@ -301,9 +303,19 @@ if __name__ == "__main__":
     print('Initialize new model, loss etc')
     model, optimizer, criterion = get_new_model(hyper_params, learning_rate, ignored_idx, drop_prob, device, True)
     starting_epoch = 1
-    if continue_from_checkpoint:
-        print('Loading model from latest saved checkpoint')   
-        model, optimizer, starting_epoch = load_model_checkpoint(model_folder + '/checkpoint.pt', model, optimizer, device)
+    
+    # if we want to continue training on real dataset
+    if continue_from_checkpoint and real_data and baseline_model:
+        model, optimizer, loss, criterion = load_model(model_folder + '/'+ baseline_model,
+                                            hyper_params,
+                                            learning_rate,
+                                            drop_prob,
+                                            ignored_idx,
+                                            pretrained=True)
+    elif continue_from_checkpoint:
+            print('Loading model from latest saved checkpoint')   
+            model, optimizer, starting_epoch = load_model_checkpoint(model_folder + '/checkpoint.pt', model, optimizer, device)
+
 
     # --------------
     # early stopping patience; how long to wait after last time validation loss improved.
@@ -311,9 +323,9 @@ if __name__ == "__main__":
 
     model, train_loss, valid_loss, avg_acc, bleu_score = train_model(model, optimizer, criterion, train_dataset, train_loader, val_loader, val_dataset, vocab_size, batch_size, patience, num_epochs, device, model_folder, starting_epoch, weights_map)
 
-    final_accuracy = sum(avg_acc)/len(avg_acc)
-    final_train_loss = sum(train_loss)/len(train_loss)
-    final_valid_loss = sum(valid_loss)/len(valid_loss)
+    final_accuracy = sum(avg_acc)/len(avg_acc) if len(avg_acc) > 0 else 0.0
+    final_train_loss = sum(train_loss)/len(train_loss) if len(avg_acc) > 0 else 0.0
+    final_valid_loss = sum(valid_loss)/len(valid_loss) if len(avg_acc) > 0 else 0.0
     
     # print('Bleu Score: ', bleu_score/8091)
     print('Final accuracy: {}%'.format(100. * round(final_accuracy, 2)))

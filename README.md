@@ -81,8 +81,10 @@ The default index is 0
 
 ```bash
 
-    python train_baseline.py --dataset ~/tub/coat-of-arms/data/cropped_coas/out --batch-size 256 --local y --resplit yes --resized-images yes --epochs 5 --checkpoint yes --run-folder run-11-07-2022-13:43:54  --accuracy charge-mod-only --seed 1234 --real-data yes  --caption-file real_captions_psumsq_lions.txt
+    python train_baseline.py --dataset ~/tub/coat-of-arms/data/cropped_coas/out --batch-size 13 --local y --resplit no --resized-images yes --epochs 50 --checkpoint yes --run-folder run-11-13-2022-15:40:39  --accuracy charge-mod-only --seed 1234 --real-data yes  --caption-file real_captions_psumsq_lions.txt --baseline-model baseline-model-11-13-2022-16:09:55.pth
 ```
+
+Please note that starting from `seed` argument, all other following args should also come in order (over 10 bash script arguments). Check the shell script.
 
 ## Testing the baseline model
 
