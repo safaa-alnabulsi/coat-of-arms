@@ -47,7 +47,9 @@ if __name__ == "__main__":
     parser.add_argument('--run-folder', dest='run_folder', type=str, help='Run Folder name where checkpoint.pt file exists', default='')
     parser.add_argument('--accuracy', dest='accuracy', type=str, help='type of accuracy', default='all', choices=['all','charge-mod-only','charge-color-only','shield-color-only'])
     parser.add_argument('--seed', dest='seed', type=int, help='reproducibility seed', default=1234)
-    
+    parser.add_argument('--caption-file', dest='caption_file', type=str, help='caption file for train images', default='captions-psumsq.txt')
+    parser.add_argument('--real-data', dest='real_data', type=str, help='training on cropped real dataset?', default='no', choices=['yes','Yes','y','Y','no','No','n', 'N'])
+
     args = parser.parse_args()
 
     # ---------------------- Reproducibility -------------------
@@ -73,7 +75,9 @@ if __name__ == "__main__":
     continue_from_checkpoint = args.checkpoint
     run_folder = args.run_folder
     accuracy = args.accuracy
-    
+    caption_file = args.caption_file
+    real_data = args.real_data
+
     if resplit in ['yes','Yes','y','Y'] :
         resplit = True
     else: 
@@ -88,6 +92,11 @@ if __name__ == "__main__":
         resized_images = True
     else: 
         resized_images = False
+        
+    if real_data in ['yes','Yes','y','Y'] :
+        real_data = True
+    else: 
+        real_data = False
 
     if continue_from_checkpoint in ['yes','Yes','y','Y'] :
         continue_from_checkpoint = True
@@ -124,6 +133,7 @@ if __name__ == "__main__":
     print('running on local ',local)
     print('data_location is ',data_location)
     print('model_folder is ',model_folder)
+    print('training on cropped real dataset? ',real_data)
     print('batch_size is ',batch_size)
     print('num_epochs is ',num_epochs)
     print('resplit is ',resplit)
@@ -135,13 +145,19 @@ if __name__ == "__main__":
     # ---------------------------------------------------------------------
 
     print('Dataset exists in', data_location)    
-    caption_file = data_location + '/captions-psumsq.txt'
-    if resized_images:
-        root_folder_images = data_location + '/res_images'
-    else:
-        root_folder_images = data_location + '/images'
+    
+    train_caption_file  = data_location + '/' + caption_file
+    print('Training caption file path: ', train_caption_file)    
 
-    df = pd.read_csv(caption_file)
+    if real_data:
+        root_folder_images = data_location + '/resized'
+    else:
+        if resized_images:
+            root_folder_images = data_location + '/res_images'            
+        else:
+            root_folder_images = data_location + '/images'
+
+    df = pd.read_csv(train_caption_file)
 
     train_annotation_file = data_location + '/train_captions_psumsq.txt'
     val_annotation_file  = data_location + '/val_captions_psumsq.txt'

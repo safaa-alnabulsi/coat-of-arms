@@ -74,22 +74,15 @@ The default index is 0
 
 ```bash
 
-    python train_baseline.py --dataset ~/tub/coat-of-arms/baseline-gen-data/small --batch-size 256 --local y --resplit no --resized-images yes --epochs 5 --checkpoint yes --run-folder run-09-12-2022-10:48:20
+    python train_baseline.py --dataset ~/tub/coat-of-arms/baseline-gen-data/small --batch-size 256 --local y --resplit no --resized-images yes --epochs 5 --checkpoint yes --run-folder run-09-12-2022-10:48:20 --accuracy all --seed 1234
 ```
 
-The server will start in http://localhost:6006/
+### To continue training on real dataset - lions
 
-- To track the metrics of loss and accuracy in real time:
-```sh
-     tensorboard --logdir=/home/space/datasets/COA/experiments --bind_all
-```       
+```bash
 
-Check the port and then do ssh forwarding:
-```sh
-     ssh -L 6012:cluster:6012 <your-email> -i ~/.ssh/id_rsa
-```    
-
-Navigate to http://localhost:6012/ in your browser and check the job logs in real time.
+    python train_baseline.py --dataset ~/tub/coat-of-arms/data/cropped_coas/out --batch-size 256 --local y --resplit yes --resized-images yes --epochs 5 --checkpoint yes --run-folder run-11-07-2022-13:43:54  --accuracy charge-mod-only --seed 1234 --real-data yes  --caption-file real_captions_psumsq_lions.txt
+```
 
 ## Testing the baseline model
 
@@ -128,6 +121,22 @@ python test_baseline.py --dataset /Users/salnabulsi/tub/coat-of-arms/data/croppe
 ```bash
      qsub test_baseline.sh /home/salnabulsi/coat-of-arms/data/cropped_coas/out 'run-06-22-2022-07:57:31' 'baseline-model-06-25-2022-20:54:47.pth' 256 no yes no test_real_captions_psumsq.txt
 ```
+
+## tensorboard: Tracking training/testing results real time
+
+The server will start in http://localhost:6006/
+
+- To track the metrics of loss and accuracy in real time:
+```sh
+     tensorboard --logdir=/home/space/datasets/COA/experiments --bind_all
+```       
+
+Check the port and then do ssh forwarding:
+```sh
+     ssh -L 6012:cluster:6012 <your-email> -i ~/.ssh/id_rsa
+```    
+
+Navigate to http://localhost:6012/ in your browser and check the job logs in real time.
 
 ## The Automata
 
