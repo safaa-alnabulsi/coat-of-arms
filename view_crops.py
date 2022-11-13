@@ -17,7 +17,7 @@ DEBUG = False
 @st.cache
 def load_data():
     
-    data_dir = Path("data/cropped_coas/out")
+    data_dir = Path("data/cropped_coas/out/images")
     # else:
     #     data_dir = Path("data/cropped_coas/out_valid")
 
@@ -86,6 +86,7 @@ def get_caption_data(df):
         parsed_label = automata.parse_label(row.caption)
         aligned = automata.align_parsed_label(row.caption, parsed_label)
         result.append(aligned)
+    # print(result)
     return pd.DataFrame(result)
 
 
@@ -122,8 +123,8 @@ view = df[np.logical_and.reduce([
 
 if len(view)>10:
     len_current_filter_set = len(view)
-    view = view.sample(n=10)
-    st.write("## !reduce result set to maximum of 10 samples!")
+    view = view.sample(n=100)
+    st.write("## !reduce result set to maximum of 100 samples!")
     st.write(f"The current filter set actually returned {len_current_filter_set} samples")
 
 for _,row in view.iterrows():
