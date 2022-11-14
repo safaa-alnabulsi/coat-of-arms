@@ -14,6 +14,6 @@ export CUDA_LAUNCH_BLOCKING=1
 
 dataset=$1
 real_data=$2
-timestamp=$(date +%s)
+pretrained=$3
 
-source /home/salnabulsi/.thesis-py38/bin/activate && python test_vanilla.py --dataset ${dataset} --real-data ${real_data} >> output-test-${timestamp}.txt 2>&1 >> errors-test-${timestamp}.txt
+source /home/salnabulsi/.thesis-py38/bin/activate && python test_vanilla.py --dataset ${dataset} --real-data ${real_data} >> output-test-${timestamp}.txt --pretrained ${pretrained}
