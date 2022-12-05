@@ -229,7 +229,7 @@ if __name__ == "__main__":
     MISSING_TOKEN = 'None'
     
     # data_location =  '../baseline-gen-data/small/'
-    data_location =  '/home/space/datasets/COA/generated-data-api-single/'
+    data_location =  '/home/space/datasets/COA/generated-data-api-single-and-plural/'
     new_with_class_caption_file = data_location + '/new-labels-class-psumsq.txt'
 
     train, validate, test = train_validate_test_split(df_new, train_percent=.6, validate_percent=.2, seed=None)
