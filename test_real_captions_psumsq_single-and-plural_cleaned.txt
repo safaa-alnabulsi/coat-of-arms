@@ -1,0 +1,52 @@
+image,caption,psum,psum_sq
+1426_G O 3 lions.jpg,G O 3 lions,705377.375,509613.6875
+27623_G A 3 lions.jpg,G A 3 lions,767689.6875,534979.75
+3298_O S 3 lions.jpg,O S 3 lions,724046.375,441295.625
+-1_B O 3 lions.jpg,B O 3 lions,209502.203125,146541.0
+-1_S O 2 lions passt guard.jpg,S O 2 lions passt guard,1387995.25,896610.9375
+22367_O B 3 lions.jpg,O B 3 lions,777776.625,554625.875
+18885_O S 3 lions passt guard.jpg,O S 3 lions passt guard,2817084.5,1838049.75
+779_O S 3 lions.jpg,O S 3 lions,757471.6875,571275.375
+22708_B A 2 lions passt guard.jpg,B A 2 lions passt guard,816586.75,629360.375
+2_A S 3 lions.jpg,A S 3 lions,850872.4375,668934.75
+703_S O 2 lions passt guard.jpg,S O 2 lions passt guard,481082.1875,318011.46875
+22611_G A 3 lions.jpg,G A 3 lions,759114.0625,577763.75
+5008_G A 2 lions passt guard.jpg,G A 2 lions passt guard,794486.75,610316.625
+17701_G A 3 lions.jpg,G A 3 lions,796419.25,606304.875
+348_A G 4 lions.jpg,A G 4 lions,758886.5,555271.75
+1382_B O 3 lions.jpg,B O 3 lions,697366.8125,532337.4375
+22583_G A 3 lions.jpg,G A 3 lions,677805.1875,474229.0625
+1087_A G 3 lions.jpg,A G 3 lions,854385.0,680258.625
+3423_G O 2 lions passt guard.jpg,G O 2 lions passt guard,10412.0869140625,5085.2421875
+4518_O G 2 lions passt.jpg,O G 2 lions passt,21358.666015625,12819.2060546875
+2737_A S 2 lions passt guard.jpg,A S 2 lions passt guard,472269.84375,398069.5625
+-1_G O 3 lions passt guard.jpg,G O 3 lions passt guard,21513.232421875,13558.9833984375
+3921_A S 2 lions passt guard.jpg,A S 2 lions passt guard,650552.0,477128.3125
+301_A S 3 lions.jpg,A S 3 lions,121144.671875,69290.4296875
+2539_G A 3 lions.jpg,G A 3 lions,834877.125,638354.0625
+9516_O S 3 lions passt guard.jpg,O S 3 lions passt guard,2808575.75,1690876.75
+22269_V A 3 lions.jpg,V A 3 lions,721438.8125,511432.96875
+3227_G O 2 lions passt guard.jpg,G O 2 lions passt guard,862655.5,666679.375
+22350_A G 2 lions rampant addorsed.jpg,A G 2 lions rampant addorsed,1070673.5,887820.25
+17949_S O 2 lions passt guard.jpg,S O 2 lions passt guard,590216.25,421700.03125
+392_G A 3 lions.jpg,G A 3 lions,725097.5,524907.0
+4382_B A 2 lions passt guard.jpg,B A 2 lions passt guard,591329.5,415385.84375
+22918_G O 3 lions passt guard.jpg,G O 3 lions passt guard,802938.0,619768.375
+5007_G O 2 lions passt guard.jpg,G O 2 lions passt guard,665055.8125,468688.90625
+20773_A G 2 lions passt.jpg,A G 2 lions passt,1255108.125,838571.6875
+17945_A G 3 lions.jpg,A G 3 lions,818365.9375,640010.125
+249_O G 2 lions passt.jpg,O G 2 lions passt,871046.0625,677358.0625
+7881_G O 2 lions passt guard.jpg,G O 2 lions passt guard,689131.375,483920.34375
+29836_G O 3 eagles.jpg,G O 3 eagles,1091836.0,888309.75
+10921_B A 3 eagles.jpg,B A 3 eagles,737772.25,500729.6875
+6397_B O 3 eagles.jpg,B O 3 eagles,701045.375,523853.9375
+17271_G A 3 eagles.jpg,G A 3 eagles,146234.9375,87394.515625
+17567_S A 3 eagles.jpg,S A 3 eagles,141605.5625,84854.7578125
+624_A G 3 eagles.jpg,A G 3 eagles,825406.0625,634254.375
+5114_B O 3 eagles.jpg,B O 3 eagles,680895.0625,458012.0
+22313_G A 3 eagles.jpg,G A 3 eagles,795278.0,581570.875
+18262_A S 3 eagles.jpg,A S 3 eagles,585265.6875,484187.28125
+2860_B A 6 eagles.jpg,B A 6 eagles,725182.9375,514085.125
+7281_A G 3 eagles.jpg,A G 3 eagles,843368.5625,661524.5625
+23305_G A 5 eagles.jpg,G A 5 eagles,766697.5,546756.125
+7345_B O 5 eagles.jpg,B O 5 eagles,693140.875,466038.4375

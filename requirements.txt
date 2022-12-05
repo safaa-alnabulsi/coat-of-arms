@@ -20,3 +20,4 @@ tqdm
 tensorboard
 torchinfo
 torchsummary
+jupyter_contrib_nbextensions
