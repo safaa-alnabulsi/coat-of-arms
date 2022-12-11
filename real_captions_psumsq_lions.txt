@@ -70,6 +70,7 @@ image,caption,psum,psum_sq
 7350_A V lion rampant.jpg,A V lion rampant,22876.92578125,16553.87109375
 6358_A V lion rampant.jpg,A V lion rampant,703273.0,517930.0
 17923_B O lion rampant.jpg,B O lion rampant,599960.875,423763.53125
+2736_A S 2 lions passt guard cowardly.jpg,A S 2 lions passt guard cowardly,3149245.0,2078928.375
 4518_O G 2 lions passt.jpg,O G 2 lions passt,21358.666015625,12819.2060546875
 2737_A S 2 lions passt guard.jpg,A S 2 lions passt guard,472269.84375,398069.5625
 -1_G O 3 lions passt guard.jpg,G O 3 lions passt guard,21513.232421875,13558.9833984375
