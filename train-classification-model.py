@@ -231,7 +231,8 @@ if __name__ == "__main__":
     # data_location =  '../baseline-gen-data/small/'
     data_location =  '/home/space/datasets/COA/generated-data-api-single-and-plural/'
     new_with_class_caption_file = data_location + '/new-labels-class-psumsq.txt'
-
+    
+    df_new = pd.read_csv(new_with_class_caption_file)
     train, validate, test = train_validate_test_split(df_new, train_percent=.6, validate_percent=.2, seed=None)
 
     train_annotation_file = data_location + '/train_labels_psumsq.txt'
@@ -256,7 +257,7 @@ if __name__ == "__main__":
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     
-    BATCH_SIZE = 56
+    BATCH_SIZE = 256
     NUM_WORKER = 2 #### this needs multi-core
     # NUM_WORKER = 0 #### this needs multi-core
     pin_memory=False,
@@ -386,7 +387,7 @@ if __name__ == "__main__":
     # save the latest model
     now = datetime.now() # current date and time
     timestr = now.strftime("%m-%d-%Y-%H:%M:%S")
-    model_full_path = f"{data_location}/classification-model-{timestr}.pth"
+    model_full_path = f"{data_location}/classification-model-plural-{timestr}.pth"
 
     model.cpu()
     model_state = {
