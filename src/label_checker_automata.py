@@ -84,6 +84,11 @@ class LabelCheckerAutomata:
                 trimmed_chunk = chunk[:size - 2]
                 if trimmed_chunk in self.objects:
                     output = output + 'o'
+            elif chunk.endswith("es"):  # plural s: G A 3 crosses
+                size = len(chunk)
+                trimmed_chunk = chunk[:size - 2]
+                if trimmed_chunk in self.objects:
+                    output = output + 'o'
             elif chunk.endswith("s"):  # plural s: G A 3 lions
                 size = len(chunk)
                 trimmed_chunk = chunk[:size - 1]
