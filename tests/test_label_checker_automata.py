@@ -23,6 +23,7 @@ valid_labels = {
     'V B lion passt guard': 'ccomm',
     "V V lion's head": 'ccom',
     "A A A lion eagle doubleheaded & border": 'cccoompb',
+    'A A 3 crosses moline': 'ccnom',
 }
 
 invalid_labels = {
@@ -38,25 +39,27 @@ invalid_labels = {
 rejected_labels = {
     '3 pales; 2 cows; =; = :: label   {OG, OG, B}': 'nn',
     'safaa coa': 'dd',
-    
+
 }
 
 aligned_parsed_labels = {
-    'O G lion rampant': {'colors': ['O','G'], 'objects': ['lion'], 'modifiers': ['rampant'], 'numbers': [], 'positions': [], 'shield_modifiers': []},
-    'G A eagle doubleheaded': {'colors': ['G','A'], 'objects': ['eagle'], 'modifiers': ['doubleheaded'], 'numbers': [], 'positions': [], 'shield_modifiers': []},
+    'O G lion rampant': {'colors': ['O', 'G'], 'objects': ['lion'], 'modifiers': ['rampant'], 'numbers': [], 'positions': [], 'shield_modifiers': []},
+    'G A eagle doubleheaded': {'colors': ['G', 'A'], 'objects': ['eagle'], 'modifiers': ['doubleheaded'], 'numbers': [], 'positions': [], 'shield_modifiers': []},
     'B G lion passt': {'colors': ['B', 'G'], 'objects': ['lion'], 'modifiers': ['passt'], 'numbers': [], 'positions': [], 'shield_modifiers': []},
     'b g lion passt': {'colors': ['b', 'g'], 'objects': ['lion'], 'modifiers': ['passt'], 'numbers': [], 'positions': [], 'shield_modifiers': []},
     'b g lion lion': {'colors': ['b', 'g'], 'objects': ['lion', 'lion'], 'modifiers': [''], 'numbers': [], 'positions': [], 'shield_modifiers': []},
     'b a lion passt guard': {'colors': ['b', 'a'], 'objects': ['lion'], 'modifiers': ['passt guard'], 'numbers': [], 'positions': [], 'shield_modifiers': []},
-    'b a g lion passt guard & cross arched & border checky': {'colors': ['b', 'a', 'g'], 'objects': ['lion', 'cross'], 'modifiers': ['passt guard', 'arched'], 'numbers': [], 'positions': ['&', '&'], 'shield_modifiers': ['border','checky']},
-    'B O lion guard cr.': {'colors': ['B','O'], 'objects': ['lion'], 'modifiers': ['guard', 'cr.'], 'numbers': [], 'positions': [], 'shield_modifiers': []},
+    'b a g lion passt guard & cross arched & border checky': {'colors': ['b', 'a', 'g'], 'objects': ['lion', 'cross'], 'modifiers': ['passt guard', 'arched'], 'numbers': [], 'positions': ['&', '&'], 'shield_modifiers': ['border', 'checky']},
+    'B O lion guard cr.': {'colors': ['B', 'O'], 'objects': ['lion'], 'modifiers': ['guard', 'cr.'], 'numbers': [], 'positions': [], 'shield_modifiers': []},
     "O O lion's head": {'colors': ['O', 'O'], 'objects': ["lion's"], 'modifiers': ['head'], 'numbers': [], 'positions': [], 'shield_modifiers': []},
     "O O 3 lions": {'colors': ['O', 'O'], 'objects': ['lions'], 'modifiers': [], 'numbers': ['3'], 'positions': [], 'shield_modifiers': []},
     "B A O 3 lions 3 eagles": {'colors': ['B', 'A', 'O'], 'objects': ['lions', 'eagles'], 'modifiers': [''], 'numbers': ['3', '3'], 'positions': [], 'shield_modifiers': []},
-    "A A A lion eagle doubleheaded & border":  {'colors': ['A', 'A', 'A'], 'objects': ['lion', 'eagle'], 'modifiers': ['','doubleheaded'], 'numbers': [], 'positions': ['&'], 'shield_modifiers': ['border']},
-    "A A bear rampant chained lion":  {'colors': ['A', 'A'], 'objects': ['bear','lion'], 'modifiers': ['rampant','chained'], 'numbers': [], 'positions': [], 'shield_modifiers': []},
+    "A A A lion eagle doubleheaded & border":  {'colors': ['A', 'A', 'A'], 'objects': ['lion', 'eagle'], 'modifiers': ['', 'doubleheaded'], 'numbers': [], 'positions': ['&'], 'shield_modifiers': ['border']},
+    "A A bear rampant chained lion":  {'colors': ['A', 'A'], 'objects': ['bear', 'lion'], 'modifiers': ['rampant', 'chained'], 'numbers': [], 'positions': [], 'shield_modifiers': []},
     'v v lions passt': {'colors': ['v', 'v'], 'objects': ['lions'], 'modifiers': ['passt'], 'numbers': [], 'positions': [], 'shield_modifiers': []},
+    "A A 3 crosses moline & border": {'colors': ['A', 'A'], 'objects': ['crosses'], 'modifiers': ['moline'], 'numbers': ['3'], 'positions': ['&'], 'shield_modifiers': ['border']},
 }
+
 
 class LabelCheckerAutomataTest(TestCase):
 

@@ -84,12 +84,9 @@ class LabelCheckerAutomata:
                 trimmed_chunk = chunk[:size - 2]
                 if trimmed_chunk in self.objects:
                     output = output + 'o'
-            elif chunk.endswith("es"):  # plural s: G A 3 crosses
-                size = len(chunk)
-                trimmed_chunk = chunk[:size - 2]
-                if trimmed_chunk in self.objects:
-                    output = output + 'o'
-            elif chunk.endswith("s"):  # plural s: G A 3 lions
+            elif chunk == "crosses":  # plural s: G A 3 crosses
+                output = output + 'o'
+            elif chunk.endswith("s"):  # plural s: G A 3 lions, roses fit in here too
                 size = len(chunk)
                 trimmed_chunk = chunk[:size - 1]
                 if trimmed_chunk in self.objects:
@@ -98,8 +95,8 @@ class LabelCheckerAutomata:
                 output = output + self.get_combination_color(chunk)
             else:
                 err_message = f'ValueError (not raised): label "{label}" cannot be parsed. The chunk "{chunk}" cannot be fit into any category.'
-#                 print(err_message)
-#                 raise ValueError(err_message)
+                print(err_message)
+                raise ValueError(err_message)
         
         return output
 
