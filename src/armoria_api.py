@@ -38,6 +38,12 @@ CROSS_MODIFIERS_MAP = {
     'cross patonce': 'crossPatonce',
 }
 
+PLURAL_CROSS_MODIFIERS_MAP = {
+    'crosses': 'crossHummetty' ,
+    'crosses moline': 'crossMoline',
+    'crosses patonce': 'crossPatonce',
+}
+
 SHIELD_MODIFIERS_MAP = {
     'border': 'bordure' ,
 }
