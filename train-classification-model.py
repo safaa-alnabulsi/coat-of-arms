@@ -342,7 +342,11 @@ if __name__ == "__main__":
     model = models.vgg16(pretrained = True)
 
     ### Modifying last few layers and no of classes
-    # NOTE: cross_entropy loss takes unnormalized op (logits), then function itself applies softmax and calculates loss, so no need to include softmax here
+    # Using Sequential to create a small model. 
+    # Modules will be added to it in the order they are passed in the constructor
+    # NOTE: cross_entropy loss takes unnormalized op (logits),
+    # then function itself applies softmax and calculates loss, 
+    # so no need to include softmax here
     model.classifier = nn.Sequential(
         nn.Linear(25088, 4096, bias = True),
         nn.ReLU(inplace = True),

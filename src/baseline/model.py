@@ -49,14 +49,16 @@ class Attention(nn.Module):
         u_hs = self.U(features)     #(batch_size,num_layers,attention_dim)
         w_ah = self.W(hidden_state) #(batch_size,attention_dim)
         
+        # Calculating Alignment Scores
         combined_states = torch.tanh(u_hs + w_ah.unsqueeze(1)) #(batch_size,num_layers,attemtion_dim)
         
         attention_scores = self.A(combined_states)         #(batch_size,num_layers,1)
         attention_scores = attention_scores.squeeze(2)     #(batch_size,num_layers)
         
-        
+         # Softmaxing alignment scores to get Attention weights   
         alpha = F.softmax(attention_scores,dim=1)          #(batch_size,num_layers)
         
+        # Multiplying the Attention weights with encoder outputs to get the context vector
         attention_weights = features * alpha.unsqueeze(2)  #(batch_size,num_layers,features_dim)
         attention_weights = attention_weights.sum(dim=1)   #(batch_size,num_layers)
         
@@ -88,7 +90,7 @@ class DecoderRNN(nn.Module):
     
     def forward(self, features, captions):
         
-        #vectorize the caption
+        # vectorize the caption by embedding input words
         embeds = self.embedding(captions)
         
         # Initialize LSTM state
@@ -195,4 +197,5 @@ class EncoderDecoder(nn.Module):
     def forward(self, images, captions):
         features = self.encoder(images)
         outputs = self.decoder(features, captions)
+        print(outputs)
         return outputs

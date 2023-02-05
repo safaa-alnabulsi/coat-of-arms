@@ -80,6 +80,12 @@ def get_std(train_dataset, train_loader, mean, img_h=500, img_w=500):
         psumq_all_image += batch[3].sum()
         
     var = psumq_all_image  - ((psum_all_image ** 2) / count_of_pixels)    
+    # print(psumq_all_image)
+    # print(psum_all_image)
+    
+    # print(var)
+    
+    # print(count_of_pixels)
     std = torch.sqrt(var/count_of_pixels)
     
     return std

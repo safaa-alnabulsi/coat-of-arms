@@ -82,7 +82,7 @@ def get_correct_caption_as_string(dataset, correct_cap):
 # Function to test the model with the val dataset and print the accuracy for the test images
 def validate_model(model, criterion, val_loader, val_dataset, vocab_size, 
                    device, tepoch, writer, step, weights_map=WEIGHT_MAP):
-    print('validate function called')
+    # print('validate function called')
     total = len(val_loader)
     bleu_score = 0
 

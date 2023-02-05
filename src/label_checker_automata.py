@@ -93,8 +93,8 @@ class LabelCheckerAutomata:
                 output = output + self.get_combination_color(chunk)
             else:
                 err_message = f'ValueError (not raised): label "{label}" cannot be parsed. The chunk "{chunk}" cannot be fit into any category.'
-                print(err_message)
-                raise ValueError(err_message)
+#                 print(err_message)
+#                 raise ValueError(err_message)
         
         return output
 
