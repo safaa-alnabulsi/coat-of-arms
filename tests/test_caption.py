@@ -80,7 +80,17 @@ struc_labels = {
                             'objects': [{'charge': 'lions', 'color': 's', 'modifiers': ['passt guard'], 'number': '1'}]},
     
     "v v lions passt": {'shield': {'color': 'v', 'modifiers': []},
-                        'objects': [{'charge': 'lions', 'color': 'v', 'modifiers': ['passt'], 'number': '1'}]}
+                        'objects': [{'charge': 'lions', 'color': 'v', 'modifiers': ['passt'], 'number': '1'}]},
+
+    "A A 3 crosses moline & border": {'shield': {'color': 'A', 'modifiers': ['border']},
+                     'objects': [{'charge': 'crosses', 'color': 'A', 'modifiers': ['moline'], 'number': '3'}]},
+    
+    "A A 3 crosses patonce & border":{'shield': {'color': 'A', 'modifiers': ['border']},
+                     'objects': [{'charge': 'crosses', 'color': 'A', 'modifiers': ['patonce'], 'number': '3'}]},
+    
+    "A A 2 crosses & border": {'shield': {'color': 'A', 'modifiers': ['border']},
+                     'objects': [{'charge': 'crosses', 'color': 'A', 'modifiers': [], 'number': '2'}]},
+    
 }
 
 
