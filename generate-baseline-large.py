@@ -9,7 +9,7 @@ import argparse
 import src.alphabet as alphabet
 from src.caption import Caption
 from src.armoria_api_generator_helper import ArmoriaAPIGeneratorHelper
-from src.armoria_api import ArmoriaAPIPayload, ArmoriaAPIWrapper, COLORS_MAP, SINGLE_LION_MODIFIERS_MAP, PLURAL_LION_MODIFIERS_MAP, CROSS_MODIFIERS_MAP, PLURAL_CROSS_MODIFIERS_MAP, \
+from src.armoria_api import ArmoriaAPIPayload, ArmoriaAPIWrapper, COLORS_MAP, SINGLE_LION_MODIFIERS_MAP, PLURAL_LION_MODIFIERS_MAP, SINGLE_CROSS_MODIFIERS_MAP, PLURAL_CROSS_MODIFIERS_MAP, \
 SINGLE_EAGLE_MODIFIERS_MAP, PLURAL_EAGLE_MODIFIERS_MAP, \
 POSITIONS, SIZES, NUMBERS, NUMBERS_MULTI, SINGLE_POSITION
 
@@ -29,7 +29,7 @@ if __name__ == "__main__":
     permutations1 = list(dict.fromkeys(itertools.product(list(COLORS_MAP.keys()), list(COLORS_MAP.keys()), list( SINGLE_LION_MODIFIERS_MAP.keys()),BORDER_MOD)))
 
     # cross, modifiers and colors
-    permutations2 = list(dict.fromkeys(itertools.product(list(COLORS_MAP.keys()), list(COLORS_MAP.keys()), list( CROSS_MODIFIERS_MAP.keys()),BORDER_MOD)))
+    permutations2 = list(dict.fromkeys(itertools.product(list(COLORS_MAP.keys()), list(COLORS_MAP.keys()), list( SINGLE_CROSS_MODIFIERS_MAP.keys()),BORDER_MOD)))
 
     # eagle, modifiers and colors
     permutations3 = list(dict.fromkeys(itertools.product(list(COLORS_MAP.keys()), list(COLORS_MAP.keys()), list( SINGLE_EAGLE_MODIFIERS_MAP.keys()),BORDER_MOD)))
@@ -60,13 +60,13 @@ if __name__ == "__main__":
 #     permutations1 = list(dict.fromkeys(itertools.product(list(COLORS_MAP.keys()),list(COLORS_MAP.keys()), list(COLORS_MAP.keys()), list( SINGLE_LION_MODIFIERS_MAP.keys()), list( SINGLE_EAGLE_MODIFIERS_MAP.keys()),BORDER_MOD)))
 
 #     # lion & cross
-#     permutations2 = list(dict.fromkeys(itertools.product(list(COLORS_MAP.keys()),list(COLORS_MAP.keys()), list(COLORS_MAP.keys()), list( SINGLE_LION_MODIFIERS_MAP.keys()), list( CROSS_MODIFIERS_MAP.keys()),BORDER_MOD)))
+#     permutations2 = list(dict.fromkeys(itertools.product(list(COLORS_MAP.keys()),list(COLORS_MAP.keys()), list(COLORS_MAP.keys()), list( SINGLE_LION_MODIFIERS_MAP.keys()), list( SINGLE_CROSS_MODIFIERS_MAP.keys()),BORDER_MOD)))
 
 #     # eagle & cross
-#     permutations3 = list(dict.fromkeys(itertools.product(list(COLORS_MAP.keys()),list(COLORS_MAP.keys()), list(COLORS_MAP.keys()), list( SINGLE_EAGLE_MODIFIERS_MAP.keys()), list( CROSS_MODIFIERS_MAP.keys()),BORDER_MOD)))
+#     permutations3 = list(dict.fromkeys(itertools.product(list(COLORS_MAP.keys()),list(COLORS_MAP.keys()), list(COLORS_MAP.keys()), list( SINGLE_EAGLE_MODIFIERS_MAP.keys()), list( SINGLE_CROSS_MODIFIERS_MAP.keys()),BORDER_MOD)))
 
 #     # lion & cross & eagle
-#     permutations4 = list(dict.fromkeys(itertools.product(list(COLORS_MAP.keys()),list(COLORS_MAP.keys()),list(COLORS_MAP.keys()), list(COLORS_MAP.keys()), list( SINGLE_LION_MODIFIERS_MAP.keys()), list( SINGLE_EAGLE_MODIFIERS_MAP.keys()), list( CROSS_MODIFIERS_MAP.keys()),BORDER_MOD)))
+#     permutations4 = list(dict.fromkeys(itertools.product(list(COLORS_MAP.keys()),list(COLORS_MAP.keys()),list(COLORS_MAP.keys()), list(COLORS_MAP.keys()), list( SINGLE_LION_MODIFIERS_MAP.keys()), list( SINGLE_EAGLE_MODIFIERS_MAP.keys()), list( SINGLE_CROSS_MODIFIERS_MAP.keys()),BORDER_MOD)))
 
 #     possible_multi_single_permutations = permutations1 + permutations2 + permutations3 + permutations4
 
@@ -79,13 +79,13 @@ if __name__ == "__main__":
 #     permutations1 = list(dict.fromkeys(itertools.product(list(COLORS_MAP.keys()),list(COLORS_MAP.keys()), list(COLORS_MAP.keys()), list(NUMBERS_MULTI),list( PLURAL_LION_MODIFIERS_MAP.keys()), list(NUMBERS_MULTI), list( PLURAL_EAGLE_MODIFIERS_MAP.keys()),BORDER_MOD)))
 
 #     # lion & cross
-#     permutations2 = list(dict.fromkeys(itertools.product(list(COLORS_MAP.keys()),list(COLORS_MAP.keys()), list(COLORS_MAP.keys()), list(NUMBERS_MULTI),list( PLURAL_LION_MODIFIERS_MAP.keys()), list( CROSS_MODIFIERS_MAP.keys()),BORDER_MOD)))
+#     permutations2 = list(dict.fromkeys(itertools.product(list(COLORS_MAP.keys()),list(COLORS_MAP.keys()), list(COLORS_MAP.keys()), list(NUMBERS_MULTI),list( PLURAL_LION_MODIFIERS_MAP.keys()), list( SINGLE_CROSS_MODIFIERS_MAP.keys()),BORDER_MOD)))
 
 #     # eagle & cross
-#     permutations3 = list(dict.fromkeys(itertools.product(list(COLORS_MAP.keys()),list(COLORS_MAP.keys()), list(COLORS_MAP.keys()), list(NUMBERS_MULTI),list( PLURAL_EAGLE_MODIFIERS_MAP.keys()), list( CROSS_MODIFIERS_MAP.keys()),BORDER_MOD)))
+#     permutations3 = list(dict.fromkeys(itertools.product(list(COLORS_MAP.keys()),list(COLORS_MAP.keys()), list(COLORS_MAP.keys()), list(NUMBERS_MULTI),list( PLURAL_EAGLE_MODIFIERS_MAP.keys()), list( SINGLE_CROSS_MODIFIERS_MAP.keys()),BORDER_MOD)))
 
 #     # lion & cross & eagle
-#     permutations4 = list(dict.fromkeys(itertools.product(list(COLORS_MAP.keys()),list(COLORS_MAP.keys()),list(COLORS_MAP.keys()), list(COLORS_MAP.keys()), list(NUMBERS_MULTI), list( PLURAL_LION_MODIFIERS_MAP.keys()), list(NUMBERS_MULTI),list( PLURAL_EAGLE_MODIFIERS_MAP.keys()), list( CROSS_MODIFIERS_MAP.keys()),BORDER_MOD)))
+#     permutations4 = list(dict.fromkeys(itertools.product(list(COLORS_MAP.keys()),list(COLORS_MAP.keys()),list(COLORS_MAP.keys()), list(COLORS_MAP.keys()), list(NUMBERS_MULTI), list( PLURAL_LION_MODIFIERS_MAP.keys()), list(NUMBERS_MULTI),list( PLURAL_EAGLE_MODIFIERS_MAP.keys()), list( SINGLE_CROSS_MODIFIERS_MAP.keys()),BORDER_MOD)))
 
 #     possible_multi_plural_permutations = permutations1 + permutations2 + permutations3 + permutations4
 

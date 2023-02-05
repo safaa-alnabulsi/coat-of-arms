@@ -32,7 +32,7 @@ PLURAL_EAGLE_MODIFIERS_MAP = {
 }
 EAGLE_MODIFIERS_MAP = {**SINGLE_EAGLE_MODIFIERS_MAP, **PLURAL_EAGLE_MODIFIERS_MAP}
 
-CROSS_MODIFIERS_MAP = {
+SINGLE_CROSS_MODIFIERS_MAP = {
     'cross': 'crossHummetty' ,
     'cross moline': 'crossMoline',
     'cross patonce': 'crossPatonce',
@@ -43,6 +43,8 @@ PLURAL_CROSS_MODIFIERS_MAP = {
     'crosses moline': 'crossMoline',
     'crosses patonce': 'crossPatonce',
 }
+
+CROSS_MODIFIERS_MAP = {**PLURAL_CROSS_MODIFIERS_MAP, **SINGLE_CROSS_MODIFIERS_MAP}
 
 SHIELD_MODIFIERS_MAP = {
     'border': 'bordure' ,
@@ -235,8 +237,8 @@ class ArmoriaAPIWrapper:
                    "format": format,
                    "coa": json.dumps(coa)
                   }
-#         self.r = requests.get('https://armoria.herokuapp.com/', params=payload)
-        self.r = requests.get('http://localhost:49160/', params=payload)
+        self.r = requests.get('https://armoria.herokuapp.com/', params=payload)
+        # self.r = requests.get('http://localhost:49160/', params=payload)
 #         print(self.r.url)
     
     def get_image_bytes(self):
