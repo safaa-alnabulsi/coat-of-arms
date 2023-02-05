@@ -58,6 +58,8 @@ aligned_parsed_labels = {
     "A A bear rampant chained lion":  {'colors': ['A', 'A'], 'objects': ['bear', 'lion'], 'modifiers': ['rampant', 'chained'], 'numbers': [], 'positions': [], 'shield_modifiers': []},
     'v v lions passt': {'colors': ['v', 'v'], 'objects': ['lions'], 'modifiers': ['passt'], 'numbers': [], 'positions': [], 'shield_modifiers': []},
     "A A 3 crosses moline & border": {'colors': ['A', 'A'], 'objects': ['crosses'], 'modifiers': ['moline'], 'numbers': ['3'], 'positions': ['&'], 'shield_modifiers': ['border']},
+    "A A 3 crosses patonce & border": {'colors': ['A', 'A'], 'objects': ['crosses'], 'modifiers': ['patonce'], 'numbers': ['3'], 'positions': ['&'], 'shield_modifiers': ['border']},
+    "A A 3 crosses & border": {'colors': ['A', 'A'], 'objects': ['crosses'], 'modifiers': [], 'numbers': ['3'], 'positions': ['&'], 'shield_modifiers': ['border']},
 }
 
 
