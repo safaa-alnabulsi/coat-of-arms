@@ -229,7 +229,7 @@ if __name__ == "__main__":
     MISSING_TOKEN = 'None'
     
     # data_location =  '../baseline-gen-data/small/'
-    data_location =  '/home/space/datasets/COA/generated-data-api-single-and-plural/'
+    data_location =  '/home/space/datasets/COA/generated-data-api-single/'
     new_with_class_caption_file = data_location + '/new-labels-class-psumsq.txt'
     
     df_new = pd.read_csv(new_with_class_caption_file)
@@ -391,7 +391,7 @@ if __name__ == "__main__":
     # save the latest model
     now = datetime.now() # current date and time
     timestr = now.strftime("%m-%d-%Y-%H:%M:%S")
-    model_full_path = f"{data_location}/classification-model-plural-{timestr}.pth"
+    model_full_path = f"{data_location}/classification-model-single-full-{timestr}.pth"
 
     model.cpu()
     model_state = {

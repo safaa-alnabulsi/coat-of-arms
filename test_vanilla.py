@@ -76,8 +76,8 @@ if __name__ == "__main__":
         test_caption_file  = data_location + '/test_real_captions_psumsq.txt'
     else:
         root_folder_images = data_location + '/images'
-        # test_caption_file  = data_location + '/test_captions_psumsq.txt'
-        test_caption_file  = data_location + '/real_captions_psumsq_lions_cleaned.txt'
+        test_caption_file  = data_location + '/test_captions_psumsq.txt'
+#         test_caption_file  = data_location + '/real_captions_psumsq_lions_cleaned.txt'
 
     df = pd.read_csv(test_caption_file)
     print("There are {} test images".format(len(df)))

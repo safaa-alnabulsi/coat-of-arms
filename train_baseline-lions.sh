@@ -9,11 +9,19 @@
 #$ -l cuda=1   # request one GPU
 #$ -j y
 #$ -l h='!node4*'
+#$ -l h_vmem=16G
+#$ -l mem_free=16G
 echo "I am a job task with ID $SGE_TASK_ID."
 export CUDA_LAUNCH_BLOCKING=1
 
 dataset=$1
-real_data=$2
-pretrained=$3
+batch_size=$2
+epochs=$3
+resplit=$4
+local=$5
+resized=$6
+checkpoint=$7
+run_folder=$8
+accuracy=$9
 
-source /home/salnabulsi/.thesis-py38/bin/activate && python test_vanilla.py --dataset ${dataset} --real-data ${real_data} --pretrained ${pretrained} >> output-test-${timestamp}.txt 
+source /home/salnabulsi/.thesis-py38/bin/activate && python train_baseline.py --dataset ${dataset} --batch-size ${batch_size} --epochs ${epochs} --resplit ${resplit} --local ${local} --resized-images ${resized} --checkpoint ${checkpoint} --run-folder ${run_folder} --accuracy ${accuracy} --seed ${10}

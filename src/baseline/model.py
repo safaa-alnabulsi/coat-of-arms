@@ -197,5 +197,5 @@ class EncoderDecoder(nn.Module):
     def forward(self, images, captions):
         features = self.encoder(images)
         outputs = self.decoder(features, captions)
-        print(outputs)
+        # print(outputs)
         return outputs

@@ -9,8 +9,6 @@
 #$ -l cuda=1   # request one GPU
 #$ -j y
 #$ -l h='!node4*'
-#$ -l h_vmem=16G
-#$ -l mem_free=16G
 echo "I am a job task with ID $SGE_TASK_ID."
 export CUDA_LAUNCH_BLOCKING=1
 

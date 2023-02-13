@@ -56,14 +56,14 @@ if __name__ == "__main__":
     # ---------------------- Reproducibility -------------------
     
     seed = args.seed
-    # random.seed(seed)     # python random generator
-    # np.random.seed(seed)  # numpy random generator
+    random.seed(seed)     # python random generator
+    np.random.seed(seed)  # numpy random generator
 
-    # torch.manual_seed(seed)
-    # torch.cuda.manual_seed_all(seed)
+    torch.manual_seed(seed)
+#     torch.cuda.manual_seed_all(seed)
 
-    # torch.backends.cudnn.deterministic = True
-    # torch.backends.cudnn.benchmark = False
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
     
     # ----------------------------------------------------------------- 
 
@@ -164,7 +164,12 @@ if __name__ == "__main__":
     train_annotation_file = data_location + '/train_captions_psumsq.txt'
     val_annotation_file  = data_location + '/val_captions_psumsq.txt'
     test_annotation_file  = data_location + '/test_captions_psumsq.txt'
+
     
+#     train_annotation_file = data_location + '/train_captions_psumsq_lions.txt'
+#     val_annotation_file  = data_location + '/val_captions_psumsq_lions.txt'
+#     test_annotation_file  = data_location + '/test_captions_psumsq_lions.txt'
+
     if resplit:
         train, validate, test = train_validate_test_split(df, train_percent=.6, validate_percent=.2, seed=None)
         train.to_csv(train_annotation_file, sep=',',index=False)
