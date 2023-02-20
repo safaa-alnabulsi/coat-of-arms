@@ -17,7 +17,9 @@ DEBUG = False
 @st.cache
 def load_data():
     
-    data_dir = Path("data/cropped_coas/out/images")
+#     data_dir = Path("data/cropped_coas/out/images")
+    data_dir = Path("data/new/images")
+
     # else:
     #     data_dir = Path("data/cropped_coas/out_valid")
 
