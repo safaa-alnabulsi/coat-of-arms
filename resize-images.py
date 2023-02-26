@@ -6,19 +6,20 @@ from PIL import Image
 
 if __name__ == "__main__":
     
-    data_location = '/home/space/datasets/COA/generated-data-api-large'
+#     data_location = '/home/space/datasets/COA/generated-data-api-large'
     # data_location =  '/home/space/datasets/COA/generated-data-api-small'
     # data_location =  'baseline-gen-data/large'
     # data_location =  'baseline-gen-data/medium'
     # data_location =  'baseline-gen-data/small'
     # data_location = '/Users/salnabulsi/tub/coat-of-arms/data/cropped_coas/out'
+    data_location = '//home/salnabulsi/coat-of-arms/data/new'
 
-    caption_file = data_location + '/captions-psumsq.txt'
-    # caption_file = data_location + '/test_real_captions_psumsq.txt'
+#     caption_file = data_location + '/captions-psumsq.txt'
+    caption_file = data_location + '/test_real_captions_psumsq.txt'
 
     root_folder_images = data_location + '/images/'
-    new_image_directory = data_location + '/res_images/'
-    # new_image_directory = data_location + '/resized/'
+#     new_image_directory = data_location + '/res_images/'
+    new_image_directory = data_location + '/resized/'
     
     if not os.path.exists(new_image_directory):
         os.mkdir(new_image_directory)

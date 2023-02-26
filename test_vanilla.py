@@ -36,13 +36,13 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     seed = 10
-    # random.seed(seed)     # python random generator
-    # np.random.seed(seed)  # numpy random generator
-    # torch.manual_seed(seed)
-    # torch.cuda.manual_seed_all(seed)
-    # torch.backends.cudnn.deterministic = True
-    # torch.backends.cudnn.benchmark = False
-    # torch.use_deterministic_algorithms(True)
+    random.seed(seed)     # python random generator
+    np.random.seed(seed)  # numpy random generator
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    #torch.backends.cudnn.deterministic = True
+    #torch.backends.cudnn.benchmark = False
+    #torch.use_deterministic_algorithms(True)
     
     data_location = args.dataset
     real_data = args.real_data
