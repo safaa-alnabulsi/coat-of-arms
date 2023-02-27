@@ -9,7 +9,7 @@ WEIGHT_MAP_ONLY_CHARGE = {'shield_color': 0, 'shield_mod': 0, 'charge_color': 0,
 
 WEIGHT_MAP_ONLY_CHARGE_COLOR = {'shield_color': 0, 'shield_mod': 0, 'charge_color': 1, 'charge': 0, 'modifier': 0}
 
-WEIGHT_MAP_ONLY_SHIELD_COLOR = {'shield_color': 1, 'shield_mod': 0, 'charge_color': 0, 'charge': 0, 'modifier': 0}
+WEIGHT_MAP_ONLY_SHIELD_COLOR = {'shield_color': 1, 'shield_mod': 1, 'charge_color': 0, 'charge': 0, 'modifier': 0}
 
 # Notes:
 # acc = number of True answers / number of samples
@@ -75,14 +75,14 @@ class Accuracy:
                 color2 = obj2['color']
                 mods2  = obj2['modifiers']
                 
-                if ch1 == ch2:
-                    hits_charge+= 1
-                else:
-                    continue
-                
-                if color1 == color2:
+                if color1.lower() == color2.lower():
                     hits_ch_colors+= 1
 
+                if ch1 == ch2:
+                    hits_charge+= 1
+                # else: # cannot remember why I added this condition here
+                #     continue
+                
                 for cm in mods1:
                     for pm in mods2:
                         if cm == pm:
@@ -94,7 +94,7 @@ class Accuracy:
                       hits_mod * self.weights_map['modifier']
                 
                 obj_acc.append(round(hits / total, 2))
-            
+
             if len(obj_acc) > 0:
                 all_obj_acc.append(obj_acc)
                 
@@ -118,22 +118,21 @@ class Accuracy:
         total = 1
         
         try:
-            color1 = self.predicted['shield']['color']
-            mods1  = self.predicted['shield']['modifiers']
+            color1 = self.correct['shield']['color']
+            mods1  = self.correct['shield']['modifiers']
         except KeyError as err:
-            print(f"Unexpected {err=}, {type(err)=} in predicted label: {self.predicted=}")
-            raise
+            print(f"KeyError - Unexpected {err=}, {type(err)=} in correct label: {self.predicted=}")
+            raise err
             
         try:
-            color2 = self.correct['shield']['color']
-            mods2  = self.correct['shield']['modifiers']
+            color2 = self.predicted['shield']['color']
+            mods2  = self.predicted['shield']['modifiers']
         except KeyError as err:
-            print('KeyError in correct: "{}"'.format(self.correct))
-            print(f"Unexpected {err=}, {type(err)=} in correct label: {self.correct=}")
-            raise
+            print(f"KeyError - Unexpected {err=}, {type(err)=} in predicted label: {self.correct=}")
+            raise err
             
 
-        if color1 == color2:
+        if color1.lower() == color2.lower():
             hits_sh_colors+= 1
 
         for cm in mods1:
