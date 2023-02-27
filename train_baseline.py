@@ -326,14 +326,24 @@ if __name__ == "__main__":
     # early stopping patience; how long to wait after last time validation loss improved.
     patience = 5
 
-    model, train_loss, valid_loss, avg_acc, bleu_score = train_model(model, optimizer, criterion, train_dataset, train_loader, val_loader, val_dataset, vocab_size, batch_size, patience, num_epochs, device, model_folder, starting_epoch, weights_map)
+    model, train_loss, valid_loss, avg_acc, bleu_score, avg_acc_charge_only, avg_acc_charge_color, avg_acc_shield_only = train_model(
+        model, optimizer, criterion, train_dataset, train_loader, val_loader, val_dataset, vocab_size, batch_size, patience, num_epochs, device, model_folder, starting_epoch, weights_map)
 
     final_accuracy = sum(avg_acc)/len(avg_acc) if len(avg_acc) > 0 else 0.0
     final_train_loss = sum(train_loss)/len(train_loss) if len(avg_acc) > 0 else 0.0
     final_valid_loss = sum(valid_loss)/len(valid_loss) if len(avg_acc) > 0 else 0.0
+
+    final_accuracy_charge_only = sum(avg_acc_charge_only)/len(avg_acc_charge_only) if len(avg_acc_charge_only) > 0 else 0.0
+    final_accuracy_charge_color = sum(avg_acc_charge_color)/len(avg_acc_charge_color) if len(avg_acc_charge_color) > 0 else 0.0
+    final_accuracy_shield_only = sum(avg_acc_shield_only)/len(avg_acc_shield_only) if len(avg_acc_shield_only) > 0 else 0.0
     
     # print('Bleu Score: ', bleu_score/8091)
-    print('Final accuracy: {}%'.format(100. * round(final_accuracy, 2)))
+    print('Final accuracy ALL: {}%'.format(100. * round(final_accuracy, 2)))
+    
+    print('Final accuracy Charge-Mod: {}%'.format(100. * round(final_accuracy_charge_only, 2)))
+    print('Final accuracy Charge color : {}%'.format(100. * round(final_accuracy_charge_color, 2)))
+    print('Final accuracy Shield: {}%'.format(100. * round(final_accuracy_shield_only, 2)))
+
     print('Final train_loss:  {}'.format(round(final_train_loss, 2)))
     print('Final valid_loss:  {}'.format(round(final_valid_loss, 2)))
 

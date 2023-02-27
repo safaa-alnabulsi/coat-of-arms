@@ -146,6 +146,7 @@ models
 baseline-gen-data
 gg
 data/cropped_coas/out
+data/new/
 *.pt
 notebooks/runs
 experiments
