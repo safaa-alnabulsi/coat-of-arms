@@ -28,6 +28,15 @@ from src.utils import list_of_tensors_to_numpy_arr
 from datetime import datetime
 
 
+
+def count_classes(captions):
+    data = list(captions)
+    lion_count = sum('lion' in s for s in data)
+    eagle_count = sum('eagle' in s for s in data)
+    cross_count = sum('cross' in s for s in data)
+    
+    return lion_count, eagle_count, cross_count
+    
 def train_validate_test_split(df, train_percent=.6, validate_percent=.2, seed=None):
     np.random.seed(seed)
     perm = np.random.permutation(df.index)
@@ -37,6 +46,18 @@ def train_validate_test_split(df, train_percent=.6, validate_percent=.2, seed=No
     train = df.iloc[perm[:train_end]]
     validate = df.iloc[perm[train_end:validate_end]]
     test = df.iloc[perm[validate_end:]]
+    # ----------------------------------------------------
+    # Count the classes to see if the hypothesis of classes is balanced
+    lion_count, eagle_count, cross_count = count_classes(train['caption'])
+    print(f'Train: lion_count:{lion_count}, eagle_count:{eagle_count}, cross_count:{cross_count}')
+
+    lion_count, eagle_count, cross_count = count_classes(validate['caption'])
+    print(f'Validation: lion_count:{lion_count}, eagle_count:{eagle_count}, cross_count:{cross_count}')
+
+    lion_count, eagle_count, cross_count = count_classes(test['caption'])
+    print(f'Test: lion_count:{lion_count}, eagle_count:{eagle_count}, cross_count:{cross_count}')
+    # ----------------------------------------------------
+
     return train, validate, test
 
 
