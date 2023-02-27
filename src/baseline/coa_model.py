@@ -187,9 +187,9 @@ def train_model(model, optimizer, criterion,
     # to track the accuracy as the model trains
     accuracy_list = []
     avg_acc = []
-    avg_acc_charge_only = []
-    avg_acc_charge_color = []
-    avg_acc_shield_only = []
+    avg_acc_ls_charge_only = []
+    avg_acc_ls_charge_color = []
+    avg_acc_ls_shield_only = []
 
     # number of batchs is needed to calclualte the validation interval
     num_of_batches = len(train_loader)
@@ -330,9 +330,9 @@ def train_model(model, optimizer, criterion,
         avg_valid_losses.append(avg_valid_loss_epoch)
         avg_acc.append(val_accuracy)
         
-        avg_acc_charge_only.append(avg_acc_charge_only)
-        avg_acc_charge_color.append(avg_acc_charge_color)
-        avg_acc_shield_only.append(avg_acc_shield_only)
+        avg_acc_ls_charge_only.append(avg_acc_charge_only)
+        avg_acc_ls_charge_color.append(avg_acc_charge_color)
+        avg_acc_ls_shield_only.append(avg_acc_shield_only)
 
         # early_stopping needs the validation loss to check if it has decresed,
         # and if it has, it will make a checkpoint of the current model
@@ -349,7 +349,7 @@ def train_model(model, optimizer, criterion,
     model, _, _ = load_model_checkpoint(
         checkpoint_file, model, optimizer, device)
 
-    return model, avg_train_losses, avg_valid_losses, avg_acc, bleu_score, avg_acc_charge_only, avg_acc_charge_color,avg_acc_shield_only
+    return model, avg_train_losses, avg_valid_losses, avg_acc, bleu_score, avg_acc_ls_charge_only, avg_acc_ls_charge_color,avg_acc_ls_shield_only
 
 # ---------- model save/load function ------------ #
 
