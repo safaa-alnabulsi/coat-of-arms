@@ -1,7 +1,7 @@
 from itertools import permutations
 from src.caption import Caption
 
-WEIGHT_MAP = {'shield_color': 1, 'shield_mod': 1, 'charge_color': 1, 'charge': 1, 'modifier': 1}
+WEIGHT_MAP = {'shield_color': 1, 'shield_mod': 0, 'charge_color': 1, 'charge': 1, 'modifier': 1}
 
 WEIGHT_MAP_OLD = {'shield_color': 10, 'charge_color': 10, 'charge': 60, 'modifier': 20}
 
@@ -9,7 +9,7 @@ WEIGHT_MAP_ONLY_CHARGE = {'shield_color': 0, 'shield_mod': 0, 'charge_color': 0,
 
 WEIGHT_MAP_ONLY_CHARGE_COLOR = {'shield_color': 0, 'shield_mod': 0, 'charge_color': 1, 'charge': 0, 'modifier': 0}
 
-WEIGHT_MAP_ONLY_SHIELD_COLOR = {'shield_color': 1, 'shield_mod': 1, 'charge_color': 0, 'charge': 0, 'modifier': 0}
+WEIGHT_MAP_ONLY_SHIELD_COLOR = {'shield_color': 1, 'shield_mod': 0, 'charge_color': 0, 'charge': 0, 'modifier': 0}
 
 # Notes:
 # acc = number of True answers / number of samples
@@ -34,37 +34,35 @@ class Accuracy:
         if self.weights_map == WEIGHT_MAP_ONLY_SHIELD_COLOR:
             return shield_score
             
-        charge_score = self.get_charges_acc()
+        charge_score, charge_color_score = self.get_charges_acc()
         if self.weights_map == WEIGHT_MAP_ONLY_CHARGE or self.weights_map == WEIGHT_MAP_ONLY_CHARGE_COLOR:
             return charge_score
     
-        
-        return (charge_score + shield_score) / 2
+        # we devivde here by 3 and not 4, as we condier the charge and its modiferes one single entity 
+        return round((charge_score + charge_color_score + shield_score) / 3 , 2) 
 
     def get_charges_acc(self):
         # The task is to find compinations which bring us the maximum total accuracy 
         
         total_acc=[]
-        
+       
         all_obj_acc = []
-        
+        all_obj_color_acc = []
+     
         for obj1 in self.correct['objects']:
             
             ch1    = obj1['charge']
             color1 = obj1['color']
             mods1  = obj1['modifiers']
             
-            # total = number of modifiers + obj's color + obj's charge + 
-            total = len(mods1) + 2
-            
+            # default value is when having WEIGHT_MAP
             # we drop the color of the charge here, we don't care about it
-            if self.weights_map == WEIGHT_MAP_ONLY_CHARGE:
-                total =  len(mods1) + 1
-            # we drop the number of modifier here and the charge itself
-            elif self.weights_map == WEIGHT_MAP_ONLY_CHARGE_COLOR:
-                total = 1
-
+            # this means that we start from correct caption and we only care about correct modifiers 
+            # which mean we don't penalize predicting extra modifier  
+            total = len(mods1) + 1
+           
             obj_acc=[]
+            obj_color_acc=[]
 
             for obj2 in self.predicted['objects']:
                 hits_ch_colors=0
@@ -89,14 +87,20 @@ class Accuracy:
                             hits_mod+= 1
                             break
 
-                hits = hits_ch_colors * self.weights_map['charge_color'] + \
-                      hits_charge * self.weights_map['charge'] + \
+                charge_hits = hits_charge * self.weights_map['charge'] + \
                       hits_mod * self.weights_map['modifier']
                 
-                obj_acc.append(round(hits / total, 2))
+                charge_color_hits = hits_ch_colors * self.weights_map['charge_color']
+                   
+                
+                obj_acc.append(round(charge_hits / total, 2))
+                obj_color_acc.append(round(charge_color_hits, 2))
 
             if len(obj_acc) > 0:
                 all_obj_acc.append(obj_acc)
+                
+            if len(obj_color_acc) > 0:
+                all_obj_color_acc.append(obj_color_acc)
                 
         # min, avg, max accuracy for each object in correct against all predicted
         
@@ -106,11 +110,14 @@ class Accuracy:
         if len(all_obj_acc) == 0:
             return 0.0
         
-        _, avg_acc = self.get_max_accuracy(all_obj_acc)
+        _, avg_charge_acc = self.get_max_accuracy(all_obj_acc)
+        _, avg_charge_color_acc = self.get_max_accuracy(all_obj_color_acc)
 
-        return avg_acc
+        return avg_charge_acc, avg_charge_color_acc
                 
 
+    # the new real dataset doesn't have shield modifier "border" 
+    # Hence, I'm commenting out the modifier calculation
     def get_shield_acc(self):
         hits_sh_colors=0
         hits_mod=0
@@ -119,14 +126,14 @@ class Accuracy:
         
         try:
             color1 = self.correct['shield']['color']
-            mods1  = self.correct['shield']['modifiers']
+#             mods1  = self.correct['shield']['modifiers']
         except KeyError as err:
             print(f"KeyError - Unexpected {err=}, {type(err)=} in correct label: {self.predicted=}")
             raise err
             
         try:
             color2 = self.predicted['shield']['color']
-            mods2  = self.predicted['shield']['modifiers']
+#             mods2  = self.predicted['shield']['modifiers']
         except KeyError as err:
             print(f"KeyError - Unexpected {err=}, {type(err)=} in predicted label: {self.correct=}")
             raise err
@@ -135,15 +142,14 @@ class Accuracy:
         if color1.lower() == color2.lower():
             hits_sh_colors+= 1
 
-        for cm in mods1:
-            total+=1
-            for pm in mods2:
-                if cm == pm:
-                    hits_mod+= 1
-                    break
+#         for cm in mods1:
+#             total+=1
+#             for pm in mods2:
+#                 if cm == pm:
+#                     hits_mod+= 1
+#                     break
         
-        hits = hits_sh_colors * self.weights_map['shield_color'] + \
-              hits_mod * self.weights_map['shield_mod']
+        hits = hits_sh_colors * self.weights_map['shield_color'] #+ hits_mod * self.weights_map['shield_mod']
               
         
         # we drop the number of modifier here and the charge itself

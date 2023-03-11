@@ -4,16 +4,16 @@ from src.accuracy import Accuracy
 
 pairs_pred_truth = [
     # predicted, truth, shield accuracy, charge accuracy, total accuracy
-    ['b a lion passt guard', 'b a lion passt guard', 1, 1, 1], # Both shield & chrage hit
-    ['b a lion passt guard', 'b a lion passt guard & border', 0.5, 1, 0.75], # Both half shield & chrage hit
-    ['b a eagle', 'b a lion passt guard', 1, 0.33, 0.665],          # shield hits, chrage misses
-    ['A O lion rampant', 'A G lion rampant', 1, 0.67, 0.835],  # shield hits, charge hit except its color
-    ['A O lion rampant', 'A O lion', 1, 1, 1],                  # shield hits, charge hit with extra attribute in prediction
-    ['A O lion', 'A O lion rampant', 1, 0.67, 0.835],         # shield hits, charge hit except its modifier
-    ['b a a lion lion', 'b a lion passt guard', 1, 0.67, 0.835],  # multi object ===> two predicted for one
-    ['b a lion', 'b a a lion lion', 1, 0.5, 0.75],               # multi object ===> one predicted for two
-    ['o b eagle', 'B O lion rampant', 0, 0, 0],    
-    ['a g lion rampant', 'O G eagle', 0, 0.5, 0.25],    
+    ['b a lion passt guard', 'b a lion passt guard', 1, (1, 1), 1], # Both shield & chrage hit
+    ['b a lion passt guard', 'b a lion passt guard & border', 1, (1, 1), 1], # Both half shield & chrage hit
+    ['b a eagle', 'b a lion passt guard', 1, (0, 1), 0.67],          # shield hits, chrage misses
+    ['A O lion rampant', 'A G lion rampant', 1, (1, 0), 0.67],  # shield hits, charge hit except its color
+    ['A O lion rampant', 'A O lion', 1, (1, 1), 1],                  # shield hits, charge hit with extra attribute in prediction
+    ['A O lion', 'A O lion rampant', 1, (0.5, 1), 0.83],         # shield hits, charge hit except its modifier
+    ['b a a lion lion', 'b a lion passt guard', 1, (0.5, 1), 0.83],  # multi object ===> two predicted for one 
+    ['b a lion', 'b a a lion lion', 1, (0.5, 0.5), 0.67],               # multi object ===> one predicted for two
+    ['o b eagle', 'B O lion rampant', 0, (0, 0), 0],    
+    ['a g lion rampant', 'O G eagle', 0, (0, 1), 0.33],    
 ]
 
 max_accuracy = [
