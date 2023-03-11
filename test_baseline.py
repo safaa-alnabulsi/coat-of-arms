@@ -132,8 +132,19 @@ if __name__ == "__main__":
     vocab.itos = {0: '<PAD>', 1: '<SOS>', 2: '<EOS>', 3: '<UNK>', 4: 'lion', 5: 'rampant', 6: 'passt', 7: 'guard', 8: 'head', 9: 'lions', 10: 'cross', 11: 'moline', 12: 'patonce', 13: 'eagle', 14: 'doubleheaded', 15: 'eagles', 16: 'a', 17: 'b', 18: 'o', 19: 's', 20: 'g', 21: 'e', 22: 'v', 23: '1', 24: '2', 25: '3', 26: '4', 27: '5', 28: '6', 29: '7', 30: '8', 31: '9', 32: '10', 33: '11', 34: 'border', 35: '&'}
     
     # ------------------------------------------ Get mean & std ---------------------------------------
-    mean, std = get_training_mean_std(run_path)
+#     mean, std = get_training_mean_std(run_path)
 
+
+    # ----------------------------------------- expermintal mean/std --------------------------------------------------
+
+    # Calculated those values from '/home/space/datasets/COA/generated-data-api-single/res_images' dataset  
+    # Reason is to normlaize real images to match colors of synthtic data
+    # expermintal 
+    mean,std = (torch.tensor(0.5654), torch.tensor(0.2895))
+    print_time(f'Using already calculated mean and std in generated-data-api-single dataset, the mean={mean} and std={mean}')
+    # ----------------------------------------- expermintal mean/std --------------------------------------------------
+
+    
     # ---------------------------------------- Loaders ------------------------------------------------
     
     test_loader, test_dataset = init_testing_model(test_caption_file, 

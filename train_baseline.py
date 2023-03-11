@@ -218,39 +218,50 @@ if __name__ == "__main__":
     profiler.print()
 
     # ------------------------------------------ Calc mean -------------------------------------------------------------
-    profiler = Profiler(async_mode='disabled')
-    profiler.start()
+#     profiler = Profiler(async_mode='disabled')
+#     profiler.start()
 
-    print_time('\n ------------------------ \n calling get_mean')
+#     print_time('\n ------------------------ \n calling get_mean')
+    
+#     # 500 x 500 is the size of syntetic data before resize, 100x100 is after resize
+#     mean = get_mean(train_dataset, train_loader, 100 , 100)
 
-    mean = get_mean(train_dataset, train_loader, 500 , 500)
+#     mean_file = f'{model_folder}/mean.txt'
+#     with open(mean_file, 'w') as file:
+#         file.write(str(float(mean)))
 
-    mean_file = f'{model_folder}/mean.txt'
-    with open(mean_file, 'w') as file:
-        file.write(str(float(mean)))
+#     print_time(f'finished calculating the mean: {mean} and saved it to file: {mean_file}')
 
-    print_time(f'finished calculating the mean: {mean} and saved it to file: {mean_file}')
-
-    profiler.stop()
-    profiler.print()
+#     profiler.stop()
+#     profiler.print()
 
     # ----------------------------------------- Calc std --------------------------------------------------
-    profiler = Profiler(async_mode='disabled')
-    profiler.start()
+#     profiler = Profiler(async_mode='disabled')
+#     profiler.start()
 
-    print_time('\n ------------------------ \n calling get_std')
+#     print_time('\n ------------------------ \n calling get_std')
 
-    std = get_std(train_dataset, train_loader, mean)
+#     std = get_std(train_dataset, train_loader, mean,100,100)
 
-    std_file = f'{model_folder}/std.txt'
-    with open(std_file, 'w') as file:
-        file.write(str(float(std)))
+#     std_file = f'{model_folder}/std.txt'
+#     with open(std_file, 'w') as file:
+#         file.write(str(float(std)))
 
-    print_time(f'finished calculating the std: {std} and saved it to file: {std_file}')
+#     print_time(f'finished calculating the std: {std} and saved it to file: {std_file}')
 
-    profiler.stop()
-    profiler.print()
+#     profiler.stop()
+#     profiler.print()
 
+    # ----------------------------------------- expermintal mean/std --------------------------------------------------
+
+    # Calculated those values from '/home/space/datasets/COA/generated-data-api-single/res_images' dataset  
+    # Reason is to normlaize real images to match colors of synthtic data
+    # expermintal 
+    mean,std = (torch.tensor(0.5654), torch.tensor(0.2895))
+    print_time(f'Using already calculated mean and std in generated-data-api-single dataset, the mean={mean} and std={mean}')
+    # ----------------------------------------- expermintal mean/std --------------------------------------------------
+
+    
     # ---------------------------------------- Loaders ---------------------------------------------------------------
     torch.cuda.empty_cache()
 
