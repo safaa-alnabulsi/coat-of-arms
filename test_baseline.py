@@ -134,14 +134,18 @@ if __name__ == "__main__":
     # ------------------------------------------ Get mean & std ---------------------------------------
 #     mean, std = get_training_mean_std(run_path)
 
+#     print_time(f'Using calculated mean and std from real dataset, the mean={mean} and std={mean}')
 
     # ----------------------------------------- expermintal mean/std --------------------------------------------------
 
     # Calculated those values from '/home/space/datasets/COA/generated-data-api-single/res_images' dataset  
     # Reason is to normlaize real images to match colors of synthtic data
     # expermintal 
-    mean,std = (torch.tensor(0.5654), torch.tensor(0.2895))
-    print_time(f'Using already calculated mean and std in generated-data-api-single dataset, the mean={mean} and std={mean}')
+#     mean,std = (torch.tensor(0.5654), torch.tensor(0.2895))
+     # /home/space/datasets/COA/generated-single-simple
+    mean,std = (torch.tensor(0.2900), torch.tensor(0.3396))
+
+    print_time(f'Using already calculated mean and std in generated-single-simple dataset, the mean={mean} and std={mean}')
     # ----------------------------------------- expermintal mean/std --------------------------------------------------
 
     

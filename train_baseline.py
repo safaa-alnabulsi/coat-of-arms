@@ -235,7 +235,7 @@ if __name__ == "__main__":
 #     profiler.stop()
 #     profiler.print()
 
-    # ----------------------------------------- Calc std --------------------------------------------------
+    #----------------------------------------- Calc std --------------------------------------------------
 #     profiler = Profiler(async_mode='disabled')
 #     profiler.start()
 
@@ -257,7 +257,11 @@ if __name__ == "__main__":
     # Calculated those values from '/home/space/datasets/COA/generated-data-api-single/res_images' dataset  
     # Reason is to normlaize real images to match colors of synthtic data
     # expermintal 
-    mean,std = (torch.tensor(0.5654), torch.tensor(0.2895))
+#     mean,std = (torch.tensor(0.5654), torch.tensor(0.2895))
+    
+    # /home/space/datasets/COA/generated-single-simple
+    mean,std = (torch.tensor(0.2900), torch.tensor(0.3396))
+
     print_time(f'Using already calculated mean and std in generated-data-api-single dataset, the mean={mean} and std={mean}')
     # ----------------------------------------- expermintal mean/std --------------------------------------------------
 
