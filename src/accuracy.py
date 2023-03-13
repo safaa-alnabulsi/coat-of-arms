@@ -3,7 +3,7 @@ from src.caption import Caption
 
 WEIGHT_MAP = {'shield_color': 1, 'shield_mod': 0, 'charge_color': 1, 'charge': 1, 'modifier': 1}
 
-WEIGHT_MAP_OLD = {'shield_color': 10, 'charge_color': 10, 'charge': 60, 'modifier': 20}
+# WEIGHT_MAP_OLD = {'shield_color': 10, 'charge_color': 10, 'charge': 60, 'modifier': 20}
 
 WEIGHT_MAP_ONLY_CHARGE = {'shield_color': 0, 'shield_mod': 0, 'charge_color': 0, 'charge': 1, 'modifier': 1}
 
@@ -30,16 +30,74 @@ class Accuracy:
         self.total_mods = 9 # counted from armoria_api.py ### maybe fix each ch with mod ==> count them together in next iteration
     
     def get(self):
+
         shield_score = self.get_shield_acc()
         if self.weights_map == WEIGHT_MAP_ONLY_SHIELD_COLOR:
             return shield_score
             
-        charge_score, charge_color_score = self.get_charges_acc()
-        if self.weights_map == WEIGHT_MAP_ONLY_CHARGE or self.weights_map == WEIGHT_MAP_ONLY_CHARGE_COLOR:
+#         charge_score, charge_color_score = self.get_charges_acc()
+        charge_score, charge_color_score = self.get_single_charges_acc()
+
+        if self.weights_map == WEIGHT_MAP_ONLY_CHARGE:
             return charge_score
-    
+
+        if self.weights_map == WEIGHT_MAP_ONLY_CHARGE_COLOR:
+            return charge_color_score
+
         # we devivde here by 3 and not 4, as we condier the charge and its modiferes one single entity 
         return round((charge_score + charge_color_score + shield_score) / 3 , 2) 
+
+    # we conisder having one object in each caption
+    def get_single_charges_acc(self):  
+        
+        
+        hits_ch_colors=0
+        hits_charge=0
+        hits_mod=0
+
+        
+        obj1 = self.correct['objects'][0]
+        ch1    = obj1['charge']
+        color1 = obj1['color']
+        mods1  = obj1['modifiers']
+        
+        # default value is when having WEIGHT_MAP
+        # we drop the color of the charge here, we don't care about it
+        # this means that we start from correct caption and we only care about correct modifiers 
+        # which mean we don't penalize predicting extra modifier  
+        total = len(mods1) + 1
+
+        if len(self.predicted['objects']) == 0:
+            return 0,0
+        
+        obj2 = self.predicted['objects'][0]
+
+        ch2    = obj2['charge']
+        color2 = obj2['color']
+        mods2  = obj2['modifiers']
+
+
+        if color1.lower() == color2.lower():
+            hits_ch_colors+= 1
+
+        if ch1 == ch2:
+            hits_charge+= 1
+
+        for cm in mods1:
+            for pm in mods2:
+                if cm == pm:
+                    hits_mod+= 1
+                    break
+
+        charge_hits = hits_charge * self.weights_map['charge'] + hits_mod * self.weights_map['modifier']
+
+        charge_color_hits = hits_ch_colors * self.weights_map['charge_color']
+
+        avg_charge_acc = round(charge_hits / total, 2)
+        avg_charge_color_acc = round(charge_color_hits, 2)
+       
+
+        return avg_charge_acc, avg_charge_color_acc
 
     def get_charges_acc(self):
         # The task is to find compinations which bring us the maximum total accuracy 
@@ -107,13 +165,14 @@ class Accuracy:
 #         print('predicted_cap: ', self.predicted)
 #         print('correct_cap: ', self.correct)
         
-        if len(all_obj_acc) == 0:
-            return 0.0
         
-        _, avg_charge_acc = self.get_max_accuracy(all_obj_acc)
-        _, avg_charge_color_acc = self.get_max_accuracy(all_obj_color_acc)
+        if len(all_obj_acc) != 0 and len(all_obj_color_acc)!=0:
+            _, avg_charge_acc = self.get_max_accuracy(all_obj_acc)
+            _, avg_charge_color_acc = self.get_max_accuracy(all_obj_color_acc)
 
-        return avg_charge_acc, avg_charge_color_acc
+            return avg_charge_acc, avg_charge_color_acc
+
+        return 0.0, 0.0
                 
 
     # the new real dataset doesn't have shield modifier "border" 
@@ -169,10 +228,10 @@ class Accuracy:
         # get the maximum sum and the indexs 
         max_index, max_acc = self.get_max_accuracy_item(all_values)
 
-#         print('comblist', comblist)
-#         print('all_values', all_values)
-#         print('max_index', max_index)
-#         print('max_acc', max_acc)
+        print('comblist', comblist)
+        print('all_values', all_values)
+        print('max_index', max_index)
+        print('max_acc', max_acc)
 
         return max_index, max_acc
             
