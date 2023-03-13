@@ -122,7 +122,12 @@ class ArmoriaAPIGeneratorHelper:
                     continue
                     
                 try:
-                    image_full_path = root_folder + '/resized/' + image_name
+                    # for synthetic or real original dataset
+#                     image_full_path = root_folder + '/images/' + image_name
+                    # for synthetic resized dataset
+                    image_full_path = root_folder + '/res_images/' + image_name
+                      # for real dataset
+#                     image_full_path = root_folder + '/resized/' + image_name
                     psum, psum_sq = self._calc_img_pixels(image_full_path)
                 except FileNotFoundError as e:
                     print(f'FileNotFoundError: "{image_full_path}"')
