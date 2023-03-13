@@ -16,7 +16,7 @@ POSITIONS, SIZES, NUMBERS, NUMBERS_MULTI, SINGLE_POSITION
 
 if __name__ == "__main__":
     print('starting the script')
-    BORDER_MOD = ['& border', '']
+#     BORDER_MOD = ['& border', '']
     parser = argparse.ArgumentParser(description='A script for generating armoria dataset')
     parser.add_argument('--index', dest='index', type=int, help='Start index', default=1)
 
@@ -26,13 +26,13 @@ if __name__ == "__main__":
 
     ## Single object
     # lion, modifiers and colors
-    permutations1 = list(dict.fromkeys(itertools.product(list(COLORS_MAP.keys()), list(COLORS_MAP.keys()), list( SINGLE_LION_MODIFIERS_MAP.keys()),BORDER_MOD)))
+    permutations1 = list(dict.fromkeys(itertools.product(list(COLORS_MAP.keys()), list(COLORS_MAP.keys()), list( SINGLE_LION_MODIFIERS_MAP.keys()))))
 
     # cross, modifiers and colors
-    permutations2 = list(dict.fromkeys(itertools.product(list(COLORS_MAP.keys()), list(COLORS_MAP.keys()), list( SINGLE_CROSS_MODIFIERS_MAP.keys()),BORDER_MOD)))
+    permutations2 = list(dict.fromkeys(itertools.product(list(COLORS_MAP.keys()), list(COLORS_MAP.keys()), list( SINGLE_CROSS_MODIFIERS_MAP.keys()))))
 
     # eagle, modifiers and colors
-    permutations3 = list(dict.fromkeys(itertools.product(list(COLORS_MAP.keys()), list(COLORS_MAP.keys()), list( SINGLE_EAGLE_MODIFIERS_MAP.keys()),BORDER_MOD)))
+    permutations3 = list(dict.fromkeys(itertools.product(list(COLORS_MAP.keys()), list(COLORS_MAP.keys()), list( SINGLE_EAGLE_MODIFIERS_MAP.keys()))))
 
     possible_single_permutations = permutations1 + permutations2 + permutations3
 
@@ -41,17 +41,17 @@ if __name__ == "__main__":
     ## Plural Object with Number
 
     # lion, modifiers and colors
-    permutations1 = list(dict.fromkeys(itertools.product(list(COLORS_MAP.keys()), list(COLORS_MAP.keys()), list(NUMBERS), list( PLURAL_LION_MODIFIERS_MAP.keys()),BORDER_MOD)))
+#     permutations1 = list(dict.fromkeys(itertools.product(list(COLORS_MAP.keys()), list(COLORS_MAP.keys()), list(NUMBERS), list( PLURAL_LION_MODIFIERS_MAP.keys()),BORDER_MOD)))
 
-    # eagle, modifiers and colors
-    permutations2 = list(dict.fromkeys(itertools.product(list(COLORS_MAP.keys()), list(COLORS_MAP.keys()), list(NUMBERS), list( PLURAL_EAGLE_MODIFIERS_MAP.keys()),BORDER_MOD)))
+#     # eagle, modifiers and colors
+#     permutations2 = list(dict.fromkeys(itertools.product(list(COLORS_MAP.keys()), list(COLORS_MAP.keys()), list(NUMBERS), list( PLURAL_EAGLE_MODIFIERS_MAP.keys()),BORDER_MOD)))
 
-    # cross, modifiers and colors
-    permutations3 = list(dict.fromkeys(itertools.product(list(COLORS_MAP.keys()), list(COLORS_MAP.keys()), list(NUMBERS), list( PLURAL_CROSS_MODIFIERS_MAP.keys()),BORDER_MOD)))
+#     # cross, modifiers and colors
+#     permutations3 = list(dict.fromkeys(itertools.product(list(COLORS_MAP.keys()), list(COLORS_MAP.keys()), list(NUMBERS), list( PLURAL_CROSS_MODIFIERS_MAP.keys()),BORDER_MOD)))
 
-    possible_pl_permutations = permutations1 + permutations2 + permutations3
+#     possible_pl_permutations = permutations1 + permutations2 + permutations3
 
-    print('Total number of plural permutations:', len(possible_pl_permutations))
+#     print('Total number of plural permutations:', len(possible_pl_permutations))
 
     ## Multi Objects - single
 
@@ -91,10 +91,11 @@ if __name__ == "__main__":
 
 #     print('Total number of plural permutations:', len(possible_multi_plural_permutations))
 
-    total_possible_permutations = possible_single_permutations + possible_pl_permutations # + \
+    total_possible_permutations = possible_single_permutations #+ possible_pl_permutations # + \
 #                                 possible_multi_single_permutations  + possible_multi_plural_permutations
 
-    FOLDER_NAME = '/home/space/datasets/COA/generated-data-api-single-and-plural-full'
+#     FOLDER_NAME = '/home/space/datasets/COA/generated-data-api-single-and-plural-full'
+    FOLDER_NAME = '/home/space/datasets/COA/generated-single-simple'
     # FOLDER_NAME = '../generated'
     caption_file = FOLDER_NAME + '/' + 'captions.txt'
     api_gen_helper = ArmoriaAPIGeneratorHelper(caption_file, FOLDER_NAME, total_possible_permutations, start_index)   

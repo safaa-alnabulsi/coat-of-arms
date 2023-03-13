@@ -14,5 +14,5 @@ export CUDA_LAUNCH_BLOCKING=1
 
 start_index=$1
 
-echo 
+echo "starting script of generate-baseline-large.sh"
 source /home/salnabulsi/.thesis-py38/bin/activate && python generate-baseline-large.py --index=${start_index}  > output-gen.txt
