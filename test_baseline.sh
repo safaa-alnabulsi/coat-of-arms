@@ -22,4 +22,4 @@ resized=$7
 caption_file=$8
 accuracy=$9
 
-source /home/salnabulsi/.thesis-py38/bin/activate && python test_baseline.py --dataset ${dataset} --run-name ${run_name} --model-name ${model_name} --batch-size ${batch_size} --local ${local} --real-data ${real_data} --resized-images ${resized} --caption-file ${caption_file}  --accuracy ${accuracy}  --seed ${10}
+source /home/salnabulsi/.thesis-py38/bin/activate && python test_baseline.py --dataset ${dataset} --run-name ${run_name} --model-name ${model_name} --batch-size ${batch_size} --local ${local} --real-data ${real_data} --resized-images ${resized} --caption-file ${caption_file}  --accuracy ${accuracy}  --seed ${10} --height ${11}
