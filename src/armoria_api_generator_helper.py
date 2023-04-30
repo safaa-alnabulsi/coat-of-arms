@@ -109,25 +109,26 @@ class ArmoriaAPIGeneratorHelper:
 
         return psum, psum_sq
 
-    def add_pixels_column(self, root_folder, new_caption_file,old_caption_file, start_index=1):
+    def add_pixels_column(self, root_folder, new_caption_file,old_caption_file, start_index=0, images_folder='images'):
         with open(old_caption_file, 'r') as f:
             garbage=[next(f) for i in range(0,start_index+1)]  
             for line in f:
-                if 'image,caption' in line:
+                if 'image,caption,psum,psum_sq' in line:
                     continue
                 try:
-                    image_name, text_label = line.strip().split(',')
+                    image_name, text_label,_,_ = line.strip().split(',')
                 except ValueError as e:
                     print(f'Invalid label: "{line}" is skipped')
                     continue
                     
                 try:
+                    # for real dataset
+#                    image_full_path = root_folder + '/resized/' + image_name
                     # for synthetic or real original dataset
 #                     image_full_path = root_folder + '/images/' + image_name
                     # for synthetic resized dataset
-                    image_full_path = root_folder + '/res_images/' + image_name
-                      # for real dataset
-#                     image_full_path = root_folder + '/resized/' + image_name
+#                   image_full_path = root_folder + '/res_images/' + image_name
+                    image_full_path = root_folder + '/' + images_folder + '/' + image_name
                     psum, psum_sq = self._calc_img_pixels(image_full_path)
                 except FileNotFoundError as e:
                     print(f'FileNotFoundError: "{image_full_path}"')
