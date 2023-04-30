@@ -21,7 +21,7 @@ from tqdm import tqdm
 from time import sleep
 from src.baseline.noise import Noise
 from src.baseline.vocabulary import Vocabulary
-from src.baseline.data_loader import get_loader, get_loaders, get_mean, get_std
+from src.baseline.data_loader import get_loader, get_mean, get_std
 from src.accuracy import WEIGHT_MAP, WEIGHT_MAP_ONLY_SHIELD_COLOR, WEIGHT_MAP_ONLY_CHARGE, WEIGHT_MAP_ONLY_CHARGE_COLOR
 from src.baseline.coa_model import save_model, get_new_model, train_model, train_validate_test_split, load_model_checkpoint, load_model
 import torch.multiprocessing as mp
@@ -50,6 +50,7 @@ if __name__ == "__main__":
     parser.add_argument('--caption-file', dest='caption_file', type=str, help='caption file for train images', default='captions-psumsq.txt')
     parser.add_argument('--real-data', dest='real_data', type=str, help='training on cropped real dataset?', default='no', choices=['yes','Yes','y','Y','no','No','n', 'N'])
     parser.add_argument('--baseline-model', dest='baseline_model', type=str, help='baseline_model file name', default='')
+    parser.add_argument('--height', dest='height', type=str, help='heightXwidth', default=100)
 
     args = parser.parse_args()
 
@@ -79,12 +80,14 @@ if __name__ == "__main__":
     caption_file = args.caption_file
     real_data = args.real_data
     baseline_model = args.baseline_model
+    height = width = height_synth = int(args.height)
     
-    if resplit in ['yes','Yes','y','Y'] :
-        resplit = True
-    else: 
-        resplit = False
-        
+    # stop the resplit 
+#     if resplit in ['yes','Yes','y','Y'] :
+#         resplit = True
+#     else: 
+#         resplit = False
+    resplit = False        
     if local in ['yes','Yes','y','Y'] :
         local = True
     else: 
@@ -99,6 +102,18 @@ if __name__ == "__main__":
         real_data = True
     else: 
         real_data = False
+
+    if real_data==True and resized_images==True:
+        height = 634
+        width = 621
+#         height = 100
+#         width = 100
+    elif real_data==False and resized_images==True:
+            height = height
+            width = width
+    elif real_data==False and resized_images==False:
+            height = 500
+            width = 500
 
     if continue_from_checkpoint in ['yes','Yes','y','Y'] :
         continue_from_checkpoint = True
@@ -140,6 +155,7 @@ if __name__ == "__main__":
     print('num_epochs is ',num_epochs)
     print('resplit is ',resplit)
     print(f'accuracy is {accuracy} and the weights_map is {weights_map}')
+    print(f'height: {height}, width: {width}')
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print('device is ',device)
@@ -152,18 +168,30 @@ if __name__ == "__main__":
     print('Training caption file path: ', train_caption_file)    
 
     if real_data:
-        root_folder_images = data_location + '/resized'
+#         root_folder_images = data_location + '/resized-images-100x100'
+        root_folder_images = data_location + '/resized-images'
     else:
         if resized_images:
-            root_folder_images = data_location + '/res_images'            
+            root_folder_images = data_location + f'/res_images{height}x{width}'            
         else:
             root_folder_images = data_location + '/images'
+    
+    print('images folder: ', root_folder_images)
 
     df = pd.read_csv(train_caption_file)
 
-    train_annotation_file = data_location + '/train_captions_psumsq.txt'
-    val_annotation_file  = data_location + '/val_captions_psumsq.txt'
-    test_annotation_file  = data_location + '/test_captions_psumsq.txt'
+#     train_annotation_file = data_location + '/resized-txt-files-100x100/train_captions_psumsq.txt'
+#     val_annotation_file  = data_location + '/resized-txt-files-100x100/val_captions_psumsq.txt'
+#     test_annotation_file  = data_location + '/resized-txt-files-100x100/test_captions_psumsq.txt'
+
+#     train_annotation_file = data_location + '/train_captions_psumsq.txt'
+#     val_annotation_file  = data_location + '/val_captions_psumsq.txt'
+#     test_annotation_file  = data_location + '/test_captions_psumsq.txt'
+
+
+    train_annotation_file = data_location + f'/train_captions_psumsq.txt{height}x{width}'
+    val_annotation_file  = data_location + f'/val_captions_psumsq.txt{height}x{width}'
+    test_annotation_file  = data_location + f'/test_captions_psumsq.txt{height}x{width}'
 
     
 #     train_annotation_file = data_location + '/train_captions_psumsq_lions.txt'
@@ -195,9 +223,13 @@ if __name__ == "__main__":
     
     # 30 minutes to create those, as it's baseline, i ran it several times and it's the same
     vocab = Vocabulary(freq_threshold)
-    vocab.stoi = {'<PAD>': 0, '<SOS>': 1, '<EOS>': 2, '<UNK>': 3, 'lion': 4, 'rampant': 5, 'passt': 6, 'guard': 7, 'head': 8, 'lions': 9, 'cross': 10, 'moline': 11, 'patonce': 12, 'eagle': 13, 'doubleheaded': 14, 'eagles': 15, 'a': 16, 'b': 17, 'o': 18, 's': 19, 'g': 20, 'e': 21, 'v': 22, '1': 23, '2': 24, '3': 25, '4': 26, '5': 27, '6': 28, '7': 29, '8': 30, '9': 31, '10': 32, '11': 33, 'border': 34, '&': 35}
-    vocab.itos = {0: '<PAD>', 1: '<SOS>', 2: '<EOS>', 3: '<UNK>', 4: 'lion', 5: 'rampant', 6: 'passt', 7: 'guard', 8: 'head', 9: 'lions', 10: 'cross', 11: 'moline', 12: 'patonce', 13: 'eagle', 14: 'doubleheaded', 15: 'eagles', 16: 'a', 17: 'b', 18: 'o', 19: 's', 20: 'g', 21: 'e', 22: 'v', 23: '1', 24: '2', 25: '3', 26: '4', 27: '5', 28: '6', 29: '7', 30: '8', 31: '9', 32: '10', 33: '11', 34: 'border', 35: '&'}
-    
+#     vocab.stoi = {'<PAD>': 0, '<SOS>': 1, '<EOS>': 2, '<UNK>': 3, 'lion': 4, 'rampant': 5, 'passt': 6, 'guard': 7, 'head': 8, 'lions': 9, 'cross': 10, 'moline': 11, 'patonce': 12, 'eagle': 13, 'doubleheaded': 14, 'eagles': 15, 'a': 16, 'b': 17, 'o': 18, 's': 19, 'g': 20, 'e': 21, 'v': 22, '1': 23, '2': 24, '3': 25, '4': 26, '5': 27, '6': 28, '7': 29, '8': 30, '9': 31, '10': 32, '11': 33, 'border': 34, '&': 35}
+#     vocab.itos = {0: '<PAD>', 1: '<SOS>', 2: '<EOS>', 3: '<UNK>', 4: 'lion', 5: 'rampant', 6: 'passt', 7: 'guard', 8: 'head', 9: 'lions', 10: 'cross', 11: 'moline', 12: 'patonce', 13: 'eagle', 14: 'doubleheaded', 15: 'eagles', 16: 'a', 17: 'b', 18: 'o', 19: 's', 20: 'g', 21: 'e', 22: 'v', 23: '1', 24: '2', 25: '3', 26: '4', 27: '5', 28: '6', 29: '7', 30: '8', 31: '9', 32: '10', 33: '11', 34: 'border', 35: '&'}
+
+    # after removing border
+    vocab.stoi = {'<PAD>': 0, '<SOS>': 1, '<EOS>': 2, '<UNK>': 3, 'lion': 4, 'rampant': 5, 'passt': 6, 'guard': 7, 'head': 8, 'lions': 9, 'cross': 10, 'moline': 11, 'patonce': 12, 'eagle': 13, 'doubleheaded': 14, 'eagles': 15, 'a': 16, 'b': 17, 'o': 18, 's': 19, 'g': 20, 'e': 21, 'v': 22, '1': 23, '2': 24, '3': 25, '4': 26, '5': 27, '6': 28, '7': 29, '8': 30, '9': 31, '10': 32, '11': 33}
+    vocab.itos = {0: '<PAD>', 1: '<SOS>', 2: '<EOS>', 3: '<UNK>', 4: 'lion', 5: 'rampant', 6: 'passt', 7: 'guard', 8: 'head', 9: 'lions', 10: 'cross', 11: 'moline', 12: 'patonce', 13: 'eagle', 14: 'doubleheaded', 15: 'eagles', 16: 'a', 17: 'b', 18: 'o', 19: 's', 20: 'g', 21: 'e', 22: 'v', 23: '1', 24: '2', 25: '3', 26: '4', 27: '5', 28: '6', 29: '7', 30: '8', 31: '9', 32: '10', 33: '11'}
+
     # ------------------------------------------ initial train loader --------------------------------------------------------
     print_time('\n ------------------------ \n calling get_loader with calc_mean=True - for mean')
     profiler = Profiler(async_mode='disabled')
@@ -218,51 +250,68 @@ if __name__ == "__main__":
     profiler.print()
 
     # ------------------------------------------ Calc mean -------------------------------------------------------------
-#     profiler = Profiler(async_mode='disabled')
-#     profiler.start()
+    profiler = Profiler(async_mode='disabled')
+    profiler.start()
 
-#     print_time('\n ------------------------ \n calling get_mean')
+    print_time('\n ------------------------ \n calling get_mean')
     
-#     # 500 x 500 is the size of syntetic data before resize, 100x100 is after resize
-#     mean = get_mean(train_dataset, train_loader, 100 , 100)
+    # 500 x 500 is the size of syntetic data before resize, 100x100 is after resize
+    mean = get_mean(train_dataset, train_loader, height , width)
 
-#     mean_file = f'{model_folder}/mean.txt'
-#     with open(mean_file, 'w') as file:
-#         file.write(str(float(mean)))
+    mean_file = f'{model_folder}/mean.txt'
+    with open(mean_file, 'w') as file:
+        file.write(str(float(mean)))
 
-#     print_time(f'finished calculating the mean: {mean} and saved it to file: {mean_file}')
+    print_time(f'finished calculating the mean: {mean} and saved it to file: {mean_file}')
 
-#     profiler.stop()
-#     profiler.print()
+    profiler.stop()
+    profiler.print()
 
     #----------------------------------------- Calc std --------------------------------------------------
-#     profiler = Profiler(async_mode='disabled')
-#     profiler.start()
+    profiler = Profiler(async_mode='disabled')
+    profiler.start()
 
-#     print_time('\n ------------------------ \n calling get_std')
+    print_time('\n ------------------------ \n calling get_std')
 
-#     std = get_std(train_dataset, train_loader, mean,100,100)
+    std = get_std(train_dataset, train_loader, mean, height , width)
 
-#     std_file = f'{model_folder}/std.txt'
-#     with open(std_file, 'w') as file:
-#         file.write(str(float(std)))
+    std_file = f'{model_folder}/std.txt'
+    with open(std_file, 'w') as file:
+        file.write(str(float(std)))
 
-#     print_time(f'finished calculating the std: {std} and saved it to file: {std_file}')
+    print_time(f'finished calculating the std: {std} and saved it to file: {std_file}')
 
-#     profiler.stop()
-#     profiler.print()
+    profiler.stop()
+    profiler.print()
 
     # ----------------------------------------- expermintal mean/std --------------------------------------------------
 
-    # Calculated those values from '/home/space/datasets/COA/generated-data-api-single/res_images' dataset  
+    # Calculated those values from '/home/space/datasets/COA/generated-single-simple' dataset  
     # Reason is to normlaize real images to match colors of synthtic data
     # expermintal 
-#     mean,std = (torch.tensor(0.5654), torch.tensor(0.2895))
     
-    # /home/space/datasets/COA/generated-single-simple
-    mean,std = (torch.tensor(0.2900), torch.tensor(0.3396))
+#     if height_synth == 100:
+#         # /home/space/datasets/COA/generated-single-simple - run-04-14-2023-18:45:41 - resized to 100x100
+#         mean,std = (torch.tensor(0.300), torch.tensor(0.3484))
+    
+#     if height_synth == 200:
+#         #/home/space/datasets/COA/generated-single-simple - run-04-14-2023-19:48:02 - resized to 200x200
+#         mean,std = (torch.tensor(0.28908), torch.tensor(0.346993))
+    
+#     if height_synth == 300:
+#         #/home/space/datasets/COA/generated-single-simple - run-04-14-2023-19:08:56 - resized to 300x300
+#         mean,std = (torch.tensor(0.28852), torch.tensor(0.34906))
 
-    print_time(f'Using already calculated mean and std in generated-data-api-single dataset, the mean={mean} and std={mean}')
+#     if height_synth == 400:
+#         #/home/space/datasets/COA/generated-single-simple - run-04-14-2023-19:51:31 - resized to 400x400
+#         mean,std = (torch.tensor(0.286567), torch.tensor(0.3505))
+    
+#     if height_synth==500:
+# #         #/home/space/datasets/COA/generated-single-simple - run-04-14-2023-20:02:07 - not resized/original 500x500
+#         mean,std = (torch.tensor(0.285479), torch.tensor(0.35180))
+
+
+#     print_time(f'Using already calculated mean and std in generated-data-api-single dataset, the mean={mean} and std={mean}')
     # ----------------------------------------- expermintal mean/std --------------------------------------------------
 
     
@@ -271,32 +320,59 @@ if __name__ == "__main__":
 
     # Defining the transform to be applied
 #     mp.set_start_method('spawn')
-
-    transform = T.Compose([
-        T.Resize(226),                     
-        T.RandomCrop(224),                 
-        T.ToTensor(),                               
-        T.Normalize(mean, std),
-        Noise(0.1, 0.05)
+    
+    # https://pytorch.org/vision/main/auto_examples/plot_transforms.html#randomposterize
+    train_transform_list = [
+        T.RandomHorizontalFlip(),
+        T.RandomRotation(10),
+        T.RandomCrop(224),
+#         T.GaussianBlur(kernel_size=(5, 9), sigma=(0.1, 5)),
+#         T.ColorJitter(brightness=.5, hue=.3)
+    ]
+    
+    # Use RandomApply to apply the transform randomly to some of the images
+    transform_with_random = T.Compose([
+        T.Resize((height, width)), # mandetory                  
+#         T.RandomApply(transforms=train_transform_list, p=0.8),
+        random.choice(train_transform_list),
+        T.ToTensor(),
+        T.Normalize(mean, std), # mandetory 
+        Noise(0.1, 0.05), # this should come at the end
     ])
 
     print_time('writing the dataloader')
     
-    train_loader, val_loader, test_loader, train_dataset, val_dataset, test_dataset = get_loaders(
+    train_loader, train_dataset = get_loader(
         root_folder=root_folder_images,
-        train_annotation_file=train_annotation_file,
-        val_annotation_file=val_annotation_file,
-        test_annotation_file=test_annotation_file,
-        transform=transform,
+        annotation_file=train_annotation_file,
+        transform=transform_with_random,
+        batch_size=batch_size,
         num_workers=NUM_WORKER,
         vocab=vocab,
-        batch_size=batch_size,
         device=device,
         pin_memory=False
     )
 
+    val_transform = T.Compose([
+        T.Resize((height, width)),                     
+        T.ToTensor(),                               
+        T.Normalize(mean, std),
+    ])
+
+    val_loader, val_dataset = get_loader(
+        root_folder=root_folder_images,
+        annotation_file=val_annotation_file,
+        transform=val_transform,
+        batch_size=batch_size,
+        num_workers=NUM_WORKER,
+        vocab=vocab,
+        device=device,
+        pin_memory=False
+    )
+
+
     print_time('finished writing the dataloader')
-    # ----------------------------------------- Hyperparams --------------------------------------------------------------
+    # ----------------------------------------- Hyperparams -------------------------------------------
 
     # Hyperparams
     embed_size=300
@@ -317,7 +393,7 @@ if __name__ == "__main__":
                   }
     
     print('hyper_params: ',hyper_params)
-    # --------------------------------------- Training the model ------------------------------------------------------
+    # --------------------------------------- Training the model ---------------------------------------
     
     # Training the model
     print('Initialize new model, loss etc')
@@ -339,7 +415,7 @@ if __name__ == "__main__":
 
     # --------------
     # early stopping patience; how long to wait after last time validation loss improved.
-    patience = 5
+    patience = 10
 
     model, train_loss, valid_loss, avg_acc, bleu_score, avg_acc_charge_only, avg_acc_charge_color, avg_acc_shield_only = train_model(
         model, optimizer, criterion, train_dataset, train_loader, val_loader, val_dataset, vocab_size, batch_size, patience, num_epochs, device, model_folder, starting_epoch, weights_map)
@@ -354,10 +430,11 @@ if __name__ == "__main__":
     
     # print('Bleu Score: ', bleu_score/8091)
     print('Final accuracy ALL: {}%'.format(100. * round(final_accuracy, 2)))
-    
+
     print('Final accuracy Charge-Mod: {}%'.format(100. * round(final_accuracy_charge_only, 2)))
     print('Final accuracy Charge color : {}%'.format(100. * round(final_accuracy_charge_color, 2)))
     print('Final accuracy Shield: {}%'.format(100. * round(final_accuracy_shield_only, 2)))
+
 
     print('Final train_loss:  {}'.format(round(final_train_loss, 2)))
     print('Final valid_loss:  {}'.format(round(final_valid_loss, 2)))
