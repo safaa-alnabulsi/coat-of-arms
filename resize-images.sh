@@ -12,4 +12,4 @@
 echo "I am a job task with ID $SGE_TASK_ID."
 export CUDA_LAUNCH_BLOCKING=1
 
-source /home/salnabulsi/.thesis-py38/bin/activate && python resize-images.py > output-res.txt
+source /home/salnabulsi/.thesis-py38/bin/activate && python resize-images.py > output-res224x224.txt
