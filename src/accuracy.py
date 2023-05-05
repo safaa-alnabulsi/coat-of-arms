@@ -18,6 +18,34 @@ WEIGHT_MAP_ONLY_SHIELD_COLOR = {'shield_color': 1, 'shield_mod': 0, 'charge_colo
 # b = np.ones(10)
 # (a == b).sum() / len(a)
 
+class AccuracyColor:
+    
+     def __init__(self, predicted, correct):
+            self.predicted = predicted.split(" ")
+            self.correct = correct.split(" ")
+            self.total_colors = 6 # from armoria_api.py
+     
+     def get(self):
+        hits = 0
+        correct_shield_color = self.correct[0]
+        correct_ch_color = self.correct[1]
+
+        predicted_shield_color = self.predicted[0]
+        
+        try:
+            predicted_ch_color = self.predicted[1]
+        except:
+            predicted_ch_color = ''
+            print('no color prediction')  
+            
+        if correct_shield_color == predicted_shield_color:
+            hits+=1
+            
+        if correct_ch_color == predicted_ch_color:
+            hits+=1
+        
+        return hits / 2
+    
 class Accuracy:
     
     def __init__(self, predicted, correct, 

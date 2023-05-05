@@ -22,7 +22,7 @@ from time import sleep
 
 from src.baseline.model import EncoderCNN, Attention, DecoderRNN, EncoderDecoder
 from src.baseline.data_loader import get_loader, get_mean, get_std
-from src.accuracy import Accuracy, WEIGHT_MAP, WEIGHT_MAP_ONLY_SHIELD_COLOR, WEIGHT_MAP_ONLY_CHARGE, WEIGHT_MAP_ONLY_CHARGE_COLOR
+from src.accuracy import AccuracyColor, Accuracy, WEIGHT_MAP, WEIGHT_MAP_ONLY_SHIELD_COLOR, WEIGHT_MAP_ONLY_CHARGE, WEIGHT_MAP_ONLY_CHARGE_COLOR
 from src.pytorchtools import EarlyStopping, EarlyStoppingAccuracy
 from src.utils import list_of_tensors_to_numpy_arr
 from datetime import datetime
@@ -48,13 +48,13 @@ def train_validate_test_split(df, train_percent=.6, validate_percent=.2, seed=No
     test = df.iloc[perm[validate_end:]]
     # ----------------------------------------------------
     # Count the classes to see if the hypothesis of classes is balanced
-    lion_count, eagle_count, cross_count = count_classes(train['caption'])
+    lion_count, eagle_count, cross_count = count_classes(train['image'])
     print(f'Train: lion_count:{lion_count}, eagle_count:{eagle_count}, cross_count:{cross_count}')
 
-    lion_count, eagle_count, cross_count = count_classes(validate['caption'])
+    lion_count, eagle_count, cross_count = count_classes(validate['image'])
     print(f'Validation: lion_count:{lion_count}, eagle_count:{eagle_count}, cross_count:{cross_count}')
 
-    lion_count, eagle_count, cross_count = count_classes(test['caption'])
+    lion_count, eagle_count, cross_count = count_classes(test['image'])
     print(f'Test: lion_count:{lion_count}, eagle_count:{eagle_count}, cross_count:{cross_count}')
     # ----------------------------------------------------
 
@@ -69,7 +69,11 @@ def get_new_model(hyper_params, learning_rate, ignored_idx, drop_prob, device, p
     attention_dim = hyper_params['attention_dim']
 
     model = EncoderDecoder(embed_size, vocab_size, attention_dim, encoder_dim, decoder_dim, drop_prob, pretrained).to(device)
-    optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+    optimizer = optim.Adam(model.parameters(), lr=learning_rate) 
+    # playing with weights of each voc, giving more weight==penalty here to the colors and trying several values 1 -> 10
+#     weight=torch.tensor([0.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,5.0,5.0,5.0,5.0,5.0,5.0,5.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0]).to(device)
+
+#     criterion = nn.CrossEntropyLoss(ignore_index=ignored_idx, weight=weight)
     criterion = nn.CrossEntropyLoss(ignore_index=ignored_idx)
 
     return model, optimizer, criterion
@@ -99,6 +103,49 @@ def get_correct_caption_as_string(dataset, correct_cap):
             correct_caption.append(itos) 
     return ' '.join(correct_caption)
 
+def calc_acc_color_only(model, dataset, device, images, correct_caps, image_file_names):
+    accuracies = []
+
+    # loop over images of one batch and predict them one by one to calculate accuracy
+    for img, correct_cap,image_file_name in zip(images, correct_caps, image_file_names):
+        predicted_caption, caps = predict_image(model, img, dataset, device)
+        # get the correct caption as a string
+        correct_caption_s = get_correct_caption_as_string(dataset, correct_cap)
+        
+        # ------------------------------------------------------------------------
+        # calc metrics
+        print(f'calc_acc image_file_name: {image_file_name}, correct_caption_s: {correct_caption_s}, predicted_caption: {predicted_caption}') 
+        try:
+            acc              = AccuracyColor(predicted_caption, correct_caption_s).get()
+
+        except ValueError as e:
+            msg = f'Problem in cala caccuracy for image {image_file_name}, correct:{correct_caption_s}, predicted:{predicted_caption}'
+            print()
+            acc = 0.0
+
+        accuracies.append(acc)
+
+    return accuracies
+
+
+def calc_acc_on_loader_color_only(model, loader, dataset, device , strtoprint="Training"):
+    model.eval()
+    
+    accuracies = []
+
+    for idx, (imgs, correct_caps,_,_,image_file_names) in enumerate(iter(loader)):
+        images, captions = imgs.to(device), correct_caps.to(device)
+        # calc metrics
+        acc1 = calc_acc_color_only(model, dataset, device, images, correct_caps, image_file_names)
+        for i in acc1:
+            accuracies.append(i)
+    # breakdown of training accuracies - average per validation
+    avg_train_accuracy = sum(accuracies) / len(accuracies)
+  
+    print('{} accuracy ALL: {}%'.format(strtoprint, 100. * round(avg_train_accuracy, 2)))
+ 
+    return avg_train_accuracy
+
 def calc_acc(model, dataset, device, images, correct_caps, image_file_names, weights_map):
 
     accuracies = []
@@ -113,7 +160,7 @@ def calc_acc(model, dataset, device, images, correct_caps, image_file_names, wei
         correct_caption_s = get_correct_caption_as_string(dataset, correct_cap)
         # ------------------------------------------
         # calc metrics
-#         print(f'calc_acc image_file_name: {image_file_name}, correct_caption_s: {correct_caption_s}, predicted_caption: {predicted_caption}') 
+        print(f'calc_acc image_file_name: {image_file_name}, correct_caption_s: {correct_caption_s}, predicted_caption: {predicted_caption}') 
         try:
             acc              = Accuracy(predicted_caption, correct_caption_s, weights_map).get()
             acc_charge_only  = Accuracy(predicted_caption, correct_caption_s, WEIGHT_MAP_ONLY_CHARGE).get()
@@ -216,6 +263,11 @@ def validate_model(model, criterion, val_loader, val_dataset, vocab_size,
                 accuracies_charge_color.append(i)
             for i in acc4:
                 accuracies_shield_only.append(i)
+            
+            #### when color only
+#             acc1 = calc_acc_color_only(model, val_dataset, device, images, correct_caps, image_file_names)
+#             for i in acc1:
+#                 accuracies.append(i)
 
             # ------------------------------------------
     avg_loss = sum(losses)/len(losses)
@@ -230,7 +282,9 @@ def validate_model(model, criterion, val_loader, val_dataset, vocab_size,
     avg_acc_shield_only = sum(accuracies_shield_only) / \
         len(accuracies_shield_only)
     # ------------------------------------------
-
+    #### color only 
+#     avg_acc_charge_only, avg_acc_charge_color, avg_acc_shield_only = 0,0,0
+    
     writer.add_scalar("Loss/validation", avg_loss, step)
     writer.add_scalar("Accuracy/validation", avg_acc, step)
     writer.close()
@@ -422,7 +476,7 @@ def train_model(model, optimizer, criterion,
     tfinal_accuracy_charge_color = sum(avg_train_ls_charge_color)/len(avg_train_ls_charge_color) if len(avg_train_ls_charge_color) > 0 else 0.0
     tfinal_accuracy_shield_only = sum(avg_train_ls_shield_only)/len(avg_train_ls_shield_only) if len(avg_train_ls_shield_only) > 0 else 0.0
     
-    # print('Bleu Score: ', bleu_score/8091)
+    print('Bleu Score: ', bleu_score/8091)
     print('Final Training accuracy ALL: {}%'.format(100. * round(tfinal_accuracy, 2)))
 
     print('Final Training accuracy Charge-Mod: {}%'.format(100. * round(tfinal_accuracy_charge_only, 2)))
@@ -578,10 +632,11 @@ def test_model(model, criterion, test_loader, test_dataset, vocab_size,
                 correct_caption_s = get_correct_caption_as_string(test_dataset, correct_cap)
 
                 # calc metrics
-                acc_image = Accuracy(predicted_caption, correct_caption_s, weights_map).get()
+                acc_image = Accuracy(predicted_caption, correct_caption_s, weights_map).get()                
                 acc_image_charge_only = Accuracy(predicted_caption, correct_caption_s, WEIGHT_MAP_ONLY_CHARGE).get()
                 acc_image_charge_color = Accuracy(predicted_caption, correct_caption_s, WEIGHT_MAP_ONLY_CHARGE_COLOR).get()
                 acc_image_shield_only = Accuracy(predicted_caption, correct_caption_s, WEIGHT_MAP_ONLY_SHIELD_COLOR).get()
+#                 acc_image = AccuracyColor(predicted_caption, correct_caption_s).get()
 
                 accuracy_batch_list.append(acc_image)
                 accuracy_batch_list_charge_only.append(acc_image_charge_only)
@@ -600,6 +655,7 @@ def test_model(model, criterion, test_loader, test_dataset, vocab_size,
             avg_batch_acc_chrage_color = sum(accuracy_batch_list_charge_color)/len(accuracy_batch_list_charge_color)
             avg_batch_acc_shield = sum(accuracy_batch_list_shield_only)/len(accuracy_batch_list_shield_only)
             
+#             avg_batch_acc_charge, avg_batch_acc_chrage_color, avg_batch_acc_shield = 0,0,0
             accuracy_test_list.append(avg_batch_acc)
             accuracy_test_list_charge.append(avg_batch_acc_charge)
             accuracy_test_list_charge_color.append(avg_batch_acc_chrage_color)
