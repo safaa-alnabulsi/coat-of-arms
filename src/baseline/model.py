@@ -191,7 +191,8 @@ class EncoderDecoder(nn.Module):
             vocab_size = vocab_size,
             attention_dim=attention_dim,
             encoder_dim=encoder_dim,
-            decoder_dim=decoder_dim
+            decoder_dim=decoder_dim,
+            drop_prob = drop_prob
         )
         
     def forward(self, images, captions):
