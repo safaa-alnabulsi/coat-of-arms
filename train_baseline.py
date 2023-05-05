@@ -169,7 +169,7 @@ if __name__ == "__main__":
 
     if real_data:
 #         root_folder_images = data_location + '/resized-images-100x100'
-        root_folder_images = data_location + '/resized-images'
+        root_folder_images = data_location + '/resized'
     else:
         if resized_images:
             root_folder_images = data_location + f'/res_images{height}x{width}'            
@@ -184,15 +184,18 @@ if __name__ == "__main__":
 #     val_annotation_file  = data_location + '/resized-txt-files-100x100/val_captions_psumsq.txt'
 #     test_annotation_file  = data_location + '/resized-txt-files-100x100/test_captions_psumsq.txt'
 
-#     train_annotation_file = data_location + '/train_captions_psumsq.txt'
-#     val_annotation_file  = data_location + '/val_captions_psumsq.txt'
-#     test_annotation_file  = data_location + '/test_captions_psumsq.txt'
+    train_annotation_file = data_location + '/train_captions_psumsq.txt'
+    val_annotation_file  = data_location + '/val_captions_psumsq.txt'
+    test_annotation_file  = data_location + '/test_captions_psumsq.txt'
 
 
-    train_annotation_file = data_location + f'/train_captions_psumsq.txt{height}x{width}'
-    val_annotation_file  = data_location + f'/val_captions_psumsq.txt{height}x{width}'
-    test_annotation_file  = data_location + f'/test_captions_psumsq.txt{height}x{width}'
+#     train_annotation_file = data_location + f'/train_captions_psumsq.txt{height}x{width}-only-color'
+#     val_annotation_file  = data_location + f'/val_captions_psumsq.txt{height}x{width}-only-color'
+#     test_annotation_file  = data_location + f'/test_captions_psumsq.txt{height}x{width}-only-color'
 
+#     train_annotation_file = data_location + f'/train_captions_psumsq.txt{height}x{width}'
+#     val_annotation_file  = data_location + f'/val_captions_psumsq.txt{height}x{width}'
+#     test_annotation_file  = data_location + f'/test_captions_psumsq.txt{height}x{width}'
     
 #     train_annotation_file = data_location + '/train_captions_psumsq_lions.txt'
 #     val_annotation_file  = data_location + '/val_captions_psumsq_lions.txt'
@@ -229,6 +232,10 @@ if __name__ == "__main__":
     # after removing border
     vocab.stoi = {'<PAD>': 0, '<SOS>': 1, '<EOS>': 2, '<UNK>': 3, 'lion': 4, 'rampant': 5, 'passt': 6, 'guard': 7, 'head': 8, 'lions': 9, 'cross': 10, 'moline': 11, 'patonce': 12, 'eagle': 13, 'doubleheaded': 14, 'eagles': 15, 'a': 16, 'b': 17, 'o': 18, 's': 19, 'g': 20, 'e': 21, 'v': 22, '1': 23, '2': 24, '3': 25, '4': 26, '5': 27, '6': 28, '7': 29, '8': 30, '9': 31, '10': 32, '11': 33}
     vocab.itos = {0: '<PAD>', 1: '<SOS>', 2: '<EOS>', 3: '<UNK>', 4: 'lion', 5: 'rampant', 6: 'passt', 7: 'guard', 8: 'head', 9: 'lions', 10: 'cross', 11: 'moline', 12: 'patonce', 13: 'eagle', 14: 'doubleheaded', 15: 'eagles', 16: 'a', 17: 'b', 18: 'o', 19: 's', 20: 'g', 21: 'e', 22: 'v', 23: '1', 24: '2', 25: '3', 26: '4', 27: '5', 28: '6', 29: '7', 30: '8', 31: '9', 32: '10', 33: '11'}
+    
+#     # trying only color
+#     vocab.stoi = {'<PAD>': 0, '<SOS>': 1, '<EOS>': 2, '<UNK>': 3, 'a': 4, 'b': 5, 'o': 6, 's': 7, 'g': 8, 'e': 9, 'v': 10}
+#     vocab.itos = {0: '<PAD>', 1: '<SOS>', 2: '<EOS>', 3: '<UNK>', 4: 'a', 5: 'b', 6: 'o', 7: 's', 8: 'g', 9: 'e', 10: 'v'}
 
     # ------------------------------------------ initial train loader --------------------------------------------------------
     print_time('\n ------------------------ \n calling get_loader with calc_mean=True - for mean')
@@ -311,6 +318,8 @@ if __name__ == "__main__":
 #         mean,std = (torch.tensor(0.285479), torch.tensor(0.35180))
 
 
+#### 224x224 
+#     mean,std = (torch.tensor(0.28803130984306335), torch.tensor(0.3481476306915283))
 #     print_time(f'Using already calculated mean and std in generated-data-api-single dataset, the mean={mean} and std={mean}')
     # ----------------------------------------- expermintal mean/std --------------------------------------------------
 
@@ -381,8 +390,8 @@ if __name__ == "__main__":
     # encoder_dim=2048  ### resnet50
     encoder_dim=512  ### resnet34 & resnet18
     decoder_dim=512
-    learning_rate = 0.01 # 3e-4
-    drop_prob=0.3
+    learning_rate = 0.0009 #0.0005 #0.0004 #0.0001 #3e-4 #0.01 # 
+    drop_prob=0.5
     ignored_idx = train_dataset.vocab.stoi["<PAD>"]
 
     hyper_params = {'embed_size': embed_size,

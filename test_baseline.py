@@ -14,7 +14,7 @@ import torchvision.transforms as T
 from src.baseline.vocabulary import Vocabulary
 from src.utils import print_time, list_of_tensors_to_numpy_arr, plot_image, plot_im
 from src.accuracy import WEIGHT_MAP, WEIGHT_MAP_ONLY_SHIELD_COLOR, WEIGHT_MAP_ONLY_CHARGE, WEIGHT_MAP_ONLY_CHARGE_COLOR
-from src.baseline.coa_model import get_new_model,load_model, train_validate_test_split, init_testing_model, test_model, test_rand_image, get_training_mean_std, get_min_max_acc_images, calc_acc, calc_acc_on_loader
+from src.baseline.coa_model import get_new_model,load_model, train_validate_test_split, init_testing_model, test_model, test_rand_image, get_training_mean_std, get_min_max_acc_images, calc_acc, calc_acc_on_loader, calc_acc_on_loader_color_only, calc_acc_color_only
 from pyinstrument import Profiler
 from src.baseline.data_loader import get_loader
 
@@ -155,10 +155,13 @@ if __name__ == "__main__":
     vocab.stoi = {'<PAD>': 0, '<SOS>': 1, '<EOS>': 2, '<UNK>': 3, 'lion': 4, 'rampant': 5, 'passt': 6, 'guard': 7, 'head': 8, 'lions': 9, 'cross': 10, 'moline': 11, 'patonce': 12, 'eagle': 13, 'doubleheaded': 14, 'eagles': 15, 'a': 16, 'b': 17, 'o': 18, 's': 19, 'g': 20, 'e': 21, 'v': 22, '1': 23, '2': 24, '3': 25, '4': 26, '5': 27, '6': 28, '7': 29, '8': 30, '9': 31, '10': 32, '11': 33}
     vocab.itos = {0: '<PAD>', 1: '<SOS>', 2: '<EOS>', 3: '<UNK>', 4: 'lion', 5: 'rampant', 6: 'passt', 7: 'guard', 8: 'head', 9: 'lions', 10: 'cross', 11: 'moline', 12: 'patonce', 13: 'eagle', 14: 'doubleheaded', 15: 'eagles', 16: 'a', 17: 'b', 18: 'o', 19: 's', 20: 'g', 21: 'e', 22: 'v', 23: '1', 24: '2', 25: '3', 26: '4', 27: '5', 28: '6', 29: '7', 30: '8', 31: '9', 32: '10', 33: '11'}
 
-    # ------------------------------------------ Get mean & std ---------------------------------------
-    mean, std = get_training_mean_std(run_path)
+#     vocab.stoi = {'<PAD>': 0, '<SOS>': 1, '<EOS>': 2, '<UNK>': 3, 'a': 4, 'b': 5, 'o': 6, 's': 7, 'g': 8, 'e': 9, 'v': 10}
+#     vocab.itos = {0: '<PAD>', 1: '<SOS>', 2: '<EOS>', 3: '<UNK>', 4: 'a', 5: 'b', 6: 'o', 7: 's', 8: 'g', 9: 'e', 10: 'v'}
 
-    print_time(f'Using calculated mean and std from real dataset, the mean={mean} and std={mean}')
+    # ------------------------------------------ Get mean & std ---------------------------------------
+#     mean, std = get_training_mean_std(run_path)
+
+#     print_time(f'Using calculated mean and std from real dataset, the mean={mean} and std={mean}')
 
     # ----------------------------------------- expermintal mean/std --------------------------------------------------
 
@@ -189,7 +192,9 @@ if __name__ == "__main__":
 #     print_time(f'Using already calculated mean and std in generated-single-simple dataset, the mean={mean} and std={mean}')
     # ----------------------------------------- expermintal mean/std --------------------------------------------------
     # (621, 634)
-    
+    mean,std = (torch.tensor(0.28803130984306335), torch.tensor(0.3481476306915283))
+    print_time(f'Using already calculated mean and std in generated-data-api-single dataset, the mean={mean} and std={mean}')
+
     # ---------------------------------------- Loaders ------------------------------------------------
     test_loader, test_dataset = init_testing_model(test_caption_file, 
                                                    root_folder_images, 
@@ -212,8 +217,8 @@ if __name__ == "__main__":
 #     encoder_dim=2048  ### resnet50
     encoder_dim=512  ### resnet34 & resnet18
     decoder_dim=512
-    learning_rate = 3e-4
-    drop_prob=0.3
+    learning_rate = 0.0009 # 3e-4
+    drop_prob=0.5
     ignored_idx = test_dataset.vocab.stoi["<PAD>"]
 
     hyper_params = {'embed_size': embed_size,
@@ -259,22 +264,24 @@ if __name__ == "__main__":
     # -------------------------------- Training Accuracy ------------------------------------------
 
     # resized 
-    data_location = '/home/space/datasets/COA/generated-single-simple/'
-    train_annotation_file = data_location + f'/train_captions_psumsq.txt{height_synth}x{height_synth}'
-    root_folder_images = data_location + f'/res_images{height_synth}x{height_synth}'
+#     data_location = '/home/space/datasets/COA/generated-single-simple/'
+#     train_annotation_file = data_location + f'/train_captions_psumsq.txt{height_synth}x{height_synth}'
+#     root_folder_images = data_location + f'/res_images{height_synth}x{height_synth}'
     
 # original
 #     train_annotation_file = data_location + f'/train_captions_psumsq.txt'
 #     root_folder_images = data_location + f'/images'            
 
 # real data
-#     train_annotation_file = data_location + f'/train_captions_psumsq.txt'
-#     root_folder_images = data_location + f'/resized'            
+    train_annotation_file = data_location + f'/train_captions_psumsq.txt'
+    root_folder_images = data_location + f'/resized'            
     
 #     train_annotation_file = data_location + f'/resized-txt-files-100x100/train_captions_psumsq.txt'
 #     root_folder_images = data_location + f'/resized-images-100x100'            
     
-    
+    # only color
+#     train_annotation_file = data_location + f'/train_captions_psumsq.txt{height_synth}x{height_synth}-only-color'
+
 
     transform = T.Compose([
         T.Resize((height,width)),
@@ -295,4 +302,5 @@ if __name__ == "__main__":
     
     print("Calculating training accuracy")    
     calc_acc_on_loader(model, train_loader, train_dataset, device, weights_map, strtoprint="Training")
+#     calc_acc_on_loader_color_only(model, train_loader, train_dataset, device, strtoprint="Training")
     
