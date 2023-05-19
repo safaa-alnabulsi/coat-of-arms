@@ -2,6 +2,7 @@
 
 #imports 
 
+import random
 import os
 import argparse
 import time
@@ -31,6 +32,8 @@ from src.caption import Caption
 from src.baseline.coa_model import save_model, load_model, train_validate_test_split
 from src.baseline.data_loader import get_mean, get_std
 from torch.utils.data import DataLoader, Dataset
+from src.pytorchtools import EarlyStopping, EarlyStoppingAccuracy
+from src.baseline.noise import Noise
 
 def calc_accuracy(true,pred):
     pred = F.softmax(pred, dim = 1)
@@ -39,9 +42,14 @@ def calc_accuracy(true,pred):
     acc = float((100 * acc.sum()) / len(acc))
     return round(acc, 4)
 
+
 ### Training Code
-def train_classification_model(model, epochs, train_data_loader, val_data_loader, device):
+def train_classification_model(model, optimizer, criterion, lr_scheduler, epochs, train_data_loader, val_data_loader, device):
     from tqdm import tqdm
+    
+    # initialize the early_stopping object
+    checkpoint_file=f"{data_location}/classification-checkpoint.pt"
+    early_stopping = EarlyStoppingAccuracy(patience=10, verbose=True, path=checkpoint_file)
 
     for epoch in range(epochs):
         start = time.time()
@@ -58,6 +66,7 @@ def train_classification_model(model, epochs, train_data_loader, val_data_loader
         # Training
         with tqdm(train_data_loader, unit="batch") as tepoch:
             tepoch.set_description(f"Epoch {epoch}")
+            print('Epoch-{0} lr: {1}'.format(epoch, optimizer.param_groups[0]['lr']))
             for images, labels,_,_,_ in tepoch: 
                 images = images.to(device)
                 labels = labels.to(device)
@@ -75,7 +84,8 @@ def train_classification_model(model, epochs, train_data_loader, val_data_loader
                 loss = criterion(preds, labels)
                 loss.backward()
                 optimizer.step()
-
+#                 lr_scheduler.step()
+                
                 #Append loss & acc
                 loss_value = loss.item()
                 train_epoch_loss.append(loss_value)
@@ -89,7 +99,12 @@ def train_classification_model(model, epochs, train_data_loader, val_data_loader
                     print("Iter Loss = {}".format(round(loss_value, 4)))
                     print("Iter Accuracy = {} % \n".format(acc))
 
-    #             _iter += 1
+                _iter += 1
+
+        # tryinf to free the memory
+#         gc.collect()
+#         torch.cuda.empty_cache()
+#         gpu_usage()                             
 
         #Validation
         with tqdm(val_data_loader, unit="batch") as tepoch:
@@ -135,8 +150,27 @@ def train_classification_model(model, epochs, train_data_loader, val_data_loader
         print("Train Accuracy = {} % \n".format(train_epoch_accuracy))
         print("Val Loss = {}".format(round(val_epoch_loss, 4)))
         print("Val Accuracy = {} % \n".format(val_epoch_accuracy))
+        
+        early_stopping(val_epoch_accuracy, model, optimizer, epoch)
+           
+        if early_stopping.early_stop:
+            print("Early stopping. Stopping the training of the model.")
+            break
+
+    #Print Final Statistics
+    final_train_loss = sum(train_loss) / len(train_loss)
+    final_val_loss = sum(val_loss) / len(val_loss)
+    final_train_acc = sum(train_accuracy) / len(train_accuracy)
+    final_val_acc = sum(val_accuracy) / len(val_accuracy)
     
+    print("----------------------------------------------------")
+    print("Final Train Loss = {}".format(round(final_train_loss, 4)))
+    print("Final Train Accuracy = {} % \n".format(train_epoch_accuracy))
+    print("Final Val Loss = {}".format(round(final_train_acc, 4)))
+    print("Final Val Accuracy = {} % \n".format(final_val_acc))
+
     return model, train_epoch_loss, train_epoch_accuracy, val_epoch_loss, val_epoch_accuracy
+
 
 class CoAClassDataset(td.Dataset):
 
@@ -223,25 +257,73 @@ class CoAClassDataset(td.Dataset):
         return label_class
 
 
+def test_classification_model(model, test_data_loader):
+    test_epoch_loss = []
+    test_epoch_accuracy = []
+
+    # model.eval()
+    with torch.no_grad():
+        for images, labels,_,_,_ in test_data_loader:
+            print(type(labels))
+            images = images.to("cpu")
+            labels = labels.to("cpu")
+
+            #Forward ->
+            preds = model(images)
+
+            #Calculate Accuracy
+            acc = calc_accuracy(labels.cpu(), preds.cpu())
+
+            #Calculate Loss
+            loss = criterion(preds, labels)
+
+            #Append loss & acc
+            loss_value = loss.item()
+            test_epoch_loss.append(loss_value)
+            test_epoch_accuracy.append(acc)
+            print("Test epoch Loss = {}".format(round(loss_value, 4)))
+            print("Test epoch Accuracy = {} % \n".format(acc))
+
+    test_loss = np.mean(test_epoch_loss)
+    test_accuracy = np.mean(test_epoch_accuracy)
+
+    print("Test Loss = {}".format(round(test_loss, 4)))
+    print("Test Accuracy = {} % \n".format(test_accuracy))
+
+
 if __name__ == "__main__":
     print('starting the script')
+
+    # ---------------------- Reproducibility -------------------
+    
+    seed = 87423
+    random.seed(seed)     # python random generator
+    np.random.seed(seed)  # numpy random generator
+
+    torch.manual_seed(seed)
+#     torch.cuda.manual_seed_all(seed)
+
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+    
+    # ----------------------------------------------------------------- 
 
     MISSING_TOKEN = 'None'
     
     # data_location =  '../baseline-gen-data/small/'
-    data_location =  '/home/space/datasets/COA/generated-data-api-single/'
-    new_with_class_caption_file = data_location + '/new-labels-class-psumsq.txt'
+    data_location =  '/home/salnabulsi/coat-of-arms/data/new/'
+    new_with_class_caption_file = data_location + '/new-labels-class-psumsq-2.txt'
     
     df_new = pd.read_csv(new_with_class_caption_file)
-    train, validate, test = train_validate_test_split(df_new, train_percent=.6, validate_percent=.2, seed=None)
+#     train, validate, test = train_validate_test_split(df_new, train_percent=.6, validate_percent=.2, seed=None)
 
-    train_annotation_file = data_location + '/train_labels_psumsq.txt'
-    val_annotation_file  = data_location + '/val_labels_psumsq.txt'
-    test_annotation_file  = data_location + '/test_labels_psumsq.txt'
+    train_annotation_file = data_location + '/train_labels_psumsq-2.txt'
+    val_annotation_file  = data_location + '/val_labels_psumsq-2.txt'
+    test_annotation_file  = data_location + '/test_labels_psumsq-2.txt'
 
-    train.to_csv(train_annotation_file, sep=',',index=False)
-    test.to_csv(test_annotation_file, sep=',',index=False)
-    validate.to_csv(val_annotation_file, sep=',',index=False)
+#     train.to_csv(train_annotation_file, sep=',',index=False)
+#     test.to_csv(test_annotation_file, sep=',',index=False)
+#     validate.to_csv(val_annotation_file, sep=',',index=False)
 
 
     # print("There are {} total images".format(len(df)))
@@ -257,13 +339,15 @@ if __name__ == "__main__":
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     
-    BATCH_SIZE = 256
+    BATCH_SIZE = 32
     NUM_WORKER = 2 #### this needs multi-core
     # NUM_WORKER = 0 #### this needs multi-core
     pin_memory=False,
     calc_mean=False
     SHUFFLE=True
-    images_location = data_location + '/res_images'
+    images_location = data_location + '/resized'
+    learning_rate = 0.0009 #0.0005 #0.0004 #0.0001 #3e-4 #0.01 # 
+    drop_prob=0.5
 
     train_dataset = CoAClassDataset(images_location, 
                          train_annotation_file, 
@@ -277,34 +361,52 @@ if __name__ == "__main__":
         sampler = None,
         num_workers = NUM_WORKER,
     )
-
-    mean = get_mean(train_dataset, train_data_loader, 500 , 500)
-    std = get_std(train_dataset, train_data_loader, mean, 500 , 500)
+    
+    height = 621
+    width = 634
+    
+    mean = get_mean(train_dataset, train_data_loader, height, width)
+    std = get_std(train_dataset, train_data_loader, mean, height, width)
     print("mean = ", mean)
     print("std = ", std)
 
-    transform = T.Compose([
-        T.Resize(226),                     
-        T.RandomCrop(224),                 
+    train_transform_list = [
+        T.RandomHorizontalFlip(),
+        T.RandomRotation(10),
+        T.RandomCrop(224),
+    ]
+ 
+    # Use RandomApply to apply the transform randomly to some of the images
+    transform_with_random = T.Compose([
+        T.Resize((height, width)), # mandetory                  
+#         T.RandomApply(transforms=train_transform_list, p=0.8),
+        random.choice(train_transform_list),
+        T.ToTensor(),
+        T.Normalize(mean, std), # mandetory 
+        Noise(0.1, 0.05), # this should come at the end
+    ])
+
+    transform_for_test = T.Compose([
+        T.Resize((height,width)),
         T.ToTensor(),                               
-        T.Normalize(mean, std)
+        T.Normalize(mean, std) 
     ])
 
     train_dataset = CoAClassDataset(images_location, 
                          train_annotation_file, 
-                         transform=transform, 
+                         transform=transform_with_random, 
                          device=device,
                          calc_mean=False)
 
     val_dataset = CoAClassDataset(images_location, 
                          val_annotation_file, 
-                         transform=transform, 
+                         transform=transform_with_random, 
                          device=device,
                          calc_mean=False)
 
     test_dataset = CoAClassDataset(images_location, 
                          test_annotation_file, 
-                         transform=transform, 
+                         transform=transform_for_test, 
                          device=device,
                          calc_mean=False)
 
@@ -337,23 +439,18 @@ if __name__ == "__main__":
     )
 
     # --------------------------------------------------
-
     ### Define model
     model = models.vgg16(pretrained = True)
 
     ### Modifying last few layers and no of classes
-    # Using Sequential to create a small model. 
-    # Modules will be added to it in the order they are passed in the constructor
-    # NOTE: cross_entropy loss takes unnormalized op (logits),
-    # then function itself applies softmax and calculates loss, 
-    # so no need to include softmax here
+    # NOTE: cross_entropy loss takes unnormalized op (logits), then function itself applies softmax and calculates loss, so no need to include softmax here
     model.classifier = nn.Sequential(
         nn.Linear(25088, 4096, bias = True),
         nn.ReLU(inplace = True),
-        nn.Dropout(0.4),
+        nn.Dropout(drop_prob),
         nn.Linear(4096, 2048, bias = True),
         nn.ReLU(inplace = True),
-        nn.Dropout(0.4),
+        nn.Dropout(drop_prob),
         nn.Linear(2048, 200)
     )
 
@@ -365,7 +462,7 @@ if __name__ == "__main__":
 
     ### Training Details
 
-    optimizer = torch.optim.Adam(model.parameters(), lr = 0.0001)
+    optimizer = torch.optim.Adam(model.parameters(), lr = learning_rate)
     lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size = 5, gamma = 0.75)
     criterion = nn.CrossEntropyLoss()
 
@@ -375,12 +472,12 @@ if __name__ == "__main__":
     val_loss = []
     val_accuracy = []
 
-    epochs = 25
+    epochs = 100
     CUDA_LAUNCH_BLOCKING=1
 
     # --------------------------------------------------
 
-    model, train_epoch_loss, train_epoch_accuracy, val_epoch_loss, val_epoch_accuracy = train_classification_model(model, epochs, train_data_loader, val_data_loader, device)
+    model, train_epoch_loss, train_epoch_accuracy, val_epoch_loss, val_epoch_accuracy = train_classification_model(model,optimizer, criterion, lr_scheduler, epochs, train_data_loader, val_data_loader, device)
 
 
     # --------------------------------------------------
@@ -391,8 +488,8 @@ if __name__ == "__main__":
     # save the latest model
     now = datetime.now() # current date and time
     timestr = now.strftime("%m-%d-%Y-%H:%M:%S")
-    model_full_path = f"{data_location}/classification-model-single-full-{timestr}.pth"
-
+    model_full_path = f"{data_location}/classification-model-trained-on-only-real-{timestr}.pth"
+    
     model.cpu()
     model_state = {
         'model_state_dict': model.state_dict(),
@@ -402,3 +499,7 @@ if __name__ == "__main__":
     }
 
     torch.save(model_state, model_full_path)
+    print('model has been saved to: ', model_full_path)
+    
+    print('running test directly afterwards')
+    test_classification_model(model, test_data_loader)

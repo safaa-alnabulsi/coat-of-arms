@@ -6,7 +6,7 @@
 #$ -V          # provide environment variables
 # -t 1-10    # start 100 instances: from 1 to 100
 # if you also want to request a GPU, add the following line to the above block:
-#$ -o task_out
+#$ -l cuda=1   # request one GPU
 #$ -j y
 #$ -l h='!node4*'
 echo "I am a job task with ID $SGE_TASK_ID."
