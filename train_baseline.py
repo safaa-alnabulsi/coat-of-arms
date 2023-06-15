@@ -82,7 +82,7 @@ if __name__ == "__main__":
     baseline_model = args.baseline_model
     height = width = height_synth = int(args.height)
     
-    # stop the resplit 
+# #     stop the resplit 
 #     if resplit in ['yes','Yes','y','Y'] :
 #         resplit = True
 #     else: 
@@ -184,9 +184,15 @@ if __name__ == "__main__":
 #     val_annotation_file  = data_location + '/resized-txt-files-100x100/val_captions_psumsq.txt'
 #     test_annotation_file  = data_location + '/resized-txt-files-100x100/test_captions_psumsq.txt'
 
+#     # for synthtic dataset and real dataset single object
     train_annotation_file = data_location + '/train_captions_psumsq.txt'
     val_annotation_file  = data_location + '/val_captions_psumsq.txt'
     test_annotation_file  = data_location + '/test_captions_psumsq.txt'
+
+#     # for real dataset
+#     train_annotation_file = data_location + '/full-train_captions_psumsq.txt'
+#     val_annotation_file  = data_location + '/full-val_captions_psumsq.txt'
+#     test_annotation_file  = data_location + '/full-test_captions_psumsq.txt'
 
 
 #     train_annotation_file = data_location + f'/train_captions_psumsq.txt{height}x{width}-only-color'
