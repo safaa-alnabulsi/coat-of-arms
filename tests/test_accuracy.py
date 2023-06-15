@@ -1,5 +1,5 @@
 from unittest import TestCase
-from src.accuracy import Accuracy
+from src.accuracy import Accuracy, WEIGHT_MAP
 
 
 pairs_pred_truth = [
@@ -19,6 +19,16 @@ pairs_pred_truth = [
 
     ['o b eagle', 'B O lion rampant', 0, (0, 0), 0],    
     ['a g lion rampant', 'O G eagle', 0, (0, 1), 0.33],    
+    
+    # plural
+    ['a g 3 lions rampant', 'a g 3 lions rampant', 1, (1, 1), 1],  
+    ['o g 3 lions rampant', 'a g 3 lions rampant', 0, (1, 1), 0.67],    
+    ['a v 3 lions rampant', 'a g 3 lions rampant', 1, (1, 0), 0.67],    
+    ['o v 3 lions rampant', 'a g 3 lions rampant', 0, (1, 0), 0.33],    
+    ['o v 3 lions rampant', 'a g 2 eagles', 0, (0, 0), 0],    
+    ['o v 3 lions rampant', 'a g 3 eagles', 0, (0.5, 0), 0.17],    
+    ['o v 3 lions rampant', 'a g 3 eagles doubleheaded', 0, (0.33, 0), 0.11],    
+    ['o v 2 lions rampant', 'a g lion rampant', 0, (0.5, 0), 0.17],    
 ]
 
 max_accuracy = [
@@ -42,12 +52,13 @@ class AccuracyTest(TestCase):
             predicted, truth, accuracy = pair[0], pair[1], pair[3]
             assert Accuracy(predicted, truth).get_charges_acc() == accuracy
 
+
     def test_get(self):
         for pair in pairs_pred_truth:
             predicted, truth, accuracy = pair[0], pair[1], pair[4]
             print(predicted, truth, accuracy)
             assert Accuracy(predicted, truth).get() == accuracy
-    
+            
     def test_get_max_accuracy(self):
         for item in max_accuracy: 
             max_index, max_acc = Accuracy('b a lion passt guard', 'b a lion passt guard').get_max_accuracy(item['input'])

@@ -63,7 +63,9 @@ class Accuracy:
         if self.weights_map == WEIGHT_MAP_ONLY_SHIELD_COLOR:
             return shield_score
             
+        # multi and plural object datasets
 #         charge_score, charge_color_score = self.get_charges_acc()
+        # Single object dataset
         charge_score, charge_color_score = self.get_single_charges_acc()
 
         if self.weights_map == WEIGHT_MAP_ONLY_CHARGE:
@@ -140,6 +142,7 @@ class Accuracy:
             ch1    = obj1['charge']
             color1 = obj1['color']
             mods1  = obj1['modifiers']
+            number1  = obj1['number']
             
             # default value is when having WEIGHT_MAP
             # we drop the color of the charge here, we don't care about it
@@ -154,11 +157,13 @@ class Accuracy:
                 hits_ch_colors=0
                 hits_charge=0
                 hits_mod=0
+                hits_num=0
 
                 ch2    = obj2['charge']
                 color2 = obj2['color']
                 mods2  = obj2['modifiers']
-                
+                number2  = obj2['number']
+
                 if color1.lower() == color2.lower():
                     hits_ch_colors+= 1
 
@@ -166,7 +171,10 @@ class Accuracy:
                     hits_charge+= 1
                 # else: # cannot remember why I added this condition here
                 #     continue
-                
+                 
+                if number1 == number2:
+                    hits_num+=1
+
                 for cm in mods1:
                     for pm in mods2:
                         if cm == pm:
@@ -175,6 +183,15 @@ class Accuracy:
 
                 charge_hits = hits_charge * self.weights_map['charge'] + \
                       hits_mod * self.weights_map['modifier']
+
+                # as we have few number of plural classes, no need to count it the 1 as a hit in case of single object
+                # if we do so, the accuracy would increase inspite of the bas prediction
+                # in here we see if the true caption has a plural, 
+                # then we penalize the model in case it didn't get the right number
+                # otherwise, no need to add this to the formula
+                if ch1 == 'lions' or ch1 == 'eagles' or ch1 == 'crosses':
+                    charge_hits+=hits_num
+                    total+=1
                 
                 charge_color_hits = hits_ch_colors * self.weights_map['charge_color']
                    
@@ -243,7 +260,7 @@ class Accuracy:
         if self.weights_map == WEIGHT_MAP_ONLY_SHIELD_COLOR:
             total = 1
 
-        return round(hits / total, 2)
+        return round(hits / total, 4)
 
     
     def get_max_accuracy(self, all_obj_acc):
@@ -256,10 +273,10 @@ class Accuracy:
         # get the maximum sum and the indexs 
         max_index, max_acc = self.get_max_accuracy_item(all_values)
 
-        print('comblist', comblist)
-        print('all_values', all_values)
-        print('max_index', max_index)
-        print('max_acc', max_acc)
+#         print('comblist', comblist)
+#         print('all_values', all_values)
+#         print('max_index', max_index)
+#         print('max_acc', max_acc)
 
         return max_index, max_acc
             
