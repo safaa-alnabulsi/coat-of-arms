@@ -156,3 +156,6 @@ ex.*
 errors*
 notebooks/vanilla-logs/
 vanilla-logs/
+ex.*
+etx.*
+notebooks/vanilla-logs*
