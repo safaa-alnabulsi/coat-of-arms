@@ -166,7 +166,11 @@ class DecoderRNN(nn.Module):
             captions.append(predicted_word_idx.item())
             
             #end if <EOS detected>
-            if vocab.itos[predicted_word_idx.item()] == "<EOS>":
+            try:
+                if vocab.itos[predicted_word_idx.item()] == "<EOS>":
+                    break
+            except KeyError:
+                print(f" Key Error in DecoderRNN: {predicted_word_idx.item()}")
                 break
             
             #send generated word as the next caption
