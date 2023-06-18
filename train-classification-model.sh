@@ -12,7 +12,7 @@
 echo "I am a job task with ID $SGE_TASK_ID."
 export CUDA_LAUNCH_BLOCKING=1
 
-start_index=$1
+seed=$1
 
 echo 
-source /home/salnabulsi/.thesis-py38/bin/activate && python train-classification-model.py --index=${start_index}
+source /home/salnabulsi/.thesis-py38/bin/activate && python train-classification-model.py --seed=${seed}

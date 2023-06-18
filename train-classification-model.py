@@ -34,14 +34,75 @@ from src.baseline.data_loader import get_mean, get_std
 from torch.utils.data import DataLoader, Dataset
 from src.pytorchtools import EarlyStopping, EarlyStoppingAccuracy
 from src.baseline.noise import Noise
+from torch.utils.data import RandomSampler
+import argparse
 
-def calc_accuracy(true,pred):
+
+def calc_accuracy(true, pred):
+    accuracies = []
+    accuracies_charge_only = []
+    accuracies_charge_color = []
+    accuracies_shield_only = []
+
+    pred = F.softmax(pred, dim = 1)
+    true = torch.zeros(pred.shape[0], pred.shape[1]).scatter_(1, true.unsqueeze(1), 1.)
+    batch_size = len(pred)
+    
+    pred_t, true_t = pred.argmax(-1), true.argmax(-1)
+    for i in range(0, batch_size-1):
+        score, charge_score, charge_color_score, shield_color_score = calc_predicted_label_accuracy(true_t[i], pred_t[i])
+        accuracies.append(score)
+        accuracies_charge_only.append(charge_score)
+        accuracies_charge_color.append(charge_color_score)
+        accuracies_shield_only.append(shield_color_score)
+        
+    return accuracies, accuracies_charge_only, accuracies_charge_color, accuracies_shield_only
+
+def calc_predicted_label_accuracy(true_class, predicted_class):
+    
+    true_label = CLASSES_MAP.get(int(true_class))
+
+    charge = true_label[0]
+    modifier = true_label[1]
+    charge_color = true_label[2]
+    shield_color = true_label[3]
+
+    predicted_label = CLASSES_MAP.get(int(predicted_class))
+
+    pre_charge = predicted_label[0]
+    pre_modifier = predicted_label[1]
+    pre_charge_color = predicted_label[2]
+    pre_shield_color = predicted_label[3]
+    
+    charge_hits = 0
+    modifier_hits = 0
+    charge_color_score = 0
+    shield_color_score = 0
+    
+    if charge == pre_charge:
+        charge_hits+=1
+    
+    if modifier == pre_modifier:
+        modifier_hits+=1
+
+    if charge_color == pre_charge_color:
+        charge_color_score+=1
+        
+    if shield_color == pre_shield_color:
+        shield_color_score+=1
+
+    charge_score = (charge_hits + modifier_hits) / 2
+    
+    score = (charge_score + charge_color_score + shield_color_score) / 3
+    
+    return score, charge_score, charge_color_score, shield_color_score
+
+def calc_accuracy_standard(true, pred):
     pred = F.softmax(pred, dim = 1)
     true = torch.zeros(pred.shape[0], pred.shape[1]).scatter_(1, true.unsqueeze(1), 1.)
     acc = (true.argmax(-1) == pred.argmax(-1)).float().detach().numpy()
     acc = float((100 * acc.sum()) / len(acc))
     return round(acc, 4)
-
 
 ### Training Code
 def train_classification_model(model, optimizer, criterion, lr_scheduler, epochs, train_data_loader, val_data_loader, device):
@@ -51,18 +112,30 @@ def train_classification_model(model, optimizer, criterion, lr_scheduler, epochs
     checkpoint_file=f"{data_location}/classification-checkpoint.pt"
     early_stopping = EarlyStoppingAccuracy(patience=10, verbose=True, path=checkpoint_file)
 
+    accuracies = []
+    accuracies_charge_only = []
+    accuracies_charge_color = []
+    accuracies_shield_only = []
+
+    avg_acc_ls = []
+    avg_acc_ls_charge_only = []
+    avg_acc_ls_charge_color = []
+    avg_acc_ls_shield_only = []
+
+    avg_train_acc_list = []
     for epoch in range(epochs):
         start = time.time()
 
         #Epoch Loss & Accuracy
-        train_epoch_loss = []
-        train_epoch_accuracy = []
+        train_epoch_losses = []
+        train_epoch_accuracies = []
         _iter = 1
 
         #Val Loss & Accuracy
-        val_epoch_loss = []
-        val_epoch_accuracy = []
-
+        val_epoch_losses = []
+        val_epoch_accuracies = []
+        train_epoch_accuracies = []
+        train_epoch_losses = []
         # Training
         with tqdm(train_data_loader, unit="batch") as tepoch:
             tepoch.set_description(f"Epoch {epoch}")
@@ -77,8 +150,10 @@ def train_classification_model(model, optimizer, criterion, lr_scheduler, epochs
                 #Forward ->
                 preds = model(images)
 
-                #Calculate Accuracy
-                acc = calc_accuracy(labels.cpu(), preds.cpu())
+#                 #Calculate Accuracy
+#                 print("train_classification_model")
+                acc = calc_accuracy_standard(labels.cpu(), preds.cpu())
+#                 print("-----------------------------------")
 
                 #Calculate Loss & Backward, Update Weights (Step)
                 loss = criterion(preds, labels)
@@ -88,11 +163,11 @@ def train_classification_model(model, optimizer, criterion, lr_scheduler, epochs
                 
                 #Append loss & acc
                 loss_value = loss.item()
-                train_epoch_loss.append(loss_value)
-                train_epoch_accuracy.append(acc)
-
-                tepoch.set_postfix({'train_epoch_loss': loss_value})
-    #             tepoch.set_postfix({'train_epoch_accuracy',acc})
+                train_epoch_losses.append(loss_value)
+                train_epoch_accuracies.append(acc)
+                
+                tepoch.set_postfix({'train_batch_loss': loss_value})
+                tepoch.set_postfix({'train_batch_accuracy': acc})
 
                 if _iter % 500 == 0:
                     print("> Iteration {} < ".format(_iter))
@@ -100,6 +175,14 @@ def train_classification_model(model, optimizer, criterion, lr_scheduler, epochs
                     print("Iter Accuracy = {} % \n".format(acc))
 
                 _iter += 1
+                
+        
+        train_epoch_loss = sum(train_epoch_losses) / len(train_epoch_losses)
+        train_epoch_accuracy = sum(train_epoch_accuracies) / len(train_epoch_accuracies)
+        tepoch.set_postfix({'train_epoch_loss': train_epoch_loss})
+        tepoch.set_postfix({'train_epoch_accuracy': train_epoch_accuracy})
+
+        avg_train_acc_list.append(train_epoch_accuracy)
 
         # tryinf to free the memory
 #         gc.collect()
@@ -109,7 +192,7 @@ def train_classification_model(model, optimizer, criterion, lr_scheduler, epochs
         #Validation
         with tqdm(val_data_loader, unit="batch") as tepoch:
             tepoch.set_description(f"Epoch {epoch}")
-            for images, labels,_,_,_ in tepoch:
+            for images, labels,_,_,images_names in tepoch:
                 images = images.to(device)
                 labels = labels.to(device)
 
@@ -117,59 +200,174 @@ def train_classification_model(model, optimizer, criterion, lr_scheduler, epochs
                 preds = model(images)
 
                 #Calculate Accuracy
-                acc = calc_accuracy(labels.cpu(), preds.cpu())
+#                 print("evaluation_classification")
+#                 print('images_names', images_names)
+                
+                acc1, acc2, acc3, acc4 = calc_accuracy(labels.cpu(), preds.cpu())
+                for i in acc1:
+                    accuracies.append(i)
+                for i in acc2:
+                    accuracies_charge_only.append(i)
+                for i in acc3:
+                    accuracies_charge_color.append(i)
+                for i in acc4:
+                    accuracies_shield_only.append(i)
+
+                print("-----------------------------------")
 
                 #Calculate Loss
                 loss = criterion(preds, labels)
 
                 #Append loss & acc
                 loss_value = loss.item()
-                val_epoch_loss.append(loss_value)
-                val_epoch_accuracy.append(acc)
                 tepoch.set_postfix({'val_epoch_loss': loss_value})
-    #             tepoch.set_postfix({'val_epoch_accuracy',acc})
+                val_epoch_losses.append(loss_value)
 
+        # ------------------------------------------
+        # calc avg values coming out of every batch in one epoch 
+        val_epoch_accuracy = sum(accuracies) / len(accuracies)
+        
+        # breakdown of accuracies - average per validation
+        avg_acc_charge_only  = sum(accuracies_charge_only) / len(accuracies_charge_only)
+        avg_acc_charge_color = sum(accuracies_charge_color) / len(accuracies_charge_color)
+        avg_acc_shield_only  = sum(accuracies_shield_only) / len(accuracies_shield_only)
+       
+        val_epoch_accuracies.append(val_epoch_accuracy)
+        tepoch.set_postfix({'val_epoch_accuracy': val_epoch_accuracy})
+        # ------------------------------------------
 
-        train_epoch_loss = np.mean(train_epoch_loss)
-        train_epoch_accuracy = np.mean(train_epoch_accuracy)
+        train_epoch_loss = np.mean(train_epoch_losses)
+        val_epoch_loss = np.mean(val_epoch_losses)
+        
+        # collect avg loss values coming out of every batch in one epoch
+        train_loss.append(train_epoch_loss)
+        val_loss.append(val_epoch_loss)
 
-        val_epoch_loss = np.mean(val_epoch_loss)
-        val_epoch_accuracy = np.mean(val_epoch_accuracy)
-
+        # ------------------------------------------  
+        # collect avg values coming out of every epochs 
+        avg_acc_ls.append(val_epoch_accuracy)
+        avg_acc_ls_charge_only.append(avg_acc_charge_only)
+        avg_acc_ls_charge_color.append(avg_acc_charge_color)
+        avg_acc_ls_shield_only.append(avg_acc_shield_only)
+        # ------------------------------------------
         end = time.time()
 
-        train_loss.append(train_epoch_loss)
-        train_accuracy.append(train_epoch_accuracy)
-
-        val_loss.append(val_epoch_loss)
-        val_accuracy.append(val_epoch_accuracy)
-
-        #Print Epoch Statistics
+        # Print Epoch Statistics
         print("** Epoch {} ** - Epoch Time {}".format(epoch, int(end-start)))
         print("Train Loss = {}".format(round(train_epoch_loss, 4)))
         print("Train Accuracy = {} % \n".format(train_epoch_accuracy))
         print("Val Loss = {}".format(round(val_epoch_loss, 4)))
-        print("Val Accuracy = {} % \n".format(val_epoch_accuracy))
+        print("Val epoch Accuracy = {} % \n".format(val_epoch_accuracy))
+        print("Val Charge Accuracy = {} % \n".format(avg_acc_charge_only))
+        print("Val Charge Color Accuracy = {} %\n".format(avg_acc_charge_color))
+        print("Val Shield Color Accuracy = {} % \n".format(avg_acc_shield_only))
         
         early_stopping(val_epoch_accuracy, model, optimizer, epoch)
            
         if early_stopping.early_stop:
             print("Early stopping. Stopping the training of the model.")
             break
+        print("------------------------------------------------------------")
 
-    #Print Final Statistics
-    final_train_loss = sum(train_loss) / len(train_loss)
-    final_val_loss = sum(val_loss) / len(val_loss)
-    final_train_acc = sum(train_accuracy) / len(train_accuracy)
-    final_val_acc = sum(val_accuracy) / len(val_accuracy)
+    val_acc_score = sum(avg_acc_ls) / len(avg_acc_ls)
+    acc_score_charge = sum(avg_acc_ls_charge_only) / len(avg_acc_ls_charge_only)
+    acc_score_charge_color = sum(avg_acc_ls_charge_color) / len(avg_acc_ls_charge_color)
+    acc_score_shield = sum(avg_acc_ls_shield_only) / len(avg_acc_ls_shield_only)
+    ftrain_loss = sum(train_loss) / len(train_loss) 
+    fval_loss = sum(val_loss) / len(val_loss) 
+    train_acc_standard = sum(avg_train_acc_list) / len(avg_train_acc_list) 
     
-    print("----------------------------------------------------")
-    print("Final Train Loss = {}".format(round(final_train_loss, 4)))
-    print("Final Train Accuracy = {} % \n".format(train_epoch_accuracy))
-    print("Final Val Loss = {}".format(round(final_train_acc, 4)))
-    print("Final Val Accuracy = {} % \n".format(final_val_acc))
+    print('Final Accuracy ALL (Overall): {}%'.format(100. * round(val_acc_score, 2)))
+    print('Final Accuracy Charge-Mod only (Overall): {}%'.format(100. * round(acc_score_charge, 2)))
+    print('Final Accuracy Charge color (Overall): {}%'.format(100. * round(acc_score_charge_color, 2)))
+    print('Final Accuracy Shield color (Overall): {}%'.format(100. * round(acc_score_shield, 2)))
+    print('Final train loss (Overall): {}'.format(round(ftrain_loss, 2)))
+    print('Final val loss (Overall): {}'.format(round(fval_loss, 2)))
+            
+    return model, ftrain_loss, train_acc_standard, fval_loss, val_acc_score
 
-    return model, train_epoch_loss, train_epoch_accuracy, val_epoch_loss, val_epoch_accuracy
+def test_classification_model(model, test_data_loader):
+    test_epoch_loss = []
+    test_epoch_accuracy = []
+
+    test_loss = []
+    test_accuracy = []
+
+    accuracies = []
+    accuracies_charge_only = []
+    accuracies_charge_color = []
+    accuracies_shield_only = []
+
+    accuracy_test_list = []
+    accuracy_test_list_charge=[]
+    accuracy_test_list_charge_color=[]
+    accuracy_test_list_shield=[]
+
+    # model.eval()
+    with torch.no_grad():
+        for images, labels,_,_,_ in test_data_loader:
+            print(type(labels))
+            images = images.to("cpu")
+            labels = labels.to("cpu")
+
+            #Forward ->
+            preds = model(images)
+
+            #Calculate Accuracy
+            acc = calc_accuracy_standard(labels.cpu(), preds.cpu())
+            acc1,acc2,acc3,acc4 = calc_accuracy(labels.cpu(), preds.cpu())
+            for i in acc1:
+                accuracies.append(i)
+            for i in acc2:
+                accuracies_charge_only.append(i)
+            for i in acc3:
+                accuracies_charge_color.append(i)
+            for i in acc4:
+                accuracies_shield_only.append(i)
+
+            #Calculate Loss
+            loss = criterion(preds, labels)
+
+            #Append loss & acc
+            loss_value = loss.item()
+            test_epoch_loss.append(loss_value)
+            test_epoch_accuracy.append(acc)
+
+            avg_batch_acc = sum(accuracies)/len(accuracies)
+            avg_batch_acc_charge = sum(accuracies_charge_only)/len(accuracies_charge_only)
+            avg_batch_acc_chrage_color = sum(accuracies_charge_color)/len(accuracies_charge_color)
+            avg_batch_acc_shield = sum(accuracies_shield_only)/len(accuracies_shield_only)
+            
+#             avg_batch_acc_charge, avg_batch_acc_chrage_color, avg_batch_acc_shield = 0,0,0
+            accuracy_test_list.append(avg_batch_acc)
+            accuracy_test_list_charge.append(avg_batch_acc_charge)
+            accuracy_test_list_charge_color.append(avg_batch_acc_chrage_color)
+            accuracy_test_list_shield.append(avg_batch_acc_shield)
+            
+            print("Test Accuracy Standard (in progress) = {} % \n".format(acc))
+            print('Test Accuracy ALL (in progress): {}%'.format(100. * round(avg_batch_acc, 2)))
+            print('Test Accuracy Charge-Mod only (in progress): {}%'.format(100. * round(avg_batch_acc_charge, 2)))
+            print('Test Accuracy Charge color (in progress): {}%'.format(100. * round(avg_batch_acc_chrage_color, 2)))
+            print('Test Accuracy Shield color (in progress): {}%'.format(100. * round(avg_batch_acc_shield, 2)))
+            
+    test_epoch_loss = sum(test_epoch_loss) / len(test_epoch_loss)
+    test_epoch_accuracy =  sum(test_epoch_accuracy) / len(test_epoch_accuracy)
+
+    test_loss.append(test_epoch_loss)
+    test_accuracy.append(test_epoch_accuracy)
+
+    print("Final Test Loss = {}".format(round(test_epoch_loss, 4)))
+    print("Test Accuracy Standard = {} % \n".format(test_epoch_accuracy))
+
+    acc_test_score = sum(accuracy_test_list) / len(accuracy_test_list)
+    acc_test_score_charge = sum(accuracy_test_list_charge) / len(accuracy_test_list_charge)
+    acc_test_score_charge_color = sum(accuracy_test_list_charge_color) / len(accuracy_test_list_charge_color)
+    acc_test_score_shield = sum(accuracy_test_list_shield) / len(accuracy_test_list_shield)
+    
+    print('Final Test Accuracy ALL (Overall): {}%'.format(100. * round(acc_test_score, 2)))
+    print('Final Test Accuracy Charge-Mod only (Overall): {}%'.format(100. * round(acc_test_score_charge, 2)))
+    print('Final Test Accuracy Charge color (Overall): {}%'.format(100. * round(acc_test_score_charge_color, 2)))
+    print('Final Test Accuracy Shield color (Overall): {}%'.format(100. * round(acc_test_score_shield, 2)))
 
 
 class CoAClassDataset(td.Dataset):
@@ -248,6 +446,8 @@ class CoAClassDataset(td.Dataset):
     def _get_label_class(self, idx):
         
         label_class = self.classes[idx]
+#         print('label_class',label_class)
+        
 #         if self.transform is not None:
 #             label_class_t = self.transform(label_class)
 #         else:
@@ -257,46 +457,16 @@ class CoAClassDataset(td.Dataset):
         return label_class
 
 
-def test_classification_model(model, test_data_loader):
-    test_epoch_loss = []
-    test_epoch_accuracy = []
-
-    # model.eval()
-    with torch.no_grad():
-        for images, labels,_,_,_ in test_data_loader:
-            print(type(labels))
-            images = images.to("cpu")
-            labels = labels.to("cpu")
-
-            #Forward ->
-            preds = model(images)
-
-            #Calculate Accuracy
-            acc = calc_accuracy(labels.cpu(), preds.cpu())
-
-            #Calculate Loss
-            loss = criterion(preds, labels)
-
-            #Append loss & acc
-            loss_value = loss.item()
-            test_epoch_loss.append(loss_value)
-            test_epoch_accuracy.append(acc)
-            print("Test epoch Loss = {}".format(round(loss_value, 4)))
-            print("Test epoch Accuracy = {} % \n".format(acc))
-
-    test_loss = np.mean(test_epoch_loss)
-    test_accuracy = np.mean(test_epoch_accuracy)
-
-    print("Test Loss = {}".format(round(test_loss, 4)))
-    print("Test Accuracy = {} % \n".format(test_accuracy))
-
-
 if __name__ == "__main__":
     print('starting the script')
+  
+    parser = argparse.ArgumentParser(description='A script for training the baseline classification vgg model')
+    parser.add_argument('--seed', dest='seed', type=int, help='reproducibility seed', default=1234)
+    args = parser.parse_args()
 
     # ---------------------- Reproducibility -------------------
     
-    seed = 87423
+    seed = args.seed
     random.seed(seed)     # python random generator
     np.random.seed(seed)  # numpy random generator
 
@@ -339,7 +509,7 @@ if __name__ == "__main__":
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     
-    BATCH_SIZE = 32
+    BATCH_SIZE = 5
     NUM_WORKER = 2 #### this needs multi-core
     # NUM_WORKER = 0 #### this needs multi-core
     pin_memory=False,
@@ -375,17 +545,16 @@ if __name__ == "__main__":
         T.RandomRotation(10),
         T.RandomCrop(224),
     ]
- 
+
     # Use RandomApply to apply the transform randomly to some of the images
     transform_with_random = T.Compose([
         T.Resize((height, width)), # mandetory                  
-#         T.RandomApply(transforms=train_transform_list, p=0.8),
         random.choice(train_transform_list),
         T.ToTensor(),
         T.Normalize(mean, std), # mandetory 
         Noise(0.1, 0.05), # this should come at the end
     ])
-
+    
     transform_for_test = T.Compose([
         T.Resize((height,width)),
         T.ToTensor(),                               
@@ -406,10 +575,17 @@ if __name__ == "__main__":
 
     test_dataset = CoAClassDataset(images_location, 
                          test_annotation_file, 
-                         transform=transform_for_test, 
+                         transform=transform_with_random, 
                          device=device,
                          calc_mean=False)
 
+    train_random_sampler = RandomSampler(train_dataset)
+    val_random_sampler = RandomSampler(val_dataset)
+    test_random_sampler = RandomSampler(test_dataset)
+
+    # --------------------------------------------------
+
+    # Shuffle Argument is mutually exclusive with Sampler!
     train_random_sampler = RandomSampler(train_dataset)
     val_random_sampler = RandomSampler(val_dataset)
     test_random_sampler = RandomSampler(test_dataset)
@@ -436,8 +612,7 @@ if __name__ == "__main__":
         batch_size = BATCH_SIZE,
         sampler = test_random_sampler,
         num_workers = NUM_WORKER,
-    )
-
+    )    
     # --------------------------------------------------
     ### Define model
     model = models.vgg16(pretrained = True)
@@ -481,7 +656,6 @@ if __name__ == "__main__":
 
 
     # --------------------------------------------------
-
     
     from datetime import datetime
 
