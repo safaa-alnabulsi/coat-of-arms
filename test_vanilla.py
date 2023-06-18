@@ -2,25 +2,20 @@
 
 #imports 
 import os
-import nltk
-import spacy
 import random
 import numpy as np
 import pandas as pd
 import torch
-import torch.nn as nn
-import torch.onnx as onnx
+# import torch.nn as nn
+# import torch.onnx as onnx
 import torch.optim as optim
 import torchvision.models as models
-
-# imports 
-import torch
-import pandas as pd
 
 from src.baseline.vocabulary import Vocabulary
 from src.baseline.data_loader import get_loader, get_mean, get_std
 from src.baseline.coa_model import get_new_model, init_testing_model,test_model,get_min_max_acc_images
-from src.accuracy import WEIGHT_MAP_ONLY_CHARGE
+from src.accuracy import WEIGHT_MAP
+from src.utils import print_time
 
 import argparse
 
@@ -34,15 +29,17 @@ if __name__ == "__main__":
     parser.add_argument('--pretrained', dest='pretrained', type=str, help='vanilla pretrained?', default='no', choices=['yes','Yes','y','Y','no','No','n', 'N'])
 
     args = parser.parse_args()
-    
-    seed = 10
+   #seed = args.seed
+    seed = 12324235
+    print("seed", seed)
     random.seed(seed)     # python random generator
     np.random.seed(seed)  # numpy random generator
+
     torch.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
-    #torch.backends.cudnn.deterministic = True
-    #torch.backends.cudnn.benchmark = False
-    #torch.use_deterministic_algorithms(True)
+
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
     
     data_location = args.dataset
     real_data = args.real_data
@@ -55,8 +52,8 @@ if __name__ == "__main__":
             
     if real_data in ['yes','Yes','y','Y'] :
         real_data = True
-        img_h=620
-        img_w=600
+        img_h = 634
+        img_w = 621
     else: 
         real_data = False
         img_h=500
@@ -73,9 +70,10 @@ if __name__ == "__main__":
     print('Dataset exists in', data_location)    
     if real_data:
         root_folder_images = data_location + '/resized'
-        test_caption_file  = data_location + '/test_real_captions_psumsq.txt'
+#         test_caption_file  = data_location + '/test_real_captions_psumsq.txt'
+        test_caption_file  = data_location + '/full-test_captions_psumsq.txt'
     else:
-        root_folder_images = data_location + '/images'
+        root_folder_images = data_location + f'/res_images{img_h}x{img_w}' 
         test_caption_file  = data_location + '/test_captions_psumsq.txt'
 #         test_caption_file  = data_location + '/real_captions_psumsq_lions_cleaned.txt'
 
@@ -90,16 +88,16 @@ if __name__ == "__main__":
     
     # 30 minutes to create those, as it's baseline, i ran it several times and it's the same
     vocab = Vocabulary(freq_threshold)
-    vocab.stoi = {'<PAD>': 0, '<SOS>': 1, '<EOS>': 2, '<UNK>': 3, 'lion': 4, 'rampant': 5, 'passt': 6, 'guard': 7, 'head': 8, 'lions': 9, 'cross': 10, 'molxine': 11, 'patonce': 12, 'eagle': 13, 'doubleheaded': 14, 'eagles': 15, 'a': 16, 'b': 17, 'o': 18, 's': 19, 'g': 20, 'e': 21, 'v': 22, '1': 23, '2': 24, '3': 25, '4': 26, '5': 27, '6': 28, '7': 29, '8': 30, '9': 31, '10': 32, '11': 33, 'border': 34, '&': 35}
-    vocab.itos = {0: '<PAD>', 1: '<SOS>', 2: '<EOS>', 3: '<UNK>', 4: 'lion', 5: 'rampant', 6: 'passt', 7: 'guard', 8: 'head', 9: 'lions', 10: 'cross', 11: 'moline', 12: 'patonce', 13: 'eagle', 14: 'doubleheaded', 15: 'eagles', 16: 'a', 17: 'b', 18: 'o', 19: 's', 20: 'g', 21: 'e', 22: 'v', 23: '1', 24: '2', 25: '3', 26: '4', 27: '5', 28: '6', 29: '7', 30: '8', 31: '9', 32: '10', 33: '11', 34: 'border', 35: '&'}
+    vocab.stoi = {'<PAD>': 0, '<SOS>': 1, '<EOS>': 2, '<UNK>': 3, 'lion': 4, 'rampant': 5, 'passt': 6, 'guard': 7, 'head': 8, 'lions': 9, 'cross': 10, 'molxine': 11, 'patonce': 12, 'eagle': 13, 'doubleheaded': 14, 'eagles': 15, 'a': 16, 'b': 17, 'o': 18, 's': 19, 'g': 20, 'e': 21, 'v': 22, '1': 23, '2': 24, '3': 25, '4': 26, '5': 27, '6': 28, '7': 29, '8': 30, '9': 31, '10': 32, '11': 33}
+    vocab.itos = {0: '<PAD>', 1: '<SOS>', 2: '<EOS>', 3: '<UNK>', 4: 'lion', 5: 'rampant', 6: 'passt', 7: 'guard', 8: 'head', 9: 'lions', 10: 'cross', 11: 'moline', 12: 'patonce', 13: 'eagle', 14: 'doubleheaded', 15: 'eagles', 16: 'a', 17: 'b', 18: 'o', 19: 's', 20: 'g', 21: 'e', 22: 'v', 23: '1', 24: '2', 25: '3', 26: '4', 27: '5', 28: '6', 29: '7', 30: '8', 31: '9', 32: '10', 33: '11'}
     
     # ------------------------------------------ Get mean & std ---------------------------------------
-    mean=0.3272075951099396
-    std=0.3805903494358063
-    batch_size = 256
+    mean,std = (torch.tensor(0.28803130984306335), torch.tensor(0.3481476306915283))
+    print_time(f'Using already calculated mean and std in generated-data-api-single dataset, the mean={mean} and std={mean}')
+    batch_size = 32
 
    # ---------------------------------------- Loaders ------------------------------------------------
-    
+    print("init_testing_model")
     test_loader, test_dataset = init_testing_model(test_caption_file, 
                                                    root_folder_images, 
                                                    mean, std,
@@ -120,8 +118,8 @@ if __name__ == "__main__":
     # encoder_dim=2048  ### resnet50
     encoder_dim=512  ### resnet34 & resnet18
     decoder_dim=512
-    learning_rate = 3e-4
-    drop_prob=0.3
+    learning_rate = 0.0009 
+    drop_prob=0.5
     ignored_idx = test_dataset.vocab.stoi["<PAD>"]
 
     hyper_params = {'embed_size': embed_size,
@@ -149,9 +147,9 @@ if __name__ == "__main__":
                                                                             test_dataset, 
                                                                             vocab_size, 
                                                                             device,
-                                                                            'vanilla-logs',
+                                                                            'vanilla-logs-final',
                                                                             real_data,
-                                                                            weights_map=WEIGHT_MAP_ONLY_CHARGE)    
+                                                                            weights_map=WEIGHT_MAP)    
 
 
     print("test_loss: ", test_loss)
